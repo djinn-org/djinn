@@ -1,6 +1,7 @@
 package com.janosgyerik.meetingroomgenie.api.com.janosgyerik.meetingroomgenie.roomstatus;
 
 import com.janosgyerik.meetingroomgenie.api.Reservation;
+import com.janosgyerik.meetingroomgenie.api.com.janosgyerik.meetingroomgenie.utils.DateUtils;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -8,9 +9,8 @@ import java.util.List;
 
 public class StatusChangeReceiverImpl implements StatusChangeReceiver {
 
-    protected static final int START_RESERVATION_WARNING_PERIOD = 15 * 60 * 1000;
-    protected static final int END_RESERVATION_WARNING_PERIOD = 15 * 60 * 1000;
-    protected static final int LONG_FREE_PERIOD = 60 * 60 * 1000;
+    protected static final int MINUTES_TO_WARN_BEFORE_NEXT_RESERVATION = 15;
+    protected static final int MINUTES_OF_LONG_FREE_PERIOD = 60;
 
     private final StatusChangeListener listener;
 
@@ -24,7 +24,7 @@ public class StatusChangeReceiverImpl implements StatusChangeReceiver {
             listener.onFree();
         } else {
             Reservation reservation = reservations.get(0);
-            Date now = Calendar.getInstance().getTime();
+            Date now = DateUtils.now();
 
             Date end = reservation.getEnd();
 
@@ -34,9 +34,9 @@ public class StatusChangeReceiverImpl implements StatusChangeReceiver {
             }
 
             Date start = reservation.getStart();
-            Date longFreeLimit = dateMinusPeriod(start, LONG_FREE_PERIOD);
-            Date startReservationLimit = dateMinusPeriod(start, START_RESERVATION_WARNING_PERIOD);
-            Date endReservationLimit = dateMinusPeriod(end, END_RESERVATION_WARNING_PERIOD);
+            Date longFreeLimit = DateUtils.minusMinutes(start, MINUTES_OF_LONG_FREE_PERIOD);
+            Date startReservationLimit = DateUtils.minusMinutes(start, MINUTES_TO_WARN_BEFORE_NEXT_RESERVATION);
+            Date endReservationLimit = DateUtils.minusMinutes(end, MINUTES_TO_WARN_BEFORE_NEXT_RESERVATION);
 
             if (start.before(longFreeLimit)) {
                 listener.onFree();
@@ -50,9 +50,5 @@ public class StatusChangeReceiverImpl implements StatusChangeReceiver {
                 }
             }
         }
-    }
-
-    private Date dateMinusPeriod(Date date, int millis) {
-        return new Date(date.getTime() - millis);
     }
 }
