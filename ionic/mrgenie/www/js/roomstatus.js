@@ -17,8 +17,14 @@ function from_days(days) {
     return from_hours(24);
 }
 
-function to_date(parse_api_date) {
-    return new Date(Date.parse(parse_api_date.iso));
+// this is for easier working with test data
+function to_date_today(parse_api_date) {
+    var date = new Date(Date.parse(parse_api_date.iso));
+    var today = new Date();
+    today.setHours(date.getHours());
+    today.setMinutes(date.getMinutes());
+    today.setSeconds(0);
+    return today;
 }
 
 function to_hhmm(date) {
@@ -38,8 +44,8 @@ function from_hhmm(time) {
 function get_status(reservations0, time) {
     var reservations1 = reservations0.map(function (item) {
         return {
-            start_date: to_date(item.start_date),
-            end_date: to_date(item.end_date)
+            start_date: to_date_today(item.start_date),
+            end_date: to_date_today(item.end_date)
         };
     });
     var reservations = get_relevant_reservations(get_clean_reservations(reservations1), time)

@@ -35,8 +35,8 @@ angular.module('mrgenie.controllers', [])
 
                 var times = data.results
                     .map(function (item) {
-                        var start_date = to_date(item.start_date);
-                        var end_date = to_date(item.end_date);
+                        var start_date = to_date_today(item.start_date);
+                        var end_date = to_date_today(item.end_date);
                         return to_hhmm(start_date) + ' - ' + to_hhmm(end_date);
                     });
                 $scope.reservations = times.map(function (time) { return {time: time}; });
