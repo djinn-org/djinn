@@ -1,0 +1,11 @@
+<ion-view view-title="Rooms">
+    <ion-content>
+        <ion-list>
+            <ion-item ng-repeat="room in rooms | orderBy: 'name'"
+                      item="room"
+                      href="#/tab/room/{{room.name}}">
+                {{room.name}}
+            </ion-item>
+        </ion-list>
+    </ion-content>
+</ion-view>

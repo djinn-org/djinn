@@ -1,0 +1,21 @@
+<ion-view view-title="Room {{room.name}}">
+    <ion-content class="padding">
+        <div class="list card">
+            <div class="item item-divider">Status</div>
+            <div class="item item-body">
+                <i class="icon ion-ionic" style="font-size: 192px"></i>
+            </div>
+        </div>
+
+        <div class="list card">
+            <div class="item item-divider">Reservations</div>
+            <div class="item item-body">
+                <ion-list>
+                    <ion-item ng-repeat="reservation in reservations | orderBy: 'time'">
+                        {{reservation.time}}
+                    </ion-item>
+                </ion-list>
+            </div>
+        </div>
+    </ion-content>
+</ion-view>
