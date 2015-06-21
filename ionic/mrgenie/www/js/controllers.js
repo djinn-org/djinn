@@ -1,4 +1,4 @@
-angular.module('starter.controllers', [])
+angular.module('mrgenie.controllers', [])
 
     .controller('RoomListController', ['$scope', 'Room', function ($scope, Room) {
         Room.getAll().success(function (data) {
