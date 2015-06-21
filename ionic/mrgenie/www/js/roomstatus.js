@@ -21,6 +21,13 @@ function to_date(parse_api_date) {
     return new Date(Date.parse(parse_api_date.iso));
 }
 
+function to_hhmm(date) {
+    function pad(num) {
+        return num < 10 ? '0' + num : num;
+    }
+    return pad(date.getHours()) + ':' + pad(date.getMinutes());
+}
+
 function get_status(reservations0, time) {
     var reservations1 = reservations0.map(function (item) {
         return {
