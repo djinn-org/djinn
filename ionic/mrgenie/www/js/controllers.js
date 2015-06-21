@@ -41,9 +41,11 @@ angular.module('mrgenie.controllers', [])
                     });
                 $scope.reservations = times.map(function (time) { return {time: time}; });
 
-                var now = new Date();
-                //now = new Date(Date.parse("2015-06-21T17:50:00.000Z"));
-                $scope.status = get_status(reservations, now);
+                var time_as_int = parseInt($stateParams.time);
+                var time = isNaN(time_as_int) ? new Date() : from_hhmm(time_as_int);
+                $scope.time = time;
+
+                $scope.status = get_status(reservations, time);
             });
         });
     })

@@ -28,6 +28,13 @@ function to_hhmm(date) {
     return pad(date.getHours()) + ':' + pad(date.getMinutes());
 }
 
+function from_hhmm(time) {
+    var date = new Date();
+    date.setHours(time % 10000 / 100);
+    date.setMinutes(time % 100);
+    return date;
+}
+
 function get_status(reservations0, time) {
     var reservations1 = reservations0.map(function (item) {
         return {

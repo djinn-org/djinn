@@ -32,7 +32,7 @@ angular.module('mrgenie', ['ionic', 'mrgenie.controllers', 'mrgenie.services'])
             // Each tab has its own nav history stack:
 
             .state('tab.room', {
-                url: '/room/:name',
+                url: '/room/:name/:time',
                 views: {
                     'tab-room': {
                         templateUrl: 'templates/tab-room.html',
