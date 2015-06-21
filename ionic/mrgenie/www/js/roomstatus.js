@@ -17,8 +17,18 @@ function from_days(days) {
     return from_hours(24);
 }
 
+function to_date(parse_api_date) {
+    return new Date(Date.parse(parse_api_date.iso));
+}
+
 function get_status(reservations0, time) {
-    var reservations = get_relevant_reservations(get_clean_reservations(reservations0), time)
+    var reservations1 = reservations0.map(function (item) {
+        return {
+            start_date: to_date(item.start_date),
+            end_date: to_date(item.end_date)
+        };
+    });
+    var reservations = get_relevant_reservations(get_clean_reservations(reservations1), time)
         .sort(function (r1, r2) { return r1.start_date >= r2.start_date; });
 
     var timeline = [];

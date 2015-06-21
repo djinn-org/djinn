@@ -31,12 +31,18 @@ angular.module('starter.controllers', [])
             $scope.room = room;
 
             Reservation.query($scope.room.objectId).success(function (data) {
+                var reservations = data.results;
+
                 var times = data.results
                     .map(function (item) {
                         var start_date = item.start_date.iso;
                         return start_date.substr(start_date.indexOf('T') + 1, 5);
                     });
                 $scope.reservations = times.map(function (time) { return {time: time}; });
+
+                var now = new Date();
+                //now = new Date(Date.parse("2015-06-21T17:50:00.000Z"));
+                $scope.status = get_status(reservations, now);
             });
         });
     })

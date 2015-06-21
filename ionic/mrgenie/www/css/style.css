@@ -1,1 +1,15 @@
-/* Empty. Add your own CSS if you like */
+i.status {
+    font-size: 192px;
+}
+
+i.status-FREE {
+    color: green;
+}
+
+i.status-RESERVED {
+    color: blue;
+}
+
+i.status-MEETING {
+    color: red;
+}
