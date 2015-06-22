@@ -1,3 +1,5 @@
+from datetime import datetime
+from datetime import timedelta
 import json
 
 import httplib2
@@ -15,8 +17,10 @@ import settings
 from mrgenie import services
 
 # [('Ay4Qe3A1lC', 'A77-14J17'), ('eLSxvYeY9R', 'A77-12E50'), ('eU9npkV8mZ', 'A77-16J89')]
-print(services.get_rooms())
-reservations = services.get_reservations('Ay4Qe3A1lC')
+# print(services.get_rooms())
+# reservations = services.get_reservations('Ay4Qe3A1lC')
+reservations = services.get_reservations('eU9npkV8mZ')
 
 print([x['start_date'] for x in reservations])
+print(services.get_status(reservations, datetime(2015, 6, 21, 9, 55)))
 # print(json.dumps(reservations, indent=4))
