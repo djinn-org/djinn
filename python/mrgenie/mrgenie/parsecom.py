@@ -9,7 +9,7 @@ def get(path, where=None):
     else:
         body = {}
 
-    http = httplib2.Http('api.parse.com', 443)
+    http = httplib2.Http('.cache', 443)
     resp, content = http.request(
         'https://api.parse.com/{}'.format(path),
         'GET',
