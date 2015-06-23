@@ -9,17 +9,19 @@ CMD_ROOMS = 'rooms'
 CMD_RESERVATIONS = 'reservations'
 CMD_STATUS = 'status'
 CMD_MAKE_RESERVATION = 'make-reservation'
+CMD_CANCEL_RESERVATION = 'cancel-reservation'
 
 SERVICES = {
     'parse': ParseService(),
-    'azure': AzureService()
+    'azure': AzureService(),
 }
 
 COMMANDS = [
     CMD_ROOMS,
     CMD_RESERVATIONS,
     CMD_STATUS,
-    CMD_MAKE_RESERVATION
+    CMD_MAKE_RESERVATION,
+    CMD_CANCEL_RESERVATION,
 ]
 
 
@@ -51,6 +53,10 @@ def make_reservation(service, room_id):
     print(service.make_reservation(room_id))
 
 
+def cancel_reservation(service, room_id):
+    print(service.cancel_reservation(room_id))
+
+
 def main():
     parser = ArgumentParser(description='Meeting Room Genie CLI')
     parser.add_argument('service', choices=SERVICES.keys())
@@ -75,6 +81,11 @@ def main():
             make_reservation(service, args.room_id)
         else:
             parser.exit(1, 'room id is required to make a reservation\n')
+    elif args.cmd == CMD_CANCEL_RESERVATION:
+        if args.room_id:
+            cancel_reservation(service, args.room_id)
+        else:
+            parser.exit(1, 'room id is required to cancel a reservation\n')
 
 if __name__ == '__main__':
     main()

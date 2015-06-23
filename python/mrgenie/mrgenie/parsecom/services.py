@@ -4,20 +4,30 @@ import json
 
 import httplib2
 from mrgenie.services import Service
+from mrgenie.utils import status
 import settings
 
 
-def get(path, params=''):
+def urlencode(params):
+    return '&'.join(['{}={}'.format(k, json.dumps(v).replace(' ', ''))
+                     for k, v in params.items()])
+
+
+def get(path, params=None):
+    if not params:
+        params = {}
+
+    params_urlencoded = urlencode(params)
     http = httplib2.Http('.cache', 443)
     resp, content = http.request(
-        'https://api.parse.com/{}'.format(path) + '?' + params,
+        'https://api.parse.com/{}?{}'.format(path, params_urlencoded),
         'GET',
         headers={
             "X-Parse-Application-Id": settings.PARSE_APP_ID,
             "X-Parse-REST-API-Key": settings.PARSE_REST_KEY
         }
     )
-    return content
+    return content.decode()
 
 
 def post_or_put(path, params=None, method='POST'):
@@ -45,6 +55,19 @@ def put(path, params=None):
     return post_or_put(path, params, method='PUT')
 
 
+def delete(path):
+    http = httplib2.Http('.cache', 443)
+    resp, content = http.request(
+        'https://api.parse.com/' + path,
+        'DELETE',
+        headers={
+            "X-Parse-Application-Id": settings.PARSE_APP_ID,
+            "X-Parse-REST-API-Key": settings.PARSE_REST_KEY
+        }
+    )
+    return content.decode()
+
+
 def to_parse_date(date):
     return {
         "__type": "Date",
@@ -59,17 +82,24 @@ class ParseService(Service):
         return [(x['objectId'], x['name']) for x in rooms]
 
     def get_reservations(self, room_id):
-        reservations_json = json.loads(get(
-            path='/1/classes/Reservation',
-            params='where={"room":{"__type":"Pointer","className":"Room","objectId":"%s"}}' % room_id
-        ).decode())
+        path = '/1/classes/Reservation'
+        params = {
+            'where': {
+                'room': {
+                    '__type': 'Pointer',
+                    'className': 'Room',
+                    'objectId': room_id
+                }
+            }
+        }
 
-        reservations_raw = reservations_json['results']
+        reservations_raw = json.loads(get(path, params))['results']
 
         reservations = [
             {
                 'start_date': to_date(x['start_date']['iso']),
-                'end_date': to_date(x['end_date']['iso'])
+                'end_date': to_date(x['end_date']['iso']),
+                'objectId': x['objectId'],
             } for x in reservations_raw]
 
         return reservations
@@ -103,7 +133,13 @@ class ParseService(Service):
         return resp
 
     def cancel_reservation(self, room_id):
-        pass
+        start_date = datetime.now()
+        reservations = self.get_reservations(room_id)
+        for reservation in reservations:
+            if reservation['start_date'] < start_date < reservation['end_date']:
+                delete('/1/classes/Reservation/' + reservation['objectId'])
+                return True
+        return False
 
 
 def to_date(strdate):
