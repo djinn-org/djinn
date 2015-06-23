@@ -2,8 +2,9 @@
 
 cd $(dirname "$0")
 
-room_id=$1
-status=$(./run.sh mrgenie/status.py $room_id)
+service=$1
+room_id=$2
+status=$(./run.sh mrgenie/cli.py $service status -r $room_id)
 
 echo room=$room_id
 echo status=$status
