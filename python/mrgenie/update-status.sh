@@ -2,8 +2,15 @@
 
 cd $(dirname "$0")
 
-room_id=eU9npkV8mZ
-status=$(./run.sh mrgenie/status.py)
+room_id=$1
+status=$(./run.sh mrgenie/status.py $room_id)
+
+echo room=$room_id
+echo status=$status
+
+BlueLED=17
+GreenLED=22
+RedLED=4
 
 gpio -g mode $BlueLED out
 gpio -g mode $GreenLED out
