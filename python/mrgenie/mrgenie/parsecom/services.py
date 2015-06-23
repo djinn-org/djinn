@@ -103,7 +103,17 @@ class ParseService(Service):
 
         return reservations
 
+    def get_current_reservation_id(self, room_id):
+        start_date = datetime.now()
+        reservations = self.get_reservations(room_id)
+        for reservation in reservations:
+            if reservation['start_date'] < start_date < reservation['end_date']:
+                return reservation['objectId']
+
     def make_reservation(self, room_id):
+        if self.get_current_reservation_id(room_id):
+            return False
+
         start_date = datetime.now()
         end_date = start_date + timedelta(minutes=30)
         params = {
@@ -134,12 +144,10 @@ class ParseService(Service):
         return resp
 
     def cancel_reservation(self, room_id):
-        start_date = datetime.now()
-        reservations = self.get_reservations(room_id)
-        for reservation in reservations:
-            if reservation['start_date'] < start_date < reservation['end_date']:
-                delete('/1/classes/Reservation/' + reservation['objectId'])
-                return True
+        reservation_id = self.get_current_reservation_id(room_id)
+        if reservation_id:
+            delete('/1/classes/Reservation/' + reservation_id)
+            return True
         return False
 
 
