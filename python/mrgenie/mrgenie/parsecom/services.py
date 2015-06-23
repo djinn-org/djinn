@@ -4,7 +4,6 @@ import json
 
 import httplib2
 from mrgenie.services import Service
-from mrgenie.utils import status
 import settings
 
 
@@ -120,11 +119,13 @@ class ParseService(Service):
             rel_params = {
                 'room': {
                     "__op": "AddRelation",
-                    "objects": [{
-                        "__type": "Pointer",
-                        "className": "Room",
-                        "objectId": room_id
-                    }]
+                    "objects": [
+                        {
+                            "__type": "Pointer",
+                            "className": "Room",
+                            "objectId": room_id
+                        }
+                    ]
                 }
             }
 
