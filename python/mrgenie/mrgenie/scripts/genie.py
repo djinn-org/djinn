@@ -1,6 +1,7 @@
 from argparse import ArgumentParser
 from datetime import datetime
 from mrgenie.parsecom.services import ParseService
+from mrgenie.azure.services import AzureService
 from mrgenie.utils import status
 
 
@@ -10,7 +11,7 @@ CMD_STATUS = 'status'
 
 SERVICES = {
     'parse': ParseService(),
-    'koua': ParseService()
+    'azure': AzureService()
 }
 
 COMMANDS = [
