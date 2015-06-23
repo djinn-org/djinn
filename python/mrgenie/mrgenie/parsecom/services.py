@@ -25,11 +25,6 @@ class ParseService(Service):
         rooms = rooms_json['results']
         return [(x['objectId'], x['name']) for x in rooms]
 
-    def get_all_reservations(self):
-        reservations_json = json.loads(get(path='/1/classes/Reservation').decode())
-        reservations = reservations_json['results']
-        return reservations
-
     def get_reservations(self, room_id):
         reservations_json = json.loads(get(
             path='/1/classes/Reservation',
