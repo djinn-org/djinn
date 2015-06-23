@@ -8,6 +8,7 @@ from mrgenie.utils import status
 CMD_ROOMS = 'rooms'
 CMD_RESERVATIONS = 'reservations'
 CMD_STATUS = 'status'
+CMD_MAKE_RESERVATION = 'make-reservation'
 
 SERVICES = {
     'parse': ParseService(),
@@ -17,7 +18,8 @@ SERVICES = {
 COMMANDS = [
     CMD_ROOMS,
     CMD_RESERVATIONS,
-    CMD_STATUS
+    CMD_STATUS,
+    CMD_MAKE_RESERVATION
 ]
 
 
@@ -45,6 +47,10 @@ def print_all_status(service):
         print('id: {} status: {}'.format(room_id, status.get_status(reservations, date)))
 
 
+def make_reservation(service, room_id):
+    print(service.make_reservation(room_id))
+
+
 def main():
     parser = ArgumentParser(description='Meeting Room Genie CLI')
     parser.add_argument('service', choices=SERVICES.keys())
@@ -64,6 +70,11 @@ def main():
             print_status(service, args.room_id)
         else:
             print_all_status(service)
+    elif args.cmd == CMD_MAKE_RESERVATION:
+        if args.room_id:
+            make_reservation(service, args.room_id)
+        else:
+            parser.exit(1, 'room id is required to make a reservation\n')
 
 if __name__ == '__main__':
     main()
