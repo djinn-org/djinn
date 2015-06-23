@@ -21,16 +21,16 @@ class AzureService(Service):
 
     def get_reservations(self, room_id):
         reservations_json = json.loads(get(
-            path='/1/classes/Reservation',
-            params='where={"room":{"__type":"Pointer","className":"Room","objectId":"%s"}}' % room_id
+            path='/api/reservation',
+            params='roomName={}'.format(room_id)
         ).decode())
 
-        reservations_raw = reservations_json['results']
+        reservations_raw = reservations_json
 
         reservations = [
             {
-                'start_date': to_date(x['start_date']['iso']),
-                'end_date': to_date(x['end_date']['iso'])
+                'start_date': to_date(x['Start']),
+                'end_date': to_date(x['Fin'])
             } for x in reservations_raw]
 
         return reservations
