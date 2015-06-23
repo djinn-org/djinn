@@ -35,13 +35,7 @@ def to_date_today(remote_date):
 def get_reservations(room_id):
     reservations_json = json.loads(parsecom.get(
         path='/1/classes/Reservation',
-        where={
-            'room': {
-                '__type': 'Pointer',
-                'className': 'Room',
-                'objectId': room_id
-            }
-        }
+        params='where={"room":{"__type":"Pointer","className":"Room","objectId":"%s"}}' % room_id
     ).decode())
 
     reservations = reservations_json['results']

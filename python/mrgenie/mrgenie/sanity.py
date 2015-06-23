@@ -17,12 +17,12 @@ import settings
 from mrgenie import services
 
 # [('Ay4Qe3A1lC', 'A77-14J17'), ('eLSxvYeY9R', 'A77-12E50'), ('eU9npkV8mZ', 'A77-16J89')]
-# print(services.get_rooms())
-# reservations = services.get_reservations('Ay4Qe3A1lC')
-reservations = services.get_reservations('eU9npkV8mZ')
-
-print([x['start_date'] for x in reservations])
+rooms = services.get_rooms()
+print(rooms)
 
 date = datetime.now()
-print(services.get_status(reservations, date))
-# print(json.dumps(reservations, indent=4))
+
+for room in rooms:
+    reservations = services.get_reservations(room[0])
+    print(services.get_status(reservations, date))
+    print([x['start_date'] for x in reservations])
