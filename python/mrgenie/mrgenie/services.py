@@ -1,5 +1,6 @@
 import json
-import datetime
+from datetime import datetime
+from datetime import timedelta
 
 from mrgenie import parsecom
 
@@ -21,7 +22,14 @@ def get_all_reservations():
 
 
 def to_date(strdate):
-    return datetime.datetime.strptime(strdate[:19], "%Y-%m-%dT%H:%M:%S")
+    return datetime.strptime(strdate[:19], "%Y-%m-%dT%H:%M:%S")
+
+
+def to_date_today(remote_date):
+    strdate = remote_date['iso'][:19]
+    date = datetime.strptime(strdate, "%Y-%m-%dT%H:%M:%S")
+    today = datetime.now()
+    return datetime(today.year, today.month, today.day, date.hour, date.minute, date.second)
 
 
 def get_reservations(room_id):
@@ -40,8 +48,8 @@ def get_reservations(room_id):
 
     reservations_simple = [
         {
-            'start_date': to_date(x['start_date']['iso']),
-            'end_date': to_date(x['end_date']['iso'])
+            'start_date': to_date_today(x['start_date']),
+            'end_date': to_date_today(x['end_date'])
         } for x in reservations]
 
     reservations_sorted = sorted(reservations_simple, key=lambda x: x['start_date'])
@@ -55,7 +63,7 @@ STATUS_MEETING = 'MEETING'
 
 
 def from_minutes(minutes):
-    return datetime.timedelta(seconds=minutes * 60)
+    return timedelta(seconds=minutes * 60)
 
 PENDING_RESERVATION_TIMEDELTA = from_minutes(15)
 

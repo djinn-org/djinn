@@ -22,5 +22,7 @@ from mrgenie import services
 reservations = services.get_reservations('eU9npkV8mZ')
 
 print([x['start_date'] for x in reservations])
-print(services.get_status(reservations, datetime(2015, 6, 21, 9, 55)))
+
+date = datetime.now()
+print(services.get_status(reservations, date))
 # print(json.dumps(reservations, indent=4))
