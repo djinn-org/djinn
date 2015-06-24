@@ -14,7 +14,7 @@ done
 while :; do
     ./update-status.sh $service $room_id
 
-    status=$(status.sh $service $room_id)
+    status=$(./status.sh $service $room_id)
     if test $status = FREE; then
         ./await-presence-and-reserve-once.sh $service $room_id $await_seconds
     fi
