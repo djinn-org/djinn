@@ -29,13 +29,13 @@ while waiting; do
             echo presence detected, making reservation ...
             presence=1
             update-leds.sh red
-            ./run.sh mrgenie/cli.py make-reservation $service $room_id
+            ./run.sh mrgenie/cli.py $service make-reservation -r $room_id
             sleep 1
         else
             echo leaving room, canceling reservation ...
             presence=0
             update-leds.sh green
-            ./run.sh mrgenie/cli.py cancel-reservation $service $room_id
+            ./run.sh mrgenie/cli.py $service cancel-reservation -r $room_id
             echo exit
             break
         fi
