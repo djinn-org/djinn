@@ -68,9 +68,10 @@ def delete(path):
 
 
 def to_parse_date(date):
+    parse_date = datetime(date.year, date.month, date.day, date.hour - 2, date.minute)
     return {
         "__type": "Date",
-        "iso": date.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+        "iso": parse_date.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
     }
 
 
@@ -152,4 +153,6 @@ class ParseService(Service):
 
 
 def to_date(strdate):
-    return datetime.strptime(strdate[:19], "%Y-%m-%dT%H:%M:%S")
+    parse_date = datetime.strptime(strdate[:19], "%Y-%m-%dT%H:%M:%S")
+    date = datetime(parse_date.year, parse_date.month, parse_date.day, parse_date.hour + 2, parse_date.minute)
+    return date
