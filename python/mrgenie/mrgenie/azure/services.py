@@ -4,11 +4,13 @@ import json
 import httplib2
 from mrgenie.services import Service
 
+BASEURL = 'https://testinnovathon.azurewebsites.net'
+
 
 def get(path, params=''):
     http = httplib2.Http('.cache', 443)
     resp, content = http.request(
-        'https://testinnovathon.azurewebsites.net' + path + '?' + params,
+        BASEURL + path + '?' + params,
         'GET'
     )
     return content
