@@ -4,7 +4,7 @@ cd $(dirname "$0")
 
 service=$1
 room_id=$2
-await_seconds=5
+await_seconds=$3
 
 # init : sanity test leds
 for color in off red green blue off; do
