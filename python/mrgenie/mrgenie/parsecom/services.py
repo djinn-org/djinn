@@ -76,7 +76,7 @@ def to_parse_date(date):
 
 class ParseService(Service):
     def get_rooms(self):
-        rooms_json = json.loads(get(path='/1/classes/Room').decode())
+        rooms_json = json.loads(get(path='/1/classes/Room'))
         rooms = rooms_json['results']
         return [(x['objectId'], x['name']) for x in rooms]
 
