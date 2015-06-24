@@ -37,7 +37,9 @@ def print_reservations(service, room_id):
 
 def print_status(service, room_id):
     date = datetime.now()
-    reservations = service.get_reservations(room_id)
+    # TODO: to use the real times not converted to today, use this version:
+    # reservations = service.get_reservations(room_id)
+    reservations = status.get_reservations(service, room_id)
     print(status.get_status(reservations, date))
 
 
@@ -45,7 +47,9 @@ def print_all_status(service):
     date = datetime.now()
     for room in service.get_rooms():
         room_id = room[0]
-        reservations = service.get_reservations(room_id)
+        # TODO: to use the real times not converted to today, use this version:
+        # reservations = service.get_reservations(room_id)
+        reservations = status.get_reservations(service, room_id)
         print('id: {} status: {}'.format(room_id, status.get_status(reservations, date)))
 
 
