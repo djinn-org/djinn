@@ -20,6 +20,10 @@ angular.module('mrgenie.controllers', [])
             }
         }
 
+        function to_local_date(date) {
+            return new Date(new Date() + 1000 * 60 * 60 * 2)
+        }
+
         Room.getAll().success(function (data) {
             var rooms = data.results;
             var room = getRoom(rooms, $stateParams.name);
@@ -42,7 +46,7 @@ angular.module('mrgenie.controllers', [])
                 $scope.reservations = times.map(function (time) { return {time: time}; });
 
                 var time_as_int = parseInt($stateParams.time);
-                var time = isNaN(time_as_int) ? new Date() : from_hhmm(time_as_int);
+                var time = isNaN(time_as_int) ? to_local_date(new Date()) : from_hhmm(time_as_int);
                 $scope.time = time;
 
                 $scope.status = get_status(reservations, time);
