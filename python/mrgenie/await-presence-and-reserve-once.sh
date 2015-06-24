@@ -13,6 +13,7 @@ SwitchGPIO=24
 # variables
 presence=0
 await_end=$(($(date +%s) + await_seconds))
+await_forever=$((await_end + 60 * 60 * 24))
 
 waiting() {
     [[ $(date +%s) -le $await_end ]]
@@ -30,6 +31,7 @@ while waiting; do
             presence=1
             update-leds.sh red
             ./run.sh mrgenie/cli.py $service make-reservation -r $room_id
+            await_end=$await_forever
             sleep 1
         else
             echo leaving room, canceling reservation ...
