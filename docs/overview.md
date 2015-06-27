@@ -1,7 +1,8 @@
 Overview
 ========
 
-Simple high-level overview of the project idea.
+Explanation of the problems related to booking meeting rooms,
+and the proposed solutions to solve or mitigate the problems.
 
 The problems
 ------------
@@ -73,6 +74,17 @@ For example:
 
 - It would be nice to have a status display in every room,
   indicating the schedule of the given day
+
+### Problem 6 (to delete): available rooms that are not really available
+
+Sometimes a meeting room is marked as available in the current system,
+but in reality there are users inside. When the users who booked the time slot
+arrive, they find themselves in the awkward situation that they
+either have to wait for the "illegal" group to get out, or to be rude to
+force them out.
+
+@Matthieu: this problem seems too rare, and much less significant than the others.
+If you don't mind, I think we should drop this.
 
 The solution
 ------------
