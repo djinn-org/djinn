@@ -65,7 +65,7 @@ Or even better, automatically extend the booking if the room is still
 available, or find another meeting room, preferably nearby, to continue
 after the current time slot expires.
 
-### Problem 5: missing features that would be obviously useful
+### Problem 5: missing obvious features
 
 For example:
 
