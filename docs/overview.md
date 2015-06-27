@@ -32,7 +32,7 @@ and you know what capacity and equipment they have.
 But even then, if your favorite meeting rooms are all taken,
 your frustration will be just as great as when trying to book your first meeting ever.
 
-### Problem 2: booking a room is not driven by the needs of users
+### Problem 2: the process of booking a room is not user-oriented
 
 When booking a room, users have very common and very natural needs:
 
@@ -46,13 +46,13 @@ The current booking system is very far from helping users to book a room.
 Finding a suitable room is a non-trivial, often time-consuming task,
 and it shouldn't be that way.
 
-### Problem 3: cases of booked but unused rooms
+### Problem 3: many booked but unused rooms
 
 Sometimes a room is booked but not used, because the meeting was canceled,
 but not the room booking. This is very unfortunate, as the perfect room
 might appear unavailable to users who really need it.
 
-### Problem 4: no visible indication of the room status during a meeting
+### Problem 4: many meetings exceed their booking and delay the next meeting
 
 Sometimes meetings exceed their planned duration, and when the new users who
 booked the next time slot arrive are in the awkward situation that they
@@ -72,4 +72,4 @@ For example:
 - When you step into an empty meeting room, it would be nice to be able to book it
 
 - It would be nice to have a status display in every room,
-  indicating the given day's schedule
+  indicating the schedule of the given day
