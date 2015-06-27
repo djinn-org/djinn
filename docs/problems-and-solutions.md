@@ -1,5 +1,5 @@
-Overview
-========
+Problems and solutions
+======================
 
 Explanation of the problems related to booking meeting rooms,
 and the proposed solutions to solve or mitigate the problems.
