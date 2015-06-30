@@ -2,7 +2,7 @@ from datetime import datetime
 from datetime import timedelta
 import json
 
-import httplib2
+import urllib3
 from mrgenie.services import Service
 import settings
 
@@ -17,33 +17,33 @@ def get(path, params=None):
         params = {}
 
     params_urlencoded = urlencode(params)
-    http = httplib2.Http('.cache', 443)
-    resp, content = http.request(
-        'https://api.parse.com/{}?{}'.format(path, params_urlencoded),
+    http = urllib3.PoolManager()
+    resp = http.request(
         'GET',
+        'https://api.parse.com/{}?{}'.format(path, params_urlencoded),
         headers={
             "X-Parse-Application-Id": settings.PARSE_APP_ID,
             "X-Parse-REST-API-Key": settings.PARSE_REST_KEY
         }
     )
-    return content.decode()
+    return resp.data.decode()
 
 
 def post_or_put(path, params=None, method='POST'):
     if not params:
         params = {}
 
-    http = httplib2.Http('.cache', 443)
-    resp, content = http.request(
-        'https://api.parse.com/' + path,
+    http = urllib3.PoolManager()
+    resp = http.request(
         method,
+        'https://api.parse.com/' + path,
         headers={
             "X-Parse-Application-Id": settings.PARSE_APP_ID,
             "X-Parse-REST-API-Key": settings.PARSE_REST_KEY
         },
         body=json.dumps(params)
     )
-    return content.decode()
+    return resp.data.decode()
 
 
 def post(path, params=None):
@@ -55,16 +55,16 @@ def put(path, params=None):
 
 
 def delete(path):
-    http = httplib2.Http('.cache', 443)
-    resp, content = http.request(
-        'https://api.parse.com/' + path,
+    http = urllib3.PoolManager()
+    resp = http.request(
         'DELETE',
+        'https://api.parse.com/' + path,
         headers={
             "X-Parse-Application-Id": settings.PARSE_APP_ID,
             "X-Parse-REST-API-Key": settings.PARSE_REST_KEY
         }
     )
-    return content.decode()
+    return resp.decode()
 
 
 def to_parse_date(date):
