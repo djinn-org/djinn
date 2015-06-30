@@ -17,7 +17,12 @@ def get(path, params=None):
         params = {}
 
     params_urlencoded = urlencode(params)
-    http = urllib3.PoolManager()
+
+    if settings.PROXY:
+        http = urllib3.ProxyManager(settings.PROXY)
+    else:
+        http = urllib3.PoolManager()
+
     resp = http.request(
         'GET',
         'https://api.parse.com/{}?{}'.format(path, params_urlencoded),
@@ -33,7 +38,11 @@ def post_or_put(path, params=None, method='POST'):
     if not params:
         params = {}
 
-    http = urllib3.PoolManager()
+    if settings.PROXY:
+        http = urllib3.ProxyManager(settings.PROXY)
+    else:
+        http = urllib3.PoolManager()
+
     resp = http.request(
         method,
         'https://api.parse.com/' + path,
@@ -55,7 +64,11 @@ def put(path, params=None):
 
 
 def delete(path):
-    http = urllib3.PoolManager()
+    if settings.PROXY:
+        http = urllib3.ProxyManager(settings.PROXY)
+    else:
+        http = urllib3.PoolManager()
+
     resp = http.request(
         'DELETE',
         'https://api.parse.com/' + path,
