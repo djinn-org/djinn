@@ -2,6 +2,8 @@ from datetime import datetime
 from datetime import timedelta
 import json
 
+import certifi
+
 import urllib3
 from mrgenie.services import Service
 import settings
@@ -12,17 +14,23 @@ def urlencode(params):
                      for k, v in params.items()])
 
 
+def create_http():
+    if settings.PROXY:
+        http = urllib3.ProxyManager(settings.PROXY)
+    else:
+        http = urllib3.PoolManager(
+            cert_reqs='CERT_REQUIRED',
+            ca_certs=certifi.where(),
+        )
+    return http
+
+
 def get(path, params=None):
     if not params:
         params = {}
 
     params_urlencoded = urlencode(params)
-
-    if settings.PROXY:
-        http = urllib3.ProxyManager(settings.PROXY)
-    else:
-        http = urllib3.PoolManager()
-
+    http = create_http()
     resp = http.request(
         'GET',
         'https://api.parse.com/{}?{}'.format(path, params_urlencoded),
@@ -38,11 +46,7 @@ def post_or_put(path, params=None, method='POST'):
     if not params:
         params = {}
 
-    if settings.PROXY:
-        http = urllib3.ProxyManager(settings.PROXY)
-    else:
-        http = urllib3.PoolManager()
-
+    http = create_http()
     resp = http.request(
         method,
         'https://api.parse.com/' + path,
@@ -64,11 +68,7 @@ def put(path, params=None):
 
 
 def delete(path):
-    if settings.PROXY:
-        http = urllib3.ProxyManager(settings.PROXY)
-    else:
-        http = urllib3.PoolManager()
-
+    http = create_http()
     resp = http.request(
         'DELETE',
         'https://api.parse.com/' + path,
