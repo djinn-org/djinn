@@ -1,3 +1,12 @@
+# Python
+__pycache__
+
+# PyCharm
+.idea
+
+# local files
 db.sqlite3
 virtualenv
+
+# misc
 tmp
