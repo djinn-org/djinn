@@ -8,11 +8,20 @@ class Room(models.Model):
     number = models.IntegerField()
     capacity = models.IntegerField()
 
+    def __str__(self):
+        return self.name
+
 
 class Equipment(models.Model):
     name = models.CharField(max_length=20)
+
+    def __str__(self):
+        return self.name
 
 
 class RoomEquipment(models.Model):
     room = models.ForeignKey(Room)
     equipment = models.ForeignKey(Equipment)
+
+    def __str__(self):
+        return '{} - {}'.format(self.room, self.equipment)
