@@ -25,3 +25,9 @@ class RoomEquipment(models.Model):
 
     def __str__(self):
         return '{} - {}'.format(self.room, self.equipment)
+
+
+class Reservation(models.Model):
+    room = models.ForeignKey(Room)
+    start = models.DateTimeField()
+    end = models.DateTimeField()
