@@ -15,7 +15,7 @@ class Room(models.Model):
     capacity = models.IntegerField()
 
     def __str__(self):
-        return self.name
+        return '{}-{}F.{}'.format(self.building, self.floor, self.name)
 
 
 class Equipment(models.Model):
