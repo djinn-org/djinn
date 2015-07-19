@@ -45,7 +45,7 @@ Exakis - Intelligent rooms ([brochure](http://www.exakis.com/media/11238/Connect
 
 What they are:
 
-- Big french company: société de conseil et d’expertises technologiques (300 people)
+- French company: société de conseil et d’expertises technologiques (300 people)
 - They are "Microsoft Gold Partner" 
 - In 2014 they were "Microsoft Partner of the year"
 - Itelligent rooms is only one of their products
@@ -64,3 +64,32 @@ Reasons to choose us:
 Ideas we can borrow:
 
 - Mash network for our docks ?
+
+Condeco Software ([website](http://www.condecosoftware.com/fr/))
+-----
+**TODO:** Contact for the price Tel: +33 (0)1 76 70 10 15 Email: Europe@condecosoftware.com
+
+What they are:
+
+- A big world wide based company: 10 offices around the globe...
+- Specialized in managing meeting rooms and workspaces
+- They worked/still work with 500 clients, some of them are big guys (BNP, Barclays, Rolls Royce, BP, Reuters, Universal, Nomura, PWC...)
+
+What the system do:
+
+- Room Booking Tools: A calendar, can work with Office/Lotus, and can be used from smartphone/Outlook. It also has the meeting room service option and can handle visitors (printing badges(!), letting the host know if the visitor is here)
+- Desk Booking Tools: That's something big !
+- Video Conferencing
+- Digital Signage: The scrennoutside the room, plus a big one to see all the rooms at one time)
+- Occupancy Sensors: An infrared detector, but used exclusively for detection and stitistics (does not unbook a room). They put it underneath the table, one for every seat. It uses a battery (2 year lifespan)
+
+Reasons to choose us:
+
+- Automatic unbooking system they don't have
+- But frankly, this is a tought competitor. I would go and say : Because we're cooler that them? :) 
+- Maybe price...
+
+Ideas we can borrow:
+
+- Everything! we need to talk about it
+
