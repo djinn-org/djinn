@@ -17,6 +17,7 @@ Reasons to choose us:
 - [Price](https://robinpowered.com/pricing): $249 / month for 15 months is too expensive
 - Not using room equipment criteria
 - Not using distance criteria
+- Robin seems to be only implemented in North America
 
 Ideas we can borrow:
 
