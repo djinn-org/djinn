@@ -23,3 +23,17 @@ Ideas we can borrow:
 - Use Beacon, [low energy Bluetooth](https://en.wikipedia.org/wiki/Bluetooth_low_energy)
 - Nice website
 - Nice and simple [analytics](https://robinpowered.com/analytics)
+
+Jooxter ([website](http://www.jooxter.com/))
+-----
+**TODO:** Check the price by sending an Email as a client
+
+Reasons to choose us:
+
+- Price: We will need to be aggrasive on the price. We will wait to see what they are offering
+- Our system is not relying on smartphones, no constraint is putted on users  
+
+Ideas we can borrow:
+
+- Navigation in the bulding to find a room
+- Penser un outil d'analyse statistique (disponibilité, rotation...)
