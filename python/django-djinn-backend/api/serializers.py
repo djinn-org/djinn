@@ -1,7 +1,12 @@
 from rest_framework import serializers
-from djinn.models import Room
+from djinn.models import Room, Reservation
 
 
 class RoomSerializer(serializers.ModelSerializer):
     class Meta:
         model = Room
+
+
+class ReservationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Reservation
