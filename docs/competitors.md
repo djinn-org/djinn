@@ -38,3 +38,29 @@ Ideas we can borrow:
 
 - Navigation in the bulding to find a room
 - Penser un outil d'analyse statistique (disponibilité, rotation...)
+
+Exakis - Intelligent rooms ([brochure](http://www.exakis.com/media/11238/Connectez-vos-salles-de-r%C3%A9unions-avec-Intelligent-Rooms.pdf))
+-----
+**TODO:** Check the price by sending an Email as a client (contact: contact@exakis.com)
+
+What they are:
+
+- Big french company: société de conseil et d’expertises technologiques (300 people)
+- They are "Microsoft Gold Partner" 
+- In 2014 they were "Microsoft Partner of the year"
+- Itelligent rooms is only one of their products
+
+What the system do:
+
+- Zwave and Bluetooth LE (probably beacons) detectors on a meshed network
+- Mobile app and outlook plugin
+- Seems to be working only for Exchange 2013 and Office 365
+
+Reasons to choose us:
+
+- Price: We will need to be aggrasive on the price. We will wait to see what they are offering
+- Sadly, I think only the price can make the difference for our system, they seem to use "passif" detectors and no need to have a smart phone... 
+
+Ideas we can borrow:
+
+- Mash network for our docks ?
