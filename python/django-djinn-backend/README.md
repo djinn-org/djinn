@@ -11,14 +11,17 @@ TODO
 POC needed
 ----------
 
+- GET /find-rooms?params
+    - params:
+        - start
+        - minutes
+        - capacity
+        - equipment
+    - show params in swagger
+    - unit tests
+
 - access to local REST from local Ionic
-    + need to get CORS stuff working
-
-- /rooms/:id/reservations
-
-- /find-rooms?params
-
-- /find-times?params
+    - need to get CORS stuff working
 
 TODO
 ----
@@ -39,4 +42,5 @@ TODO
 
 - /rooms/:id/status
 
-- /rooms/:id/reserve?params
+- POST /rooms/:id/reserve?params
+    - or: POST /rooms/:id/reservations
