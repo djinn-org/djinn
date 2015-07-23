@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.db import models
 
 
@@ -34,6 +35,7 @@ class RoomEquipment(models.Model):
 
 
 class Reservation(models.Model):
+    user = models.ForeignKey(User)
     room = models.ForeignKey(Room)
     start = models.DateTimeField()
     end = models.DateTimeField()
