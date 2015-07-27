@@ -11,7 +11,7 @@ TODO
 POC needed
 ----------
 
-- GET /find-rooms?params
+- GET /find/rooms?params
     - params:
         - start
         - minutes
@@ -20,8 +20,20 @@ POC needed
     - show params in swagger
     - unit tests
 
-- access to local REST from local Ionic
-    - need to get CORS stuff working
+- POST /rooms/:id/reservations?params
+    - params:
+        - start
+        - minutes
+
+x access to local REST from local Ionic
+    x need to get CORS stuff working
+    -> djinn-web will probably take care of this part
+
+Memo
+----
+
+    # invalid date range:
+    curl -X POST -d start=2015-07-27T12:00 -d room=1 -d end=2015-07-27T11:00 localhost:8000/api/v1/rooms/1/reservations/ | tee x.html
 
 TODO
 ----
