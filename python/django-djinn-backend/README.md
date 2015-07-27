@@ -22,8 +22,12 @@ POC needed
 
 - POST /rooms/:id/reservations?params
     - params:
+        - room id
         - start
-        - minutes
+        - end
+    - validators: -> perhaps override in RoomReservationViewSet ?
+        - start < end
+        - [start, end] is actually available
 
 x access to local REST from local Ionic
     x need to get CORS stuff working
