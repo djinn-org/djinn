@@ -1,4 +1,6 @@
-from rest_framework import viewsets, status
+from django import forms
+from rest_framework import viewsets, status, mixins
+from rest_framework.decorators import api_view
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from djinn.models import Room, Reservation
@@ -6,6 +8,11 @@ from api.serializers import RoomSerializer, ReservationSerializer
 
 
 class RoomViewSet(viewsets.ModelViewSet):
+    queryset = Room.objects.all()
+    serializer_class = RoomSerializer
+
+
+class FindRoomsViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     queryset = Room.objects.all()
     serializer_class = RoomSerializer
 
@@ -34,3 +41,22 @@ class RoomReservationViewSet(viewsets.ModelViewSet):
 class ReservationViewSet(viewsets.ModelViewSet):
     queryset = Reservation.objects.all()
     serializer_class = ReservationSerializer
+
+
+class FindRoomsForm(forms.Form):
+    start = forms.DateTimeField()
+    end = forms.DateTimeField()
+    capacity = forms.IntegerField(required=False)
+    # TODO: equipment, some kind of multi-select
+
+
+@api_view(['GET'])
+def find_rooms(request):
+    pass
+    # form = FindRoomsForm(request.data)
+    # debug = form.is_valid()
+    # debug = dir(form)
+    # debug = form.errors
+    # debug = request.data
+    # return Response({"debug": debug})
+    # return Response({"message": "hello", "data": request.data, "debug": debug})
