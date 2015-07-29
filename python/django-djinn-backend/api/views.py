@@ -3,8 +3,8 @@ from rest_framework import viewsets, status, mixins
 from rest_framework.decorators import api_view
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
-from djinn.models import Room, Reservation
-from api.serializers import RoomSerializer, ReservationSerializer
+from djinn.models import Room, Reservation, Equipment
+from api.serializers import RoomSerializer, ReservationSerializer, EquipmentSerializer
 
 
 class RoomViewSet(viewsets.ModelViewSet):
@@ -41,6 +41,11 @@ class RoomReservationViewSet(viewsets.ModelViewSet):
 class ReservationViewSet(viewsets.ModelViewSet):
     queryset = Reservation.objects.all()
     serializer_class = ReservationSerializer
+
+
+class EquipmentViewSet(viewsets.ModelViewSet):
+    queryset = Equipment.objects.all()
+    serializer_class = EquipmentSerializer
 
 
 class FindRoomsForm(forms.Form):

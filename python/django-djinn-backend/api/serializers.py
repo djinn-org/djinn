@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from djinn.models import Room, Reservation
+from djinn.models import Room, Reservation, Equipment
 from datetime import timedelta
 
 
@@ -32,3 +32,8 @@ class ReservationSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('Either field is required: minutes, end')
 
         return data
+
+
+class EquipmentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Equipment
