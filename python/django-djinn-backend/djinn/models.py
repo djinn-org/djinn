@@ -11,8 +11,8 @@ class Building(models.Model):
 
 class Room(models.Model):
     building = models.ForeignKey(Building)
-    name = models.CharField(max_length=20)
     floor = models.IntegerField()
+    name = models.CharField(max_length=20)
     capacity = models.IntegerField()
 
     def __str__(self):
