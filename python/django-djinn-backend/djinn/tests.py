@@ -1,48 +1,39 @@
 from django.test import TestCase
 from django.test import Client
 from djinn.models import Room, Building, Equipment
+from api.serializers import RoomSerializer, EquipmentSerializer
 
 
-class SearchTestCase(TestCase):
+def to_json(serializer_cls, model_cls):
+    return [serializer_cls(obj).data for obj in model_cls.objects.all()]
+
+
+class RoomListTestCase(TestCase):
     def setUp(self):
         self.client = Client()
 
-        self.building = Building.objects.create(name='main')
+        building = Building.objects.create(name='main')
 
-        self.room1_data = {
-            'building': self.building,
-            'floor': 12,
-            'name': 'E50',
-            'capacity': 8,
-        }
-        Room.objects.create(**self.room1_data)
+        Room.objects.create(
+            building=building,
+            floor=12,
+            name='E50',
+            capacity=8,
+        )
 
-        self.room2_data = {
-            'building': self.building,
-            'floor': 16,
-            'name': 'J89',
-            'capacity': 20,
-        }
-        Room.objects.create(**self.room2_data)
+        Room.objects.create(
+            building=building,
+            floor=16,
+            name='J89',
+            capacity=20,
+        )
 
     def test_list_rooms(self):
         response = self.client.get('/api/v1/rooms/')
         self.assertEqual(response.status_code, 200)
 
         json = response.content.decode()
-        self.assertJSONEqual(json, [{
-            'id': 1,
-            'building': self.building.pk,
-            'floor': 12,
-            'name': 'E50',
-            'capacity': 8,
-        }, {
-            'id': 2,
-            'building': self.building.pk,
-            'floor': 16,
-            'name': 'J89',
-            'capacity': 20,
-        }])
+        self.assertJSONEqual(json, to_json(RoomSerializer, Room))
 
     # def test_list_equipment(self):
     #     self.assertEqual(1, 1)
@@ -54,7 +45,7 @@ class SearchTestCase(TestCase):
 # get list of possible equipments
 
 
-class EquipmentTestCase(TestCase):
+class EquipmentListTestCase(TestCase):
     def setUp(self):
         self.client = Client()
         self.pc = Equipment.objects.create(name="PC")
@@ -65,10 +56,4 @@ class EquipmentTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
 
         json = response.content.decode()
-        self.assertJSONEqual(json, [{
-            'id': 1,
-            'name': 'PC',
-        }, {
-            'id': 2,
-            'name': 'Phone',
-        }])
+        self.assertJSONEqual(json, to_json(EquipmentSerializer, Equipment))
