@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.test import Client
-from djinn.models import Room, Building
+from djinn.models import Room, Building, Equipment
 
 
 class SearchTestCase(TestCase):
@@ -52,3 +52,23 @@ class SearchTestCase(TestCase):
 # search by criteria
 #   calculate rank: match on capacity, match on equipment, match on availability
 # get list of possible equipments
+
+
+class EquipmentTestCase(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.pc = Equipment.objects.create(name="PC")
+        self.phone = Equipment.objects.create(name="Phone")
+
+    def test_list_equipment(self):
+        response = self.client.get('/api/v1/equipments/')
+        self.assertEqual(response.status_code, 200)
+
+        json = response.content.decode()
+        self.assertJSONEqual(json, [{
+            'id': 1,
+            'name': 'PC',
+        }, {
+            'id': 2,
+            'name': 'Phone',
+        }])
