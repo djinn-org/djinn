@@ -1,12 +1,16 @@
 from django.test import TestCase
 from django.test import Client
-from djinn.models import Room, Building, Equipment
-from api.serializers import RoomSerializer, EquipmentSerializer
+from djinn.models import Room, Building, Equipment, Reservation
+from api.serializers import RoomSerializer, EquipmentSerializer, ReservationSerializer
 import json
 
 
 def to_json(serializer_cls, model_cls):
     return [serializer_cls(obj).data for obj in model_cls.objects.all()]
+
+
+def to_json_first(serializer_cls, model_cls):
+    return serializer_cls(model_cls.objects.all()[0]).data
 
 
 class RoomListTestCase(TestCase):
@@ -112,7 +116,16 @@ class MakeReservationTestCase(TestCase):
         self.assertTrue('non_field_errors' in obj)
 
     def test_reserve_ok_sanity(self):
-        pass
+        data = {
+            'room': 1,
+            'start': '2015-07-27T12:00',
+            'end': '2015-07-27T13:00',
+        }
+        response = self.client.post('/api/v1/reservations/', data=data)
+        self.assertEqual(response.status_code, 201)
+
+        obj = response.content.decode()
+        self.assertJSONEqual(obj, to_json_first(ReservationSerializer, Reservation))
 
     def test_reserve_fails_if_missing_end_and_duration(self):
         pass
@@ -124,5 +137,12 @@ class MakeReservationTestCase(TestCase):
         pass
 
     def test_reserve_fails_if_end_before_start(self):
-        pass
+        data = {
+            'room': 1,
+            'start': '2015-07-27T12:00',
+            'end': '2015-07-27T11:00',
+        }
+        response = self.client.post('/api/v1/reservations/', data=data)
+        self.assertEqual(response.status_code, 400)
+        # TODO : add more accurate checks
 
