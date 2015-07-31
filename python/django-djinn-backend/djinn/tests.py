@@ -33,8 +33,8 @@ class RoomListTestCase(TestCase):
         response = self.client.get('/api/v1/rooms/')
         self.assertEqual(response.status_code, 200)
 
-        json = response.content.decode()
-        self.assertJSONEqual(json, to_json(RoomSerializer, Room))
+        obj = response.content.decode()
+        self.assertJSONEqual(obj, to_json(RoomSerializer, Room))
 
 
 class EquipmentListTestCase(TestCase):
@@ -47,8 +47,8 @@ class EquipmentListTestCase(TestCase):
         response = self.client.get('/api/v1/equipments/')
         self.assertEqual(response.status_code, 200)
 
-        json = response.content.decode()
-        self.assertJSONEqual(json, to_json(EquipmentSerializer, Equipment))
+        obj = response.content.decode()
+        self.assertJSONEqual(obj, to_json(EquipmentSerializer, Equipment))
 
 
 class FindRoomsTestCase(TestCase):
