@@ -26,8 +26,10 @@ class ReservationSerializer(serializers.ModelSerializer):
             if not start < end:
                 raise serializers.ValidationError('start date-time must be before end date-time')
             minutes = (end - start).seconds / 60
+            data['minutes'] = minutes
         elif minutes:
             end = start + timedelta(minutes=minutes)
+            data['end'] = end
         else:
             raise serializers.ValidationError('Either field is required: minutes, end')
 

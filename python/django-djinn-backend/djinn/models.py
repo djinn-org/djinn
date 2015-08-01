@@ -38,5 +38,5 @@ class Reservation(models.Model):
     user = models.ForeignKey(User, null=True)
     room = models.ForeignKey(Room)
     start = models.DateTimeField()
-    end = models.DateTimeField(null=True)
-    minutes = models.IntegerField(null=True)
+    end = models.DateTimeField(blank=True)
+    minutes = models.IntegerField(blank=True)
