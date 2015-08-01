@@ -81,7 +81,7 @@ class MakeReservationTestCase(TestCase):
         self.assertEqual(content['room'], errormsg)
         self.assertEqual(content['start'], errormsg)
         self.assertEqual(len(content), 2)
-        # TODO: should also report missing end / duration
+        # TODO: should also report missing end / minutes
 
     def test_reserve_fails_if_missing_room(self):
         data = {'room': 1}
@@ -147,5 +147,7 @@ class MakeReservationTestCase(TestCase):
         }
         response = self.client.post('/api/v1/reservations/', data=data)
         self.assertEqual(response.status_code, 400)
-        # TODO : add more accurate checks
+
+        obj = json.loads(response.content.decode())
+        self.assertTrue('non_field_errors' in obj)
 
