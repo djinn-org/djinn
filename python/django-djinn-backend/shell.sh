@@ -3,4 +3,4 @@
 cd $(dirname "$0")
 . ./virtualenv.sh
 
-python
+./manage.sh shell $*
