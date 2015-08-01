@@ -115,7 +115,19 @@ class MakeReservationTestCase(TestCase):
         obj = json.loads(response.content.decode())
         self.assertTrue('non_field_errors' in obj)
 
-    def test_reserve_ok_sanity(self):
+    def test_reserve_ok_with_start_and_minutes(self):
+        data = {
+            'room': 1,
+            'start': '2015-07-27T12:00',
+            'minutes': 15,
+        }
+        response = self.client.post('/api/v1/reservations/', data=data)
+        self.assertEqual(response.status_code, 201)
+
+        obj = response.content.decode()
+        self.assertJSONEqual(obj, to_json_first(ReservationSerializer, Reservation))
+
+    def test_reserve_ok_with_start_and_end(self):
         data = {
             'room': 1,
             'start': '2015-07-27T12:00',
@@ -126,15 +138,6 @@ class MakeReservationTestCase(TestCase):
 
         obj = response.content.decode()
         self.assertJSONEqual(obj, to_json_first(ReservationSerializer, Reservation))
-
-    def test_reserve_fails_if_missing_end_and_duration(self):
-        pass
-
-    def test_reserve_ok_with_start_and_duration(self):
-        pass
-
-    def test_reserve_ok_with_start_and_end(self):
-        pass
 
     def test_reserve_fails_if_end_before_start(self):
         data = {
