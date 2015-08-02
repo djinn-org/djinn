@@ -1,3 +1,4 @@
+from datetime import timedelta
 from django.contrib.auth.models import User
 from django.db import models
 
@@ -40,3 +41,11 @@ class Reservation(models.Model):
     start = models.DateTimeField()
     end = models.DateTimeField(blank=True)
     minutes = models.IntegerField(blank=True)
+
+    def save(self, *args, **kwargs):
+        if self.minutes and not self.end:
+            self.end = self.start + timedelta(minutes=self.minutes)
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return '{} - {}'.format(self.start, self.end)
