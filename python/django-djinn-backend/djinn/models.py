@@ -49,7 +49,13 @@ class Reservation(models.Model):
     def save(self, *args, **kwargs):
         if self.minutes and not self.end:
             self.end = self.start + timedelta(minutes=self.minutes)
-        if Reservation.objects.filter(room=self.room, end__gte=self.start).exists():
+        if Reservation.objects.filter(room=self.room, end__gt=self.start, end__lt=self.end).exists():
+            raise IllegalReservation()
+        if Reservation.objects.filter(room=self.room, start__gt=self.start, start__lt=self.end).exists():
+            raise IllegalReservation()
+        if Reservation.objects.filter(room=self.room, start__gt=self.start, end__lt=self.end).exists():
+            raise IllegalReservation()
+        if Reservation.objects.filter(room=self.room, start__lt=self.start, end__gt=self.end).exists():
             raise IllegalReservation()
         super().save(*args, **kwargs)
 

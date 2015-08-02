@@ -217,3 +217,20 @@ class MakeReservationTestCase(TestCase):
 
         obj = json.loads(response.content.decode())
         self.assertTrue('non_field_errors' in obj)
+
+    def test_reserve_ok_just_before_existing(self):
+        room = Room.objects.all()[0]
+        tz = timezone.get_default_timezone_name()
+        start = pytz.timezone(tz).localize(datetime(2015, 7, 27, 13, 0))
+        first = Reservation.objects.create(room=room, start=start, minutes=30)
+        data = {
+            'room': 1,
+            'start': '2015-07-27T12:00',
+            'end': '2015-07-27T13:00',
+        }
+        response = self.client.post('/api/v1/reservations/', data=data)
+        self.assertEqual(response.status_code, 201)
+
+        first.delete()
+        obj = response.content.decode()
+        self.assertJSONEqual(obj, to_json_first(ReservationSerializer, Reservation))
