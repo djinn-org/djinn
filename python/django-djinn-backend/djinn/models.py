@@ -35,6 +35,10 @@ class RoomEquipment(models.Model):
         return '{} - {}'.format(self.room, self.equipment)
 
 
+class IllegalReservation(Exception):
+    pass
+
+
 class Reservation(models.Model):
     user = models.ForeignKey(User, null=True)
     room = models.ForeignKey(Room)
@@ -45,6 +49,8 @@ class Reservation(models.Model):
     def save(self, *args, **kwargs):
         if self.minutes and not self.end:
             self.end = self.start + timedelta(minutes=self.minutes)
+        if Reservation.objects.filter(room=self.room, end__gte=self.start).exists():
+            raise IllegalReservation()
         super().save(*args, **kwargs)
 
     def __str__(self):

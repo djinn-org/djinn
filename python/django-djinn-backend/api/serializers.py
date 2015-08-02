@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from djinn.models import Room, Reservation, Equipment
+from djinn.models import Room, Reservation, Equipment, IllegalReservation
 from datetime import timedelta
 
 
@@ -11,6 +11,12 @@ class RoomSerializer(serializers.ModelSerializer):
 class ReservationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Reservation
+
+    def save(self, **kwargs):
+        try:
+            return super().save(**kwargs)
+        except IllegalReservation:
+            raise serializers.ValidationError({'non_field_errors': ['Illegal Reservation']})
 
     def validate(self, attrs):
         data = super().validate(attrs)
