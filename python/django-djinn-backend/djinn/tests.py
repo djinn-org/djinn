@@ -59,7 +59,30 @@ class EquipmentListTestCase(TestCase):
 
 
 class FindRoomsTestCase(TestCase):
-    pass
+    def setUp(self):
+        self.client = Client()
+
+        building = Building.objects.create(name='main')
+
+        Room.objects.create(
+            building=building,
+            floor=12,
+            name='E50',
+            capacity=8,
+        )
+        Room.objects.create(
+            building=building,
+            floor=12,
+            name='E50',
+            capacity=8,
+        )
+
+    def test_find_rooms_without_filters(self):
+        response = self.client.get('/api/v1/find/rooms/')
+        self.assertEqual(response.status_code, 200)
+
+        obj = response.content.decode()
+        self.assertJSONEqual(obj, to_json(RoomSerializer, Room))
 
 
 class MakeReservationTestCase(TestCase):
