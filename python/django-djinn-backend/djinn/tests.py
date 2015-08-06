@@ -72,9 +72,9 @@ class FindRoomsTestCase(TestCase):
         )
         Room.objects.create(
             building=building,
-            floor=12,
-            name='E50',
-            capacity=8,
+            floor=14,
+            name='E17',
+            capacity=4,
         )
 
     def test_find_rooms_without_filters(self):
