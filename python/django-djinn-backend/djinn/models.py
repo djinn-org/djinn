@@ -19,6 +19,9 @@ class Room(models.Model):
     def __str__(self):
         return '{}-{}F.{}'.format(self.building, self.floor, self.name)
 
+    class Meta:
+        unique_together = (('building', 'floor', 'name'),)
+
 
 class Equipment(models.Model):
     name = models.CharField(max_length=20)
