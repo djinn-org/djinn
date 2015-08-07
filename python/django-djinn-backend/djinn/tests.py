@@ -16,6 +16,11 @@ def to_json_first(serializer_cls, model_cls):
     return serializer_cls(model_cls.objects.all()[0]).data
 
 
+def to_date_with_tz(dt):
+    tz = timezone.get_default_timezone_name()
+    return pytz.timezone(tz).localize(dt)
+
+
 class RoomListTestCase(TestCase):
     def setUp(self):
         self.client = Client()
@@ -79,6 +84,18 @@ class FindRoomsTestCase(TestCase):
 
     def test_find_rooms_without_filters(self):
         response = self.client.get('/api/v1/find/rooms/')
+        self.assertEqual(response.status_code, 200)
+
+        obj = response.content.decode()
+        self.assertJSONEqual(obj, to_json(RoomSerializer, Room))
+
+    def test_find_rooms_with_filters(self):
+        data = {
+            'start': to_date_with_tz(datetime(2015, 8, 15, 11, 0)),
+            'end': to_date_with_tz(datetime(2015, 8, 15, 12, 0)),
+        }
+        # TODO: fabricate conditions to match only one room
+        response = self.client.get('/api/v1/find/rooms/', data)
         self.assertEqual(response.status_code, 200)
 
         obj = response.content.decode()
