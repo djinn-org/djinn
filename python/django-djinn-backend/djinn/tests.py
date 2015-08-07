@@ -196,8 +196,7 @@ class MakeReservationTestCase(TestCase):
 
     def test_reserve_fails_if_start_overlaps(self):
         room = Room.objects.all()[0]
-        tz = timezone.get_default_timezone_name()
-        start = pytz.timezone(tz).localize(datetime(2015, 7, 27, 11, 50))
+        start = to_date_with_tz(datetime(2015, 7, 27, 11, 50))
         Reservation.objects.create(room=room, start=start, minutes=15)
         data = {
             'room': 1,
@@ -212,8 +211,7 @@ class MakeReservationTestCase(TestCase):
 
     def test_reserve_fails_if_end_overlaps(self):
         room = Room.objects.all()[0]
-        tz = timezone.get_default_timezone_name()
-        start = pytz.timezone(tz).localize(datetime(2015, 7, 27, 12, 10))
+        start = to_date_with_tz(datetime(2015, 7, 27, 12, 10))
         Reservation.objects.create(room=room, start=start, minutes=15)
         data = {
             'room': 1,
@@ -228,8 +226,7 @@ class MakeReservationTestCase(TestCase):
 
     def test_reserve_fails_if_existing_within_start_end(self):
         room = Room.objects.all()[0]
-        tz = timezone.get_default_timezone_name()
-        start = pytz.timezone(tz).localize(datetime(2015, 7, 27, 12, 5))
+        start = to_date_with_tz(datetime(2015, 7, 27, 12, 5))
         Reservation.objects.create(room=room, start=start, minutes=5)
         data = {
             'room': 1,
@@ -244,8 +241,7 @@ class MakeReservationTestCase(TestCase):
 
     def test_reserve_fails_if_start_end_within_existing(self):
         room = Room.objects.all()[0]
-        tz = timezone.get_default_timezone_name()
-        start = pytz.timezone(tz).localize(datetime(2015, 7, 27, 11, 55))
+        start = to_date_with_tz(datetime(2015, 7, 27, 11, 55))
         Reservation.objects.create(room=room, start=start, minutes=30)
         data = {
             'room': 1,
@@ -260,8 +256,7 @@ class MakeReservationTestCase(TestCase):
 
     def test_reserve_ok_just_before_existing(self):
         room = Room.objects.all()[0]
-        tz = timezone.get_default_timezone_name()
-        start = pytz.timezone(tz).localize(datetime(2015, 7, 27, 13, 0))
+        start = to_date_with_tz(datetime(2015, 7, 27, 13, 0))
         first = Reservation.objects.create(room=room, start=start, minutes=30)
         data = {
             'room': 1,
@@ -277,8 +272,7 @@ class MakeReservationTestCase(TestCase):
 
     def test_reserve_ok_just_after_existing(self):
         room = Room.objects.all()[0]
-        tz = timezone.get_default_timezone_name()
-        start = pytz.timezone(tz).localize(datetime(2015, 7, 27, 11, 0))
+        start = to_date_with_tz(datetime(2015, 7, 27, 11, 0))
         first = Reservation.objects.create(room=room, start=start, minutes=60)
         data = {
             'room': 1,
