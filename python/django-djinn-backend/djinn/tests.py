@@ -69,7 +69,7 @@ class FindRoomsTestCase(TestCase):
 
         building = Building.objects.create(name='main')
 
-        Room.objects.create(
+        room1 = Room.objects.create(
             building=building,
             floor=12,
             name='E50',
@@ -82,23 +82,33 @@ class FindRoomsTestCase(TestCase):
             capacity=4,
         )
 
+        self.reservation = Reservation.objects.create(
+            room=room1,
+            start=to_date_with_tz(datetime(2015, 8, 15, 11, 0)),
+            end=to_date_with_tz(datetime(2015, 8, 15, 12, 0)),
+            minutes=60,
+            # TODO: should not have to specify both end and minutes
+        )
+
     def test_find_rooms_without_filters(self):
         response = self.client.get('/api/v1/find/rooms/')
         self.assertEqual(response.status_code, 200)
 
         obj = response.content.decode()
         self.assertJSONEqual(obj, to_json(RoomSerializer, Room))
+        # TODO: use default date params
 
     def test_find_rooms_with_filters(self):
+        # TODO: derive conflicting params from the known reservation
         data = {
             'start': to_date_with_tz(datetime(2015, 8, 15, 11, 0)),
-            'end': to_date_with_tz(datetime(2015, 8, 15, 12, 0)),
+            'minutes': 30,
         }
-        # TODO: fabricate conditions to match only one room
         response = self.client.get('/api/v1/find/rooms/', data)
         self.assertEqual(response.status_code, 200)
 
         obj = response.content.decode()
+        # TODO: fabricate conditions to match only one room
         self.assertJSONEqual(obj, to_json(RoomSerializer, Room))
 
 
