@@ -8,5 +8,7 @@ __pycache__
 db.sqlite3
 virtualenv
 
+/static
+
 # misc
 tmp
