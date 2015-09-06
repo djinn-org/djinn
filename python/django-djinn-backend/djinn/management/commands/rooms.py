@@ -59,6 +59,9 @@ class Command(BaseCommand):
 
         def get_or_create_room(room_data):
             match = re.match(r'^(?P<building>.+)-(?P<floor>\d+)\.(?P<name>\w+)', room_data.name)
+            if not match:
+                return
+
             building = get_or_create_building(match.group('building'))
             floor = int(match.group('floor'))
             name = match.group('name')
@@ -83,8 +86,9 @@ class Command(BaseCommand):
             room_data = parse_room_data(room_soup)
             if room_data:
                 room = get_or_create_room(room_data)
-                items = get_or_create_items(room_data.items)
-                register_room_items(room, items)
+                if room:
+                    items = get_or_create_items(room_data.items)
+                    register_room_items(room, items)
 
     def msg(self, message):
         self.stdout.write('* ' + message)
