@@ -312,6 +312,16 @@ class ImportRoomsTestCase(TestCase):
                 </Room>
             </Rooms>'''
 
+    room2_xml = '''<Rooms>
+                <Room>
+                    <Name>91A-06.E29(06)</Name>
+                    <Mail>91A06E29@rc-its.credit-agricole.fr</Mail>
+                    <Equipment>Room,TV,AudioConference,VideoConference,VideoProjector</Equipment>
+                    <Capacity>6</Capacity>
+                    <Type>ResourceType:Room</Type>
+                </Room>
+            </Rooms>'''
+
     def setUp(self):
         self.cmd = RoomCommand()
 
@@ -330,3 +340,14 @@ class ImportRoomsTestCase(TestCase):
         self.cmd.do_import_soup(soup)
         self.assertEquals(1, Room.objects.count())
         self.assertEquals(5, Equipment.objects.count())
+
+    def test_import_two_rooms_with_overlap_in_equipment(self):
+        soup = BeautifulSoup(self.room1_xml, 'html.parser')
+        self.cmd.do_import_soup(soup)
+        self.assertEquals(1, Room.objects.count())
+        self.assertEquals(5, Equipment.objects.count())
+
+        soup = BeautifulSoup(self.room2_xml, 'html.parser')
+        self.cmd.do_import_soup(soup)
+        self.assertEquals(2, Room.objects.count())
+        self.assertEquals(6, Equipment.objects.count())

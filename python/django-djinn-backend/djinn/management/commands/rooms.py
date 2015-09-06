@@ -91,13 +91,6 @@ class Command(BaseCommand):
                 items = get_or_create_items(room_data.items)
                 register_room_items(room, items)
 
-    # todo: unit testing:
-    # +register a room from xml
-    # +verify room created
-    # +verify equipment created
-    # +re-run + verify no dups
-    # register another room, with partly existing equipment
-
     def msg(self, message):
         self.stdout.write('* ' + message)
 
