@@ -331,6 +331,9 @@ class ImportRoomsTestCase(TestCase):
         self.assertEquals(1, Room.objects.count())
         self.assertEquals(5, Equipment.objects.count())
 
+        room = Room.objects.first()
+        self.assertEquals(5, room.roomequipment_set.count())
+
     def test_import_room_twice_no_dups(self):
         soup = BeautifulSoup(self.room1_xml, 'html.parser')
         self.cmd.do_import_soup(soup)
@@ -351,3 +354,13 @@ class ImportRoomsTestCase(TestCase):
         self.cmd.do_import_soup(soup)
         self.assertEquals(2, Room.objects.count())
         self.assertEquals(6, Equipment.objects.count())
+
+        def get_equipment_set(room):
+            return {room.equipment for room in room.roomequipment_set.all()}
+
+        room1, room2 = Room.objects.all()
+        room1_equipment_set = get_equipment_set(room1)
+        room2_equipment_set = get_equipment_set(room2)
+        self.assertEquals(5, len(room1_equipment_set))
+        self.assertEquals(5, len(room2_equipment_set))
+        self.assertEquals(6, len(room1_equipment_set.union(room2_equipment_set)))
