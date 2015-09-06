@@ -37,6 +37,9 @@ class RoomEquipment(models.Model):
     def __str__(self):
         return '{} - {}'.format(self.room, self.equipment)
 
+    class Meta:
+        unique_together = (('room', 'equipment'),)
+
 
 class IllegalReservation(Exception):
     pass
