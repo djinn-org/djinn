@@ -17,7 +17,7 @@ class Room(models.Model):
     capacity = models.IntegerField()
 
     def __str__(self):
-        return '{}-{}F.{}'.format(self.building, self.floor, self.name)
+        return '{}-{}.{}'.format(self.building, self.floor, self.name)
 
     class Meta:
         unique_together = (('building', 'floor', 'name'),)
