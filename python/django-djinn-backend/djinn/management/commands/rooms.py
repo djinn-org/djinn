@@ -25,9 +25,6 @@ class Command(BaseCommand):
             self.do_import_soup(BeautifulSoup(fh, 'html.parser'))
 
     def do_import_soup(self, soup):
-        # keep a running set of equipment
-        # if a new equipment found, register it
-        # register the room
         # later: update room
         # later: option to delete rooms that disappeared
         known_items = {item.name: item for item in Equipment.objects.all()}
@@ -51,10 +48,11 @@ class Command(BaseCommand):
             for name in items_data:
                 if name in known_items:
                     yield known_items[name]
-                item = Equipment.objects.create(name=name)
-                known_items[name] = item
-                self.msg('new equipment: {}'.format(item))
-                yield item
+                else:
+                    item = Equipment.objects.create(name=name)
+                    known_items[name] = item
+                    self.msg('new equipment: {}'.format(item))
+                    yield item
 
         def get_or_create_building(name):
             qs = Building.objects.filter(name=name)
@@ -97,7 +95,7 @@ class Command(BaseCommand):
     # +register a room from xml
     # +verify room created
     # +verify equipment created
-    # re-run + verify no dups
+    # +re-run + verify no dups
     # register another room, with partly existing equipment
 
     def msg(self, message):
