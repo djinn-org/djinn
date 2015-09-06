@@ -77,7 +77,7 @@ class Command(BaseCommand):
 
         def register_room_items(room, items):
             for equipment in items:
-                RoomEquipment.objects.create(room=room, equipment=equipment)
+                RoomEquipment.objects.get_or_create(room=room, equipment=equipment)
 
         for room_soup in soup.find_all('room'):
             room_data = parse_room_data(room_soup)
