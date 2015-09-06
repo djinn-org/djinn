@@ -55,12 +55,7 @@ class Command(BaseCommand):
                     yield item
 
         def get_or_create_building(name):
-            qs = Building.objects.filter(name=name)
-            if qs:
-                return qs[0]
-            building = Building(name=name)
-            building.save()
-            return building
+            return Building.objects.get_or_create(name=name)[0]
 
         def get_or_create_room(room_data):
             match = re.match(r'^(?P<building>.+)-(?P<floor>\d+)\.(?P<name>\w+)', room_data.name)
