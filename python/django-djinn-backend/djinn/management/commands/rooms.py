@@ -1,5 +1,5 @@
 import re
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 from djinn.models import Room, Equipment, RoomEquipment, Building
 from bs4 import BeautifulSoup
 from collections import namedtuple
@@ -48,7 +48,7 @@ class Command(BaseCommand):
             for name in items_data:
                 if name in known_items:
                     yield known_items[name]
-                else:
+                elif name != 'Room':
                     item = Equipment.objects.create(name=name)
                     known_items[name] = item
                     self.msg('new equipment: {}'.format(item))
