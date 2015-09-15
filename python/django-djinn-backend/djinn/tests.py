@@ -20,6 +20,10 @@ def to_json_first(serializer_cls, model_cls):
     return serializer_cls(model_cls.objects.all()[0]).data
 
 
+def rooms_from_json(json_str):
+    pass
+
+
 def to_date_with_tz(dt):
     tz = timezone.get_default_timezone_name()
     return pytz.timezone(tz).localize(dt)
@@ -114,6 +118,98 @@ class FindRoomsTestCase(TestCase):
         obj = response.content.decode()
         # TODO: fabricate conditions to match only one room
         self.assertJSONEqual(obj, to_json(RoomSerializer, Room))
+
+    def find_rooms(self, data):
+        response = self.client.get('/api/v1/find/rooms/', data)
+        self.assertEqual(response.status_code, 200)
+
+        json_str = response.content.decode()
+        return rooms_from_json(json_str)
+
+    def test_find_rooms_with_computer(self):
+        equipment_name = 'Computer'
+        data = {
+            'start': to_date_with_tz(datetime(2015, 8, 15, 11, 0)),
+            'minutes': 30,
+            'equipment': equipment_name,
+        }
+        rooms = self.find_rooms(data)
+        self.assertTrue(len(rooms) > 0)
+
+        for room in rooms:
+            names = [re.equipment.name for re in room.roomequipment_set.all()]
+            self.assertTrue(equipment_name in names)
+
+    def test_find_rooms_with_computer_unavailable(self):
+        equipment_name = 'Computer'
+        data = {
+            'start': to_date_with_tz(datetime(2015, 8, 15, 11, 0)),
+            'minutes': 30,
+            'equipment': equipment_name,
+        }
+        rooms = self.find_rooms(data)
+        self.assertTrue(len(rooms) > 0)
+
+        for room in rooms:
+            names = [re.equipment.name for re in room.roomequipment_set.all()]
+            self.assertTrue(equipment_name in names)
+
+        rooms = self.find_rooms(data)
+        self.assertTrue(len(rooms) > 0)
+
+        for room in rooms:
+            names = [re.equipment.name for re in room.roomequipment_set.all()]
+            self.assertTrue(equipment_name in names)
+
+    def test_find_rooms_with_computer_for_12(self):
+        equipment_name = 'Computer'
+        capacity_target = 12
+        data = {
+            'start': to_date_with_tz(datetime(2015, 8, 15, 11, 0)),
+            'minutes': 30,
+            'capacity': capacity_target,
+            'equipment': equipment_name,
+        }
+        rooms = self.find_rooms(data)
+        self.assertTrue(len(rooms) > 0)
+
+        for room in rooms:
+            self.assertTrue(room.capacity >= capacity_target)
+            names = [re.equipment.name for re in room.roomequipment_set.all()]
+            self.assertTrue(equipment_name in names)
+
+    def test_find_rooms_with_phone_for_2(self):
+        equipment_name = 'Phone'
+        capacity_target = 2
+        data = {
+            'start': to_date_with_tz(datetime(2015, 8, 15, 11, 0)),
+            'minutes': 30,
+            'capacity': capacity_target,
+            'equipment': equipment_name,
+        }
+        rooms = self.find_rooms(data)
+        self.assertTrue(len(rooms) > 0)
+
+        for room in rooms:
+            self.assertTrue(room.capacity >= capacity_target)
+            names = [re.equipment.name for re in room.roomequipment_set.all()]
+            self.assertTrue(equipment_name in names)
+
+    def test_find_rooms_with_phone_and_whiteboard(self):
+        equipment_name1 = 'Phone'
+        equipment_name2 = 'Whiteboard'
+        data = {
+            'start': to_date_with_tz(datetime(2015, 8, 15, 11, 0)),
+            'minutes': 30,
+            'equipment': '{},{}'.format(equipment_name1, equipment_name2),
+        }
+        rooms = self.find_rooms(data)
+        self.assertTrue(len(rooms) > 0)
+
+        for room in rooms:
+            names = [re.equipment.name for re in room.roomequipment_set.all()]
+            self.assertTrue(equipment_name1 in names)
+            self.assertTrue(equipment_name2 in names)
 
 
 class MakeReservationTestCase(TestCase):
