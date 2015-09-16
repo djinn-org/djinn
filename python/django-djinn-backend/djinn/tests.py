@@ -21,7 +21,11 @@ def to_json_first(serializer_cls, model_cls):
 
 
 def rooms_from_json(json_str):
-    pass
+    rooms = []
+    for data in json.loads(json_str):
+        room = Room.objects.get(pk=data['id'])
+        rooms.append(room)
+    return rooms
 
 
 def to_date_with_tz(dt):
