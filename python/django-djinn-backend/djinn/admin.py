@@ -16,8 +16,11 @@ class RoomAdmin(admin.ModelAdmin):
     inlines = [RoomEquipmentInline]
 
 
+class EquipmentAdmin(admin.ModelAdmin):
+    inlines = [RoomEquipmentInline]
+
 admin.site.register(Building)
 admin.site.register(Room, RoomAdmin)
-admin.site.register(Equipment)
+admin.site.register(Equipment, EquipmentAdmin)
 admin.site.register(RoomEquipment)
 admin.site.register(Reservation)
