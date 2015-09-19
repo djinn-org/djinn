@@ -50,18 +50,17 @@ class EquipmentViewSet(viewsets.ModelViewSet):
 
 class FindRoomsForm(forms.Form):
     start = forms.DateTimeField()
-    end = forms.DateTimeField()
+    end = forms.DateTimeField(required=False)
     capacity = forms.IntegerField(required=False)
     # TODO: equipment, some kind of multi-select
 
 
 @api_view(['GET'])
 def find_rooms(request):
-    pass
-    # form = FindRoomsForm(request.data)
-    # debug = form.is_valid()
+    form = FindRoomsForm(request.data)
+    debug = form.is_valid()
     # debug = dir(form)
     # debug = form.errors
     # debug = request.data
-    # return Response({"debug": debug})
+    return Response({"debug": debug})
     # return Response({"message": "hello", "data": request.data, "debug": debug})

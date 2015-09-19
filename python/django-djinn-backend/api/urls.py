@@ -14,5 +14,5 @@ router.register(r'find/rooms', views.FindRoomsViewSet)
 urlpatterns = [
     url(r'^', include(router.urls)),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    # url(r'find/rooms', views.find_rooms),
+    url(r'find/rooms', views.find_rooms),
 ]
