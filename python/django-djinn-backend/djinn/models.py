@@ -110,7 +110,7 @@ class Client(models.Model):
     ip = models.GenericIPAddressField(unique=True)
     mac = MACAddressField(unique=True)
     alias = models.CharField(max_length=50, unique=True, null=True, blank=True)
-    room = models.ForeignKey(Room, unique=True, null=True)
+    room = models.OneToOneField(Room, null=True)
     service_url = models.URLField(unique=True)
 
     def save(self, force_insert=False, force_update=False, **kwargs):
