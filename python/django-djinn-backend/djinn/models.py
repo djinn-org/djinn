@@ -118,6 +118,7 @@ class Client(models.Model):
         super(Client, self).save(force_insert, force_update)
         if is_new:
             ClientHeartbeat.objects.create(client=self)
+            ClientUpdate.objects.create(client=self)
 
     def is_alive(self):
         return False
@@ -147,4 +148,4 @@ class ClientHeartbeat(models.Model):
 
 class ClientUpdate(models.Model):
     client = models.OneToOneField(Client)
-    failed_updates = models.IntegerField()
+    failed_updates = models.IntegerField(default=0)
