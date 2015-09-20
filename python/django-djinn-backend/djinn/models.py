@@ -113,6 +113,12 @@ class Client(models.Model):
     room = models.ForeignKey(Room, unique=True, null=True)
     service_url = models.URLField(unique=True)
 
+    def save(self, force_insert=False, force_update=False, **kwargs):
+        is_new = self.id is None
+        super(Client, self).save(force_insert, force_update)
+        if is_new:
+            ClientHeartbeat.objects.create(client=self)
+
     def is_alive(self):
         return False
 
@@ -124,13 +130,19 @@ class Client(models.Model):
         heartbeat.last_heartbeat = timezone.now()
         heartbeat.save()
 
+    def increment_failed_updates(self):
+        pass
+
+    def clear_failed_updates(self):
+        pass
+
     def __str__(self):
         return self.alias or self.ip
 
 
 class ClientHeartbeat(models.Model):
     client = models.OneToOneField(Client)
-    last_heartbeat = models.DateTimeField()
+    last_heartbeat = models.DateTimeField(auto_now=True)
 
 
 class ClientUpdate(models.Model):

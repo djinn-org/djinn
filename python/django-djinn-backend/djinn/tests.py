@@ -471,10 +471,9 @@ class ClientSanityTest(TestCase):
         DjinnClient.objects.create(mac='as', ip='', service_url='1')
         DjinnClient.objects.create(mac='as2', ip='2', service_url='2')
 
-    def test_new_client_has_no_heartbeat(self):
+    def test_new_client_auto_creates_heartbeat(self):
         client = DjinnClient.objects.create(ip='', mac='')
-        with self.assertRaises(ClientHeartbeat.DoesNotExist):
-            self.assertIsNone(client.clientheartbeat)
+        self.assertIsNotNone(client.clientheartbeat.last_heartbeat)
 
     def test_new_heartbeat(self):
         client = DjinnClient.objects.create(ip='', mac='')
