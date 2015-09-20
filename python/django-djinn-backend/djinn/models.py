@@ -109,7 +109,7 @@ class MACAddressField(models.Field):
 class Client(models.Model):
     ip = models.GenericIPAddressField(unique=True)
     mac = MACAddressField(unique=True)
-    alias = models.TextField(unique=True, null=True)
+    alias = models.TextField(unique=True, null=True, blank=True)
     room = models.ForeignKey(Room, unique=True, null=True)
     service_url = models.URLField(unique=True)
 
