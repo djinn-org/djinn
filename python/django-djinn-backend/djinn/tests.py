@@ -7,10 +7,9 @@ import pytz
 from django.utils import timezone
 from django.test import TestCase
 from django.test import Client
-from djinn.models import Room, Building, Equipment, Reservation
+from djinn.models import Room, Building, Equipment, Reservation, Client as DjinnClient, ClientHeartbeat
 from api.serializers import RoomSerializer, EquipmentSerializer, ReservationSerializer
 from djinn.management.commands.rooms import Command as RoomCommand
-
 
 def to_json(serializer_cls, model_cls):
     return [serializer_cls(obj).data for obj in model_cls.objects.all()]
@@ -464,3 +463,29 @@ class ImportRoomsTestCase(TestCase):
         self.assertEquals(4, len(room1_equipment_set))
         self.assertEquals(4, len(room2_equipment_set))
         self.assertEquals(5, len(room1_equipment_set.union(room2_equipment_set)))
+
+
+class ClientSanityTest(TestCase):
+    def test_can_create_without_room_and_alias(self):
+        # note: I wish these actually failed, as these are non-sense values
+        DjinnClient.objects.create(mac='as', ip='', service_url='1')
+        DjinnClient.objects.create(mac='as2', ip='2', service_url='2')
+
+    def test_new_client_has_no_heartbeat(self):
+        client = DjinnClient.objects.create(ip='', mac='')
+        with self.assertRaises(ClientHeartbeat.DoesNotExist):
+            self.assertIsNone(client.clientheartbeat)
+
+    def test_new_heartbeat(self):
+        client = DjinnClient.objects.create(ip='', mac='')
+        client.received_heartbeat()
+        self.assertIsNotNone(client.clientheartbeat.last_heartbeat)
+
+    def test_update_heartbeat(self):
+        client = DjinnClient.objects.create(ip='', mac='')
+        client.received_heartbeat()
+        heartbeat1 = client.clientheartbeat.last_heartbeat
+        client.received_heartbeat()
+        heartbeat2 = client.clientheartbeat.last_heartbeat
+        self.assertTrue(heartbeat1 < heartbeat2)
+

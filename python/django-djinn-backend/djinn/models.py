@@ -1,6 +1,12 @@
 from datetime import timedelta
+
+from django import forms
+import re
 from django.contrib.auth.models import User
+from django.core import validators, checks
 from django.db import models
+from django.utils.translation import ugettext_lazy as _
+from django.utils import timezone
 
 
 class Building(models.Model):
@@ -67,3 +73,66 @@ class Reservation(models.Model):
 
     def __str__(self):
         return '{} - {}'.format(self.start, self.end)
+
+
+mac_re = re.compile(r'^([0-9a-fA-F]{2}([:-]|$)){6}$')
+
+
+class MACAddressFormField(forms.RegexField):
+    default_error_messages = {
+        'invalid': _(u'Enter a valid MAC address.'),
+    }
+
+    def __init__(self, *args, **kwargs):
+        super(MACAddressFormField, self).__init__(mac_re, *args, **kwargs)
+
+
+class MACAddressField(models.Field):
+    empty_strings_allowed = False
+    description = _("MAC address")
+
+    def __init__(self, *args, **kwargs):
+        kwargs['max_length'] = 17
+        super(MACAddressField, self).__init__(*args, **kwargs)
+
+    def get_internal_type(self):
+        return "CharField"
+
+    def formfield(self, **kwargs):
+        defaults = {
+            'form_class': MACAddressFormField,
+        }
+        defaults.update(kwargs)
+        return super(MACAddressField, self).formfield(**defaults)
+
+
+class Client(models.Model):
+    ip = models.GenericIPAddressField(unique=True)
+    mac = MACAddressField(unique=True)
+    alias = models.TextField(unique=True, null=True)
+    room = models.ForeignKey(Room, unique=True, null=True)
+    service_url = models.URLField(unique=True)
+
+    def is_alive(self):
+        return False
+
+    def received_heartbeat(self):
+        try:
+            heartbeat = self.clientheartbeat
+        except ClientHeartbeat.DoesNotExist:
+            heartbeat = ClientHeartbeat(client=self)
+        heartbeat.last_heartbeat = timezone.now()
+        heartbeat.save()
+
+    def __str__(self):
+        return self.alias or self.ip
+
+
+class ClientHeartbeat(models.Model):
+    client = models.OneToOneField(Client)
+    last_heartbeat = models.DateTimeField()
+
+
+class ClientUpdate(models.Model):
+    client = models.OneToOneField(Client)
+    failed_updates = models.IntegerField()
