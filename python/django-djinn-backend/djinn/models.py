@@ -132,10 +132,12 @@ class Client(models.Model):
         heartbeat.save()
 
     def increment_failed_updates(self):
-        pass
+        self.clientupdate.failed_updates += 1
+        self.clientupdate.save()
 
     def clear_failed_updates(self):
-        pass
+        self.clientupdate.failed_updates = 0
+        self.clientupdate.save()
 
     def __str__(self):
         return self.alias or self.ip

@@ -490,3 +490,22 @@ class ClientHeartbeatSanityTest(TestCase):
         heartbeat2 = client.clientheartbeat.last_heartbeat
         self.assertTrue(heartbeat1 < heartbeat2)
 
+
+class ClientUpdateSanityTest(TestCase):
+    def test_new_client_auto_creates_updates_with_zero_count(self):
+        client = DjinnClient.objects.create(ip='', mac='')
+        self.assertEqual(0, client.clientupdate.failed_updates)
+
+    def test_increment_failed_updates(self):
+        client = DjinnClient.objects.create(ip='', mac='')
+        client.increment_failed_updates()
+        self.assertEqual(1, client.clientupdate.failed_updates)
+        client.increment_failed_updates()
+        self.assertEqual(2, client.clientupdate.failed_updates)
+
+    def test_clear_failed_updates(self):
+        client = DjinnClient.objects.create(ip='', mac='')
+        client.increment_failed_updates()
+        self.assertEqual(1, client.clientupdate.failed_updates)
+        client.clear_failed_updates()
+        self.assertEqual(0, client.clientupdate.failed_updates)
