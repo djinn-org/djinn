@@ -124,12 +124,7 @@ class Client(models.Model):
         return False
 
     def received_heartbeat(self):
-        try:
-            heartbeat = self.clientheartbeat
-        except ClientHeartbeat.DoesNotExist:
-            heartbeat = ClientHeartbeat(client=self)
-        heartbeat.last_heartbeat = timezone.now()
-        heartbeat.save()
+        self.clientheartbeat.save()
 
     def increment_failed_updates(self):
         self.clientupdate.failed_updates += 1
