@@ -73,6 +73,21 @@ class Reservation(models.Model):
         return '{} - {}'.format(self.start, self.end)
 
 
+def make_choices(*values):
+    return [(value, value.title()) for value in values]
+
+
+class ReservationLog(models.Model):
+    user = models.ForeignKey(User, null=True)
+    room = models.ForeignKey(Room)
+    start = models.DateTimeField()
+    end = models.DateTimeField()
+    minutes = models.IntegerField()
+    log_type = models.CharField(max_length=50, choices=make_choices('create', 'cancel'))
+    log_trigger = models.CharField(max_length=50, choices=make_choices('djinn', 'app', 'web', 'ext'))
+    log_time = models.DateTimeField(auto_now=True)
+
+
 mac_re = re.compile(r'^([0-9a-fA-F]{2}([:-]|$)){6}$')
 
 
