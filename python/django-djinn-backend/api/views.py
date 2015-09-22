@@ -1,9 +1,11 @@
+from datetime import timedelta
 from django import forms
+from django.utils import timezone
 from rest_framework import viewsets, status, mixins
 from rest_framework.decorators import api_view
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
-from djinn.models import Room, Reservation, Equipment
+from djinn.models import Room, Reservation, Equipment, Client, ReservationLog
 from api.serializers import RoomSerializer, ReservationSerializer, EquipmentSerializer
 
 
@@ -64,3 +66,42 @@ def find_rooms(request):
     # debug = request.data
     return Response({"debug": debug})
     # return Response({"message": "hello", "data": request.data, "debug": debug})
+
+
+def ext_sync_room(room):
+    return room
+
+
+def ext_reserve(room, start, end):
+    pass
+
+
+@api_view(['PUT'])
+def client_presence(request, mac):
+    try:
+        client = Client.objects.get(mac=mac)
+    except Client.DoesNotExist:
+        return Response({"error": "No such client"}, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        room = client.room
+    except Room.DoesNotExist:
+        return Response({"error": "No associated room"}, status=status.HTTP_400_BAD_REQUEST)
+
+    room = ext_sync_room(room)
+
+    if room.is_available():
+        minutes = min(60, room.calc_minutes_to_next_reservation())
+        start = timezone.now()
+        end = start + timedelta(minutes=minutes)
+        reservation = Reservation.create(room=room, start=start, end=end)
+        ReservationLog.log(reservation)
+
+        ext_reserve(room, start, end)
+        room = ext_sync_room(room)
+
+        client.update_status(room.status)
+
+        return Response({"message": "Room was available. Current status: {}".format(room.status)})
+
+    return Response({"error": "Room is not available"}, status=status.HTTP_409_CONFLICT)

@@ -1,7 +1,7 @@
 essential
 ---------
 
-/clients/:mac/presence
++ /clients/:mac/presence
     - ext: sync related room
     - if available:
         - calculate end = min(next start, start + 1 hour)
