@@ -95,8 +95,7 @@ def client_presence(request, mac):
         start = timezone.now()
         end = start + timedelta(minutes=minutes)
         reservation = Reservation.objects.create(room=room, start=start, minutes=minutes)
-        # TODO
-        # ReservationLog.log(reservation)
+        ReservationLog.create_from_reservation(reservation, ReservationLog.TYPE_CREATE, ReservationLog.TRIGGER_DJINN)
 
         ext_reserve(room, start, end)
         room = ext_sync_room(room)

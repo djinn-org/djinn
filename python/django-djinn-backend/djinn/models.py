@@ -96,14 +96,28 @@ def make_choices(*values):
 
 
 class ReservationLog(models.Model):
+    TYPE_CREATE = 'create'
+    TYPE_CANCEL = 'cancel'
+    TRIGGER_DJINN = 'djinn'
+    TRIGGER_APP = 'app'
+    TRIGGER_WEB = 'web'
+    TRIGGER_EXT = 'ext'
+
     user = models.ForeignKey(User, null=True)
     room = models.ForeignKey(Room)
     start = models.DateTimeField()
     end = models.DateTimeField()
     minutes = models.IntegerField()
-    log_type = models.CharField(max_length=50, choices=make_choices('create', 'cancel'))
-    log_trigger = models.CharField(max_length=50, choices=make_choices('djinn', 'app', 'web', 'ext'))
+    log_type = models.CharField(max_length=50, choices=make_choices(TYPE_CREATE, TYPE_CANCEL))
+    log_trigger = models.CharField(max_length=50, choices=make_choices(
+        TRIGGER_DJINN, TRIGGER_APP, TRIGGER_WEB, TRIGGER_EXT))
     log_time = models.DateTimeField(auto_now=True)
+
+    @staticmethod
+    def create_from_reservation(reservation, log_type, log_trigger):
+        ReservationLog.objects.create(user=reservation.user, room=reservation.room,
+                                      start=reservation.start, end=reservation.end, minutes=reservation.minutes,
+                                      log_type=log_type, log_trigger=log_trigger)
 
 
 mac_re = re.compile(r'^([0-9a-fA-F]{2}([:-]|$)){6}$')

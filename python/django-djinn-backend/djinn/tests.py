@@ -8,7 +8,7 @@ import pytz
 from django.utils import timezone
 from django.test import TestCase
 from django.test import Client
-from djinn.models import Room, Building, Equipment, Reservation, Client as DjinnClient
+from djinn.models import Room, Building, Equipment, Reservation, Client as DjinnClient, ReservationLog
 from api.serializers import RoomSerializer, EquipmentSerializer, ReservationSerializer
 from djinn.management.commands.rooms import Command as RoomCommand
 from rest_framework import status
@@ -559,14 +559,17 @@ class ClientPresenceTest(TestCase):
         building = Building.objects.create()
         room = Room.objects.create(building=building, floor=1, capacity=1)
         mac = 'aa:bb:cc:dd:ee:ff'
-        DjinnClient.objects.create(mac=mac, ip='x', room=room)
+        client = DjinnClient.objects.create(mac=mac, ip='x', room=room)
+
+        self.assertEquals(0, ReservationLog.objects.count())
+        self.assertEquals(0, client.clientupdate.failed_updates)
 
         response = self.client_presence(mac)
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEquals('Room was available. Current status: OCCUPIED', self.extract_msg(response))
 
-        # TODO: verify log created
-        # TODO: verify client failure count incremented
+        self.assertEquals(1, ReservationLog.objects.count())
+        self.assertEquals(1, client.clientupdate.failed_updates)
 
 
 class RoomAvailableTest(TestCase):
