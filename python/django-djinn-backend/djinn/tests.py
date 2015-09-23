@@ -1,8 +1,9 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 import json
 import unittest
 
 from bs4 import BeautifulSoup
+from django_djinn_backend import settings
 import pytz
 from django.utils import timezone
 from django.test import TestCase
@@ -548,3 +549,38 @@ class ClientPresenceTest(TestCase):
         response = self.client_presence(mac)
         self.assertEqual(400, response.status_code)
         self.assertEquals('No associated room', self.extract_error_msg(response))
+
+
+class RoomAvailableTest(TestCase):
+    def setUp(self):
+        self.building = Building.objects.create()
+        self.room = Room.objects.create(building=self.building, floor=1, capacity=1)
+
+    def test_available_when_no_meetings(self):
+        self.assertTrue(self.room.is_available())
+
+    def test_not_available_if_meeting_starts_now(self):
+        start = timezone.now()
+        Reservation.objects.create(room=self.room, start=start, minutes=30)
+        self.assertFalse(self.room.is_available())
+
+    def test_not_available_if_next_meeting_within_wait_period(self):
+        start = timezone.now() + timedelta(minutes=settings.WAIT_MINUTES)
+        Reservation.objects.create(room=self.room, start=start, minutes=30)
+        self.assertFalse(self.room.is_available())
+
+    def test_not_available_if_during_meeting(self):
+        start = timezone.now() - timedelta(minutes=5)
+        Reservation.objects.create(room=self.room, start=start, minutes=30)
+        self.assertFalse(self.room.is_available())
+
+    def test_available_if_next_meeting_beyond_wait_period(self):
+        start = timezone.now() + timedelta(minutes=settings.WAIT_MINUTES + 1)
+        Reservation.objects.create(room=self.room, start=start, minutes=30)
+        self.assertTrue(self.room.is_available())
+
+    def test_available_if_beyond_end_of_prev_meeting(self):
+        minutes = 30
+        start = timezone.now() - timedelta(minutes=minutes)
+        Reservation.objects.create(room=self.room, start=start, minutes=minutes)
+        self.assertTrue(self.room.is_available())

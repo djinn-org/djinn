@@ -1,10 +1,12 @@
 from datetime import timedelta
 
 from django import forms
+from django_djinn_backend import settings
 import re
 from django.contrib.auth.models import User
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+from django.utils import timezone
 
 
 class Building(models.Model):
@@ -25,6 +27,11 @@ class Room(models.Model):
 
     class Meta:
         unique_together = (('building', 'floor', 'name'),)
+
+    def is_available(self):
+        now = timezone.now()
+        start = now + timedelta(minutes=settings.WAIT_MINUTES)
+        return not Reservation.objects.filter(room=self, start__lte=start, end__gt=now).exists()
 
 
 class Equipment(models.Model):
