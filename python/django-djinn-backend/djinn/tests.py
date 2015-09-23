@@ -11,6 +11,7 @@ from django.test import Client
 from djinn.models import Room, Building, Equipment, Reservation, Client as DjinnClient
 from api.serializers import RoomSerializer, EquipmentSerializer, ReservationSerializer
 from djinn.management.commands.rooms import Command as RoomCommand
+from rest_framework import status
 
 
 def to_json(serializer_cls, model_cls):
@@ -545,10 +546,11 @@ class ClientPresenceTest(TestCase):
         room = Room.objects.create(building=building, floor=1, capacity=1)
         mac = 'aa:bb:cc:dd:ee:ff'
         DjinnClient.objects.create(mac=mac, ip='x', room=room)
+        Reservation.objects.create(room=room, start=timezone.now(), minutes=30)
 
         response = self.client_presence(mac)
-        self.assertEqual(400, response.status_code)
-        self.assertEquals('No associated room', self.extract_error_msg(response))
+        self.assertEqual(status.HTTP_409_CONFLICT, response.status_code)
+        self.assertEquals('Room is not available', self.extract_error_msg(response))
 
 
 class RoomAvailableTest(TestCase):
