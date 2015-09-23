@@ -567,7 +567,7 @@ class RoomAvailableTest(TestCase):
         self.assertFalse(self.room.is_available())
 
     def test_not_available_if_next_meeting_within_wait_period(self):
-        start = timezone.now() + timedelta(minutes=settings.WAIT_MINUTES)
+        start = timezone.now() + settings.WAIT_DELTA
         Reservation.objects.create(room=self.room, start=start, minutes=30)
         self.assertFalse(self.room.is_available())
 
@@ -577,7 +577,7 @@ class RoomAvailableTest(TestCase):
         self.assertFalse(self.room.is_available())
 
     def test_available_if_next_meeting_beyond_wait_period(self):
-        start = timezone.now() + timedelta(minutes=settings.WAIT_MINUTES + 1)
+        start = timezone.now() + settings.WAIT_DELTA + timedelta(minutes=1)
         Reservation.objects.create(room=self.room, start=start, minutes=30)
         self.assertTrue(self.room.is_available())
 

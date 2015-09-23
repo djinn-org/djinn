@@ -30,7 +30,7 @@ class Room(models.Model):
 
     def is_available(self):
         now = timezone.now()
-        start = now + timedelta(minutes=settings.WAIT_MINUTES)
+        start = now + settings.WAIT_DELTA
         return not Reservation.objects.filter(room=self, start__lte=start, end__gt=now).exists()
 
 
