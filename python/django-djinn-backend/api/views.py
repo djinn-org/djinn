@@ -83,9 +83,8 @@ def client_presence(request, mac):
     except Client.DoesNotExist:
         return Response({"error": "No such client"}, status=status.HTTP_400_BAD_REQUEST)
 
-    try:
-        room = client.room
-    except Room.DoesNotExist:
+    room = client.room
+    if not room:
         return Response({"error": "No associated room"}, status=status.HTTP_400_BAD_REQUEST)
 
     room = ext_sync_room(room)

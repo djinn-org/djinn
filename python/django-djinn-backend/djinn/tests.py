@@ -511,3 +511,40 @@ class ClientUpdateSanityTest(TestCase):
         self.assertEqual(1, client.clientupdate.failed_updates)
         client.clear_failed_updates()
         self.assertEqual(0, client.clientupdate.failed_updates)
+
+
+class ClientPresenceTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+
+    def client_presence(self, mac):
+        return self.client.put('/api/v1/clients/{}/presence'.format(mac))
+
+    def test_invalid_mac(self):
+        response = self.client_presence('x')
+        self.assertEqual(404, response.status_code)
+
+    def extract_error_msg(self, response):
+        return json.loads(response.content.decode())['error']
+
+    def test_no_such_client(self):
+        response = self.client_presence('aa:bb:cc:dd:ee:ff')
+        self.assertEqual(400, response.status_code)
+        self.assertEquals('No such client', self.extract_error_msg(response))
+
+    def test_no_associated_room(self):
+        mac = 'aa:bb:cc:dd:ee:ff'
+        DjinnClient.objects.create(mac=mac, ip='x')
+        response = self.client_presence(mac)
+        self.assertEqual(400, response.status_code)
+        self.assertEquals('No associated room', self.extract_error_msg(response))
+
+    def test_room_not_available(self):
+        building = Building.objects.create()
+        room = Room.objects.create(building=building, floor=1, capacity=1)
+        mac = 'aa:bb:cc:dd:ee:ff'
+        DjinnClient.objects.create(mac=mac, ip='x', room=room)
+
+        response = self.client_presence(mac)
+        self.assertEqual(400, response.status_code)
+        self.assertEquals('No associated room', self.extract_error_msg(response))
