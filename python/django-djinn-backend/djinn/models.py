@@ -165,6 +165,9 @@ class Client(models.Model):
             ClientHeartbeat.objects.create(client=self)
             ClientUpdate.objects.create(client=self)
 
+    def __str__(self):
+        return self.alias or self.ip
+
     def is_alive(self):
         return False
 
@@ -179,8 +182,9 @@ class Client(models.Model):
         self.clientupdate.failed_updates = 0
         self.clientupdate.save()
 
-    def __str__(self):
-        return self.alias or self.ip
+    def update_status(self, status):
+        # TODO: REST call to self.service_url
+        self.increment_failed_updates()
 
 
 class ClientHeartbeat(models.Model):

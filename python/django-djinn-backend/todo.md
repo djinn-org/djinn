@@ -3,9 +3,9 @@ essential
 
 + /clients/:mac/presence
     - ext: sync related room
-    - if available:
-        - calculate end = min(next start, start + 1 hour)
-        - ext: create booking -> log
+    + if available:
+        + calculate end = min(next start, start + 1 hour)
+        - ext: create booking -> +log
         - ext: sync related room
     - update related client
 

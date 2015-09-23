@@ -100,8 +100,7 @@ def client_presence(request, mac):
         ext_reserve(room, start, end)
         room = ext_sync_room(room)
 
-        # client.update_status(room.status)
-        # TODO
+        client.update_status(room.status)
 
         return Response({"message": "Room was available. Current status: {}".format(room.status)})
 

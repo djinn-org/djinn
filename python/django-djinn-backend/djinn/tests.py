@@ -569,6 +569,7 @@ class ClientPresenceTest(TestCase):
         self.assertEquals('Room was available. Current status: OCCUPIED', self.extract_msg(response))
 
         self.assertEquals(1, ReservationLog.objects.count())
+        client.clientupdate.refresh_from_db()
         self.assertEquals(1, client.clientupdate.failed_updates)
 
 
