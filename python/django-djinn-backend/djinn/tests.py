@@ -529,6 +529,9 @@ class ClientPresenceTest(TestCase):
     def extract_error_msg(self, response):
         return json.loads(response.content.decode())['error']
 
+    def extract_msg(self, response):
+        return json.loads(response.content.decode())['message']
+
     def test_no_such_client(self):
         response = self.client_presence('aa:bb:cc:dd:ee:ff')
         self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
@@ -551,6 +554,19 @@ class ClientPresenceTest(TestCase):
         response = self.client_presence(mac)
         self.assertEqual(status.HTTP_409_CONFLICT, response.status_code)
         self.assertEquals('Room is not available', self.extract_error_msg(response))
+
+    def test_reserve_success(self):
+        building = Building.objects.create()
+        room = Room.objects.create(building=building, floor=1, capacity=1)
+        mac = 'aa:bb:cc:dd:ee:ff'
+        DjinnClient.objects.create(mac=mac, ip='x', room=room)
+
+        response = self.client_presence(mac)
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEquals('Room was available. Current status: OCCUPIED', self.extract_msg(response))
+
+        # TODO: verify log created
+        # TODO: verify client failure count incremented
 
 
 class RoomAvailableTest(TestCase):

@@ -33,6 +33,17 @@ class Room(models.Model):
         start = now + settings.WAIT_DELTA
         return not Reservation.objects.filter(room=self, start__lte=start, end__gt=now).exists()
 
+    def calc_minutes_to_next_reservation(self):
+        now = timezone.now()
+        next_reservation = Reservation.objects.filter(room=self, start__gte=now).order_by('start').first()
+        if next_reservation:
+            return (next_reservation.start - now).seconds // 60
+        return settings.AUTO_RESERVATION_MINUTES
+
+    @property
+    def status(self):
+        return 'FREE' if self.is_available() else 'OCCUPIED'
+
 
 class Equipment(models.Model):
     name = models.CharField(max_length=20, unique=True)

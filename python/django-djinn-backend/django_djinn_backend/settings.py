@@ -109,3 +109,4 @@ STATIC_URL = '/static/'
 # Project specific settings
 
 WAIT_DELTA = timedelta(minutes=15)
+AUTO_RESERVATION_MINUTES = 60

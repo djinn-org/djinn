@@ -1,6 +1,7 @@
 from datetime import timedelta
 from django import forms
 from django.utils import timezone
+from django_djinn_backend import settings
 from rest_framework import viewsets, status, mixins
 from rest_framework.decorators import api_view
 from rest_framework.generics import get_object_or_404
@@ -90,16 +91,18 @@ def client_presence(request, mac):
     room = ext_sync_room(room)
 
     if room.is_available():
-        minutes = min(60, room.calc_minutes_to_next_reservation())
+        minutes = min(settings.AUTO_RESERVATION_MINUTES, room.calc_minutes_to_next_reservation())
         start = timezone.now()
         end = start + timedelta(minutes=minutes)
-        reservation = Reservation.create(room=room, start=start, end=end)
-        ReservationLog.log(reservation)
+        reservation = Reservation.objects.create(room=room, start=start, minutes=minutes)
+        # TODO
+        # ReservationLog.log(reservation)
 
         ext_reserve(room, start, end)
         room = ext_sync_room(room)
 
-        client.update_status(room.status)
+        # client.update_status(room.status)
+        # TODO
 
         return Response({"message": "Room was available. Current status: {}".format(room.status)})
 
