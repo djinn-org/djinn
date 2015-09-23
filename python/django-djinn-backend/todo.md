@@ -11,8 +11,8 @@ essential
 
 /clients/:mac/empty
     - ext: sync related room
-    - if booked:
-        - ext: cancel booking -> log
+    + if booked:
+        - ext: cancel booking -> +log
         - ext: sync related room
     - update related client
 

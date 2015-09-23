@@ -77,6 +77,10 @@ def ext_reserve(room, start, end):
     pass
 
 
+def ext_cancel(room, start, end):
+    pass
+
+
 @api_view(['PUT'])
 def client_presence(request, mac):
     try:
@@ -94,6 +98,7 @@ def client_presence(request, mac):
         minutes = min(settings.AUTO_RESERVATION_MINUTES, room.calc_minutes_to_next_reservation())
         start = timezone.now()
         end = start + timedelta(minutes=minutes)
+
         reservation = Reservation.objects.create(room=room, start=start, minutes=minutes)
         ReservationLog.create_from_reservation(reservation, ReservationLog.TYPE_CREATE, ReservationLog.TRIGGER_DJINN)
 
@@ -105,3 +110,31 @@ def client_presence(request, mac):
         return Response({"message": "Room was available. Current status: {}".format(room.status)})
 
     return Response({"error": "Room is not available"}, status=status.HTTP_409_CONFLICT)
+
+@api_view(['PUT'])
+def client_empty(request, mac):
+    try:
+        client = Client.objects.get(mac=mac)
+    except Client.DoesNotExist:
+        return Response({"error": "No such client"}, status=status.HTTP_400_BAD_REQUEST)
+
+    room = client.room
+    if not room:
+        return Response({"error": "No associated room"}, status=status.HTTP_400_BAD_REQUEST)
+
+    room = ext_sync_room(room)
+
+    if not room.is_available():
+        reservation = room.get_current_reservation()
+        if reservation:
+            reservation.delete()
+            ReservationLog.create_from_reservation(reservation, ReservationLog.TYPE_CANCEL, ReservationLog.TRIGGER_DJINN)
+
+            ext_cancel(room, reservation.start, reservation.end)
+            room = ext_sync_room(room)
+
+            client.update_status(room.status)
+
+            return Response({"message": "Room was booked. Current status: {}".format(room.status)})
+
+    return Response({"error": "Room is empty"}, status=status.HTTP_409_CONFLICT)

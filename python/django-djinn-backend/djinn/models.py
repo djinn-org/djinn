@@ -40,8 +40,13 @@ class Room(models.Model):
             return (next_reservation.start - now).seconds // 60
         return settings.AUTO_RESERVATION_MINUTES
 
+    def get_current_reservation(self):
+        now = timezone.now()
+        return Reservation.objects.filter(room=self, start__lte=now, end__gt=now).order_by('start').first()
+
     @property
     def status(self):
+        # TODO: +WAITING
         return 'FREE' if self.is_available() else 'OCCUPIED'
 
 

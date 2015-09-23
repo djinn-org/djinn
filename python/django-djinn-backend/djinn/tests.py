@@ -522,6 +522,9 @@ class ClientPresenceTest(TestCase):
     def client_presence(self, mac):
         return self.client.put('/api/v1/clients/{}/presence'.format(mac))
 
+    def client_empty(self, mac):
+        return self.client.put('/api/v1/clients/{}/empty'.format(mac))
+
     def test_invalid_mac(self):
         response = self.client_presence('x')
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
@@ -567,6 +570,24 @@ class ClientPresenceTest(TestCase):
         response = self.client_presence(mac)
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEquals('Room was available. Current status: OCCUPIED', self.extract_msg(response))
+
+        self.assertEquals(1, ReservationLog.objects.count())
+        client.clientupdate.refresh_from_db()
+        self.assertEquals(1, client.clientupdate.failed_updates)
+
+    def test_cancel_success(self):
+        building = Building.objects.create()
+        room = Room.objects.create(building=building, floor=1, capacity=1)
+        mac = 'aa:bb:cc:dd:ee:ff'
+        client = DjinnClient.objects.create(mac=mac, ip='x', room=room)
+        Reservation.objects.create(room=room, start=timezone.now(), minutes=30)
+
+        self.assertEquals(0, ReservationLog.objects.count())
+        self.assertEquals(0, client.clientupdate.failed_updates)
+
+        response = self.client_empty(mac)
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEquals('Room was booked. Current status: FREE', self.extract_msg(response))
 
         self.assertEquals(1, ReservationLog.objects.count())
         client.clientupdate.refresh_from_db()
