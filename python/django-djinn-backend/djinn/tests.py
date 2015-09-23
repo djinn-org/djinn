@@ -524,21 +524,21 @@ class ClientPresenceTest(TestCase):
 
     def test_invalid_mac(self):
         response = self.client_presence('x')
-        self.assertEqual(404, response.status_code)
+        self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
 
     def extract_error_msg(self, response):
         return json.loads(response.content.decode())['error']
 
     def test_no_such_client(self):
         response = self.client_presence('aa:bb:cc:dd:ee:ff')
-        self.assertEqual(400, response.status_code)
+        self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
         self.assertEquals('No such client', self.extract_error_msg(response))
 
     def test_no_associated_room(self):
         mac = 'aa:bb:cc:dd:ee:ff'
         DjinnClient.objects.create(mac=mac, ip='x')
         response = self.client_presence(mac)
-        self.assertEqual(400, response.status_code)
+        self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
         self.assertEquals('No associated room', self.extract_error_msg(response))
 
     def test_room_not_available(self):
