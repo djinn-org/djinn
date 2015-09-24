@@ -20,7 +20,7 @@ client: POST /status
 
 client: GET /status
 
-/clients/:mac/register  # TODO POST /clients
++ /clients/:mac/register  # TODO POST /clients
 
 /clients/:mac/heartbeat
 

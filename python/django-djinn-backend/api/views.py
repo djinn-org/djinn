@@ -138,3 +138,27 @@ def client_empty(request, mac):
             return Response({"message": "Room was booked. Current status: {}".format(room.status)})
 
     return Response({"error": "Room is empty"}, status=status.HTTP_409_CONFLICT)
+
+
+class RegisterClientForm(forms.ModelForm):
+    class Meta:
+        model = Client
+        fields = ['ip', 'mac', 'alias', 'service_url']
+
+
+# TODO: move this to /clients
+@api_view(['POST'])
+def client_register(request, mac):
+    try:
+        Client.objects.get(mac=mac)
+        return Response({"error": "Client already exists"}, status=status.HTTP_400_BAD_REQUEST)
+    except Client.DoesNotExist:
+        pass
+
+    form = RegisterClientForm(request.POST)
+    if form.is_valid():
+        form.save()
+        return Response({"message": "Register client OK"})
+
+    return Response({"error": "Invalid parameters", "errors": form.errors}, status=status.HTTP_400_BAD_REQUEST)
+

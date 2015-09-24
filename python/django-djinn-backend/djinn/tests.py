@@ -627,3 +627,63 @@ class RoomAvailableTest(TestCase):
         start = timezone.now() - timedelta(minutes=minutes)
         Reservation.objects.create(room=self.room, start=start, minutes=minutes)
         self.assertTrue(self.room.is_available())
+
+
+class RegisterClientTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+
+    def client_register(self, mac, data=None):
+        return self.client.post('/api/v1/clients/{}/register'.format(mac), data)
+
+    def extract_error_msg(self, response):
+        return json.loads(response.content.decode())['error']
+
+    def extract_errors(self, response):
+        return json.loads(response.content.decode())['errors']
+
+    def extract_msg(self, response):
+        return json.loads(response.content.decode())['message']
+
+    def test_register_existing_fails(self):
+        mac = 'aa:bb:cc:dd:ee:ff'
+        DjinnClient.objects.create(mac=mac, ip='x')
+        response = self.client_register(mac)
+        self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
+        self.assertEquals('Client already exists', self.extract_error_msg(response))
+
+    def test_register_ok(self):
+        mac = 'aa:bb:cc:dd:ee:ff'
+        data = {
+            'mac': mac,
+            'ip': '127.0.0.1',
+            'service_url': 'http://localhost:8001/api/v1',
+        }
+        response = self.client_register(mac, data)
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEquals('Register client OK', self.extract_msg(response))
+        self.assertEquals(1, DjinnClient.objects.count())
+
+    def test_register_fail_if_missing_service_url_or_ip(self):
+        mac = 'aa:bb:cc:dd:ee:ff'
+        data = {
+            'mac': mac,
+        }
+        response = self.client_register(mac, data)
+        self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
+        self.assertEquals('Invalid parameters', self.extract_error_msg(response))
+        self.assertEquals(['This field is required.'], self.extract_errors(response)['service_url'])
+        self.assertEquals(['This field is required.'], self.extract_errors(response)['ip'])
+
+    def test_register_fail_if_invalid_service_url_or_ip(self):
+        mac = 'aa:bb:cc:dd:ee:ff'
+        data = {
+            'mac': mac,
+            'ip': 'x',
+            'service_url': 'x',
+        }
+        response = self.client_register(mac, data)
+        self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
+        self.assertEquals('Invalid parameters', self.extract_error_msg(response))
+        self.assertEquals(['Enter a valid URL.'], self.extract_errors(response)['service_url'])
+        self.assertEquals(['Enter a valid IPv4 or IPv6 address.'], self.extract_errors(response)['ip'])

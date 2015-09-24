@@ -17,4 +17,5 @@ urlpatterns = [
     url(r'find/rooms', views.find_rooms),
     url(r'clients/(?P<mac>([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2}))/presence', views.client_presence),
     url(r'clients/(?P<mac>([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2}))/empty', views.client_empty),
+    url(r'clients/(?P<mac>([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2}))/register', views.client_register),
 ]
