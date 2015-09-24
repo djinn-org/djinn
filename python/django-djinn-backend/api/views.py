@@ -140,6 +140,15 @@ def client_empty(request, mac):
     return Response({"error": "Room is empty"}, status=status.HTTP_409_CONFLICT)
 
 
+@api_view(['HEAD'])
+def client_heartbeat(request, mac):
+    try:
+        Client.objects.get(mac=mac).received_heartbeat()
+        return Response({}, status=status.HTTP_200_OK)
+    except Client.DoesNotExist:
+        return Response({"error": "No such client"}, status=status.HTTP_400_BAD_REQUEST)
+
+
 class RegisterClientForm(forms.ModelForm):
     class Meta:
         model = Client

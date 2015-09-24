@@ -18,4 +18,5 @@ urlpatterns = [
     url(r'clients/(?P<mac>([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2}))/presence', views.client_presence),
     url(r'clients/(?P<mac>([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2}))/empty', views.client_empty),
     url(r'clients/(?P<mac>([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2}))/register', views.client_register),
+    url(r'clients/(?P<mac>([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2}))/heartbeat', views.client_heartbeat),
 ]
