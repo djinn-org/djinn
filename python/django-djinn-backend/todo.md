@@ -22,15 +22,7 @@ client: GET /status
 
 + /clients/:mac/register  # TODO POST /clients
 
-/clients/:mac/heartbeat
-
 install on sandbox server
-
-client command: presence
-
-client command: empty
-
-client command: heartbeat
 
 later
 -----
