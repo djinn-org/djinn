@@ -3,10 +3,10 @@ from client.models import Config
 
 
 class Command(BaseCommand):
-    help = 'Get and set server URL'
+    help = 'Interact with the server'
 
     def add_arguments(self, parser):
-        parser.add_argument('--url', metavar='SERVER_URL', help='Set server URL')
+        parser.add_argument('--set-url', metavar='SERVER_URL', help='Set server URL')
 
     def print_server_url(self):
         self.stdout.write(Config.get_server_url())
@@ -16,6 +16,6 @@ class Command(BaseCommand):
         Config.set_server_url(server_url)
 
     def handle(self, *args, **options):
-        if options['url']:
-            self.set_server_url(options['url'])
+        if options['set_url']:
+            self.set_server_url(options['set_url'])
         self.print_server_url()
