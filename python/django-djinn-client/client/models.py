@@ -10,10 +10,18 @@ class Config(models.Model):
     def __str__(self):
         return '{} = {}'.format(self.name, self.value)
 
-    def get_server_url(self):
-        return Config.objects.get(name=self.SERVER_URL)
+    @staticmethod
+    def get_server_url():
+        try:
+            return Config.objects.get(name=Config.SERVER_URL).value
+        except Config.DoesNotExist:
+            return None
 
-    def set_server_url(self, server_url):
-        config = Config.objects.get(name=self.SERVER_URL)
-        config.value = server_url
-        config.save()
+    @staticmethod
+    def set_server_url(server_url):
+        try:
+            config = Config.objects.get(name=Config.SERVER_URL)
+            config.value = server_url
+            config.save()
+        except Config.DoesNotExist:
+            Config.objects.create(name=Config.SERVER_URL, value=server_url)
