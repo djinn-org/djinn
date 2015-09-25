@@ -8,7 +8,7 @@ public class CancelReservation {
 
 		Arguments arguments = ArgumentParser.parseOrExit(args);
 
-		boolean success = controler.cancelAppointment(arguments.start, arguments.end, arguments.roomNames.get(0));
+		boolean success = controler.declineAppointmentsOnBehalfOf(arguments.start, arguments.end, arguments.roomNames.get(0));
 
 		controler.close();
 
