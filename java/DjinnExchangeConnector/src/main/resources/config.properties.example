@@ -1,0 +1,5 @@
+mail.domain = example.com
+domain = EXAMPLE-AD
+username = djinn
+password = secret
+ws.url = https://example.com/ews/Exchange.asmx
