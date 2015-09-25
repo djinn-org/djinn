@@ -123,12 +123,12 @@ public class ExchangeController {
 		return findManyUserAppointments(startDate, endDate, users);
 	}
 
-	public JSONObject findManyUserAppointments(Date startDate, Date endDate, ArrayList<String> users) throws Exception {
+	public JSONObject findManyUserAppointments(Date startDate, Date endDate, List<String> users) throws Exception {
 
 		JSONObject json = new JSONObject();
 
 		for (String onBehafOf : users) {
-			ArrayList<JSONObject> listOfJSONAppointment = new ArrayList<>();
+			List<JSONObject> listOfJSONAppointment = new ArrayList<>();
 
 			for (Appointment appointment : getAppointments(startDate, endDate, onBehafOf)) {
 				listOfJSONAppointment.add(ToolBox.appointmentToJSON(appointment));
