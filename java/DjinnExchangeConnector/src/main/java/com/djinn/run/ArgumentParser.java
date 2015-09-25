@@ -4,7 +4,6 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -28,7 +27,9 @@ public class ArgumentParser {
 		}
 
 		List<String> roomNames = new ArrayList<>();
-		roomNames.addAll(Arrays.asList(args).subList(2, args.length));
+		for (int i = 2; i < args.length; ++i) {
+			roomNames.add(args[i].replaceAll("[.-]", ""));
+		}
 		return new Arguments(start, end, roomNames);
 	}
 

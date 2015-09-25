@@ -44,4 +44,10 @@ public class ArgumentParserTest {
 		Arguments args = ArgumentParser.parse(new String[]{"201509251351", "201509251352", "room1", "room2"});
 		assertEquals(Arrays.asList("room1", "room2"), args.roomNames);
 	}
+
+	@Test
+	public void simplified_room_name() throws Exception {
+		Arguments args = ArgumentParser.parse(new String[]{"201509251351", "201509251352", "room1", "91A-12.J54"});
+		assertEquals(Arrays.asList("room1", "91A12J54"), args.roomNames);
+	}
 }
