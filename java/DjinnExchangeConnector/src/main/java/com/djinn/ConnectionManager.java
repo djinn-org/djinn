@@ -85,11 +85,8 @@ public class ConnectionManager {
 				new Mailbox(someone + "@" + ConfigManager.getMailDomain()));
 	}
 
-	public CalendarView getNewCalendarView(String startDate, String endDate) throws ParseException {
-		Date startDat = ToolBox.formatDate(startDate);
-		Date endDat = ToolBox.formatDate(endDate);
-
-		return new CalendarView(startDat, endDat);
+	public CalendarView getNewCalendarView(Date start, Date end) throws ParseException {
+		return new CalendarView(start, end);
 	}
 
 	public void close() {

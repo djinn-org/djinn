@@ -9,9 +9,13 @@ import org.json.JSONObject;
 
 public class ToolBox {
 
-	public static Date formatDate(String date) throws ParseException {
+	public static Date formatDate(String date) {
 		SimpleDateFormat formatter = new SimpleDateFormat(ConnectionManager.dateFormat);
-		return formatter.parse(date);
+		try {
+			return formatter.parse(date);
+		} catch (ParseException e) {
+			return null;
+		}
 	}
 
 	public static JSONObject appointmentToJSON(Appointment appointment) throws Exception {

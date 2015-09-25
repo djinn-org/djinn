@@ -95,7 +95,7 @@ public class ExchangeController {
 		}
 	}
 
-	private FindItemsResults<Appointment> getAppointments(String startDate, String endDate, String onBehafOf) throws Exception {
+	private FindItemsResults<Appointment> getAppointments(Date startDate, Date endDate, String onBehafOf) throws Exception {
 		CalendarFolder cf;
 		if (onBehafOf.equals(ConfigManager.getUsername())) {
 			cf = this.manager.getMyCalendar();
@@ -108,22 +108,22 @@ public class ExchangeController {
 		return cf.findAppointments(cv);
 	}
 
-	public JSONObject findMyAppointments(String startDate, String endDate) throws Exception {
+	public JSONObject findMyAppointments(Date startDate, Date endDate) throws Exception {
 		return findAppointments(startDate, endDate, ConfigManager.getUsername());
 	}
 
-	public JSONObject findSomeoneAppointments(String startDate, String endDate, String user) throws Exception {
+	public JSONObject findSomeoneAppointments(Date startDate, Date endDate, String user) throws Exception {
 		return findAppointments(startDate, endDate, user);
 	}
 
-	private JSONObject findAppointments(String startDate, String endDate, String onBehafOf) throws Exception {
+	private JSONObject findAppointments(Date startDate, Date endDate, String onBehafOf) throws Exception {
 		ArrayList<String> users = new ArrayList<>();
 		users.add(onBehafOf);
 
 		return findManyUserAppointments(startDate, endDate, users);
 	}
 
-	public JSONObject findManyUserAppointments(String startDate, String endDate, ArrayList<String> users) throws Exception {
+	public JSONObject findManyUserAppointments(Date startDate, Date endDate, ArrayList<String> users) throws Exception {
 
 		JSONObject json = new JSONObject();
 
@@ -140,7 +140,7 @@ public class ExchangeController {
 		return json;
 	}
 
-	public int declineMyAppointments(String startDate, String endDate) {
+	public int declineMyAppointments(Date startDate, Date endDate) {
 		try {
 
 			this.decline(this.getAppointments(startDate, endDate, ConfigManager.getUsername()));
@@ -152,7 +152,7 @@ public class ExchangeController {
 		}
 	}
 
-	public int declineAppointmentsOnBehalfOf(String startDate, String endDate, String onBehafOf) {
+	public int declineAppointmentsOnBehalfOf(Date startDate, Date endDate, String onBehafOf) {
 		try {
 
 			this.decline(this.getAppointments(startDate, endDate, onBehafOf));
