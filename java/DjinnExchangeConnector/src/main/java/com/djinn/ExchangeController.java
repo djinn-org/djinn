@@ -62,7 +62,7 @@ public class ExchangeController {
 	 * @param location   might be null I know it's not clean, It's quick and dirty...
 	 * @param onBehalfOf might be null
 	 */
-	public int makeAMeeting(String subject, String body, String startDate, String endDate, String location, String onBehalfOf) {
+	public boolean makeAMeeting(String subject, String body, Date startDate, Date endDate, String location, String onBehalfOf) {
 		try {
 			//TODO : test parameters...
 
@@ -70,12 +70,8 @@ public class ExchangeController {
 
 			appointment.setSubject(subject);
 			appointment.setBody(MessageBody.getMessageBodyFromText(body));
-
-			Date startDat = ToolBox.formatDate(startDate);
-			Date endDat = ToolBox.formatDate(endDate);
-
-			appointment.setStart(startDat);
-			appointment.setEnd(endDat);
+			appointment.setStart(startDate);
+			appointment.setEnd(endDate);
 
 			//set location is simple text, does not send an invitation to the room
 			if (location == null)
@@ -88,10 +84,10 @@ public class ExchangeController {
 			else
 				appointment.save(manager.getSomeoneFolderId(onBehalfOf));
 
-			return 0;
+			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
-			return 1;
+			return false;
 		}
 	}
 
@@ -144,27 +140,27 @@ public class ExchangeController {
 		return json;
 	}
 
-	public int declineMyAppointments(Date startDate, Date endDate) {
+	public boolean declineMyAppointments(Date startDate, Date endDate) {
 		try {
 
 			this.decline(this.getAppointments(startDate, endDate, ConfigManager.getUsername()));
-			return 0;
+			return true;
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			return 1;
+			return false;
 		}
 	}
 
-	public int declineAppointmentsOnBehalfOf(Date startDate, Date endDate, String onBehafOf) {
+	public boolean declineAppointmentsOnBehalfOf(Date startDate, Date endDate, String onBehafOf) {
 		try {
 
 			this.decline(this.getAppointments(startDate, endDate, onBehafOf));
-			return 0;
+			return true;
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			return 1;
+			return false;
 		}
 	}
 

@@ -9,8 +9,7 @@ public class ListReservations {
 
 		Arguments arguments = ArgumentParser.parseOrExit(args);
 
-		String json =
-				controler.findManyUserAppointments(arguments.start, arguments.end, arguments.roomNames);
+		String json = controler.findManyUserAppointments(arguments.start, arguments.end, arguments.roomNames);
 
 		System.out.println(json);
 
