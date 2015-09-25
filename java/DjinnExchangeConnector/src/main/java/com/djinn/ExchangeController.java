@@ -140,6 +140,20 @@ public class ExchangeController {
 		return json;
 	}
 
+	public boolean cancelAppointment(Date startDate, Date endDate, String roomName) {
+		try {
+			FindItemsResults<Appointment> appointments = this.getAppointments(startDate, endDate, roomName);
+			for (Appointment appt : appointments.getItems()) {
+				appt.cancelMeeting();
+				break;
+			}
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
 	public boolean declineMyAppointments(Date startDate, Date endDate) {
 		try {
 
