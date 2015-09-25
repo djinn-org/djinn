@@ -10,7 +10,7 @@ import java.util.List;
 
 public class ArgumentParser {
 
-	private static final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+	private static final DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmm");
 
 	static class NotEnoughArgumentsException extends Exception {}
 
@@ -56,7 +56,7 @@ public class ArgumentParser {
 
 	private static void printUsage(int exitCode) {
 		System.out.println("usage: java %prog START END ROOM");
-		System.out.println("note: dates are in format: 'YYYY-MM-DD HH:mm'");
+		System.out.println("Date format: YYYYMMDDHHmm");
 		System.exit(exitCode);
 	}
 }
