@@ -28,18 +28,12 @@ public class ConnectionManager {
 	private ExchangeService service = null;
 
 	//Constructor
-	private ConnectionManager() throws Exception {
+	private ConnectionManager() throws URISyntaxException {
 		this.service = new ExchangeService();
 		ExchangeCredentials credentials =
 				new WebCredentials(ConfigManager.getUsername(), ConfigManager.getPassword(), ConfigManager.getDomain());
 		service.setCredentials(credentials);
-
-		try {
-			service.setUrl(new URI(ConfigManager.getWebServiceUrl()));
-		} catch (URISyntaxException e) {
-			e.printStackTrace();
-			throw new Exception("Something wrong with the url", e);
-		}
+		service.setUrl(new URI(ConfigManager.getWebServiceUrl()));
 	}
 
 	//
@@ -50,7 +44,7 @@ public class ConnectionManager {
 	 * @return
 	 * @throws Exception if something went wrong on the API service instantiation
 	 */
-	public static ConnectionManager getInstance() throws Exception {
+	public static ConnectionManager getInstance() throws URISyntaxException {
 		if (instance == null)
 			instance = new ConnectionManager();
 

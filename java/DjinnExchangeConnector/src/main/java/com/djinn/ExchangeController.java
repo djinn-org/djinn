@@ -1,5 +1,6 @@
 package com.djinn;
 
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -18,16 +19,26 @@ public class ExchangeController {
 
 	private ConnectionManager manager = null;
 
-	private ExchangeController() throws Exception {
+	private ExchangeController() throws URISyntaxException {
 		this.manager = ConnectionManager.getInstance();
 
 	}
 
-	public static ExchangeController getInstance() throws Exception {
+	public static ExchangeController getInstance() throws URISyntaxException {
 		if (instance == null)
 			instance = new ExchangeController();
 
 		return instance;
+	}
+
+	public static ExchangeController getInstanceOrDie() {
+		try {
+			return new ExchangeController();
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+			System.exit(1);
+		}
+		throw new AssertionError("Unreachable statement");
 	}
 
 	public void sendEmail(String subject, String msgBody, List<String> listDestination) throws Exception {
@@ -165,7 +176,7 @@ public class ExchangeController {
 		return cpt;
 	}
 
-	public void end() {
+	public void close() {
 		this.manager.close();
 	}
 
