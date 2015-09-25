@@ -120,10 +120,14 @@ public class ExchangeController {
 		ArrayList<String> users = new ArrayList<>();
 		users.add(onBehafOf);
 
-		return findManyUserAppointments(startDate, endDate, users);
+		return findManyUserAppointmentsJSON(startDate, endDate, users);
 	}
 
-	public JSONObject findManyUserAppointments(Date startDate, Date endDate, List<String> users) throws Exception {
+	public String findManyUserAppointments(Date startDate, Date endDate, List<String> users) throws Exception {
+		return findManyUserAppointmentsJSON(startDate, endDate, users).toString(5);
+	}
+
+	public JSONObject findManyUserAppointmentsJSON(Date startDate, Date endDate, List<String> users) throws Exception {
 
 		JSONObject json = new JSONObject();
 
