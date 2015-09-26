@@ -1,6 +1,13 @@
 essential
 ---------
 
+implement comm with exchange
+- create package, move and rename ext commands
+- make it easy to work with or without exchange
+    - reserve and cancel are void methods (at least for now)
+    - sync gets a list of bookings
+    - if any of these are broken, simply nothing happens
+
 + /clients/:mac/presence
     - ext: sync related room
     + if available:
@@ -20,9 +27,16 @@ client: POST /status
 
 client: GET /status
 
-+ /clients/:mac/register  # TODO POST /clients
-
 install on sandbox server
+
+cron script for client
+
+full test with zwave
+- copy scripts from image
+- fix raspi network
+- setup hosts service
+- install djinn client
+- simple test of zwave: call to presence, empty
 
 later
 -----
