@@ -110,3 +110,9 @@ STATIC_URL = '/static/'
 
 WAIT_DELTA = timedelta(minutes=15)
 AUTO_RESERVATION_MINUTES = 60
+
+EXCHANGE_CONNECTOR_JAR = os.path.join(BASE_DIR, 'local/TestEWS-0.0.1-SNAPSHOT-jar-with-dependencies.jar')
+EXCHANGE_CONNECTOR_READY = os.path.isfile(EXCHANGE_CONNECTOR_JAR)
+EXCHANGE_LIST_CMD = 'com.djinn.run.ListReservations'
+EXCHANGE_CREATE_CMD = 'com.djinn.run.CreateReservation'
+EXCHANGE_CANCEL_CMD = 'com.djinn.run.CancelReservation'

@@ -2,6 +2,8 @@ from datetime import datetime, timedelta
 import json
 import unittest
 
+from django_djinn_backend.exchange import run_cmd
+
 from bs4 import BeautifulSoup
 from django_djinn_backend import settings
 import pytz
@@ -687,3 +689,17 @@ class RegisterClientTest(TestCase):
         self.assertEquals('Invalid parameters', self.extract_error_msg(response))
         self.assertEquals(['Enter a valid URL.'], self.extract_errors(response)['service_url'])
         self.assertEquals(['Enter a valid IPv4 or IPv6 address.'], self.extract_errors(response)['ip'])
+
+
+class RunCommandTest(TestCase):
+    def test_exit_code_0(self):
+        returncode, out, err = run_cmd('echo', 'hello')
+        self.assertEquals(0, returncode)
+        self.assertEquals('hello', out)
+        self.assertEquals('', err)
+
+    def test_exit_code_1(self):
+        returncode, out, err = run_cmd('ls', 'nonexistent')
+        self.assertEquals(1, returncode)
+        self.assertEquals('', out)
+        self.assertEquals('ls: nonexistent: No such file or directory', err)

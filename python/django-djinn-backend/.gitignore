@@ -8,7 +8,11 @@ __pycache__
 db.sqlite3
 virtualenv
 
+# Django
 /static
+
+# Project
+/local
 
 # misc
 tmp
