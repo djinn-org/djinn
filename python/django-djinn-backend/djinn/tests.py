@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 import json
 import unittest
 
-from django_djinn_backend.exchange import run_cmd
+from django_djinn_backend.exchange import run_cmd, list_reservations, parse_reservations, parse_date
 
 from bs4 import BeautifulSoup
 from django_djinn_backend import settings
@@ -703,3 +703,30 @@ class RunCommandTest(TestCase):
         self.assertEquals(1, returncode)
         self.assertEquals('', out)
         self.assertEquals('ls: nonexistent: No such file or directory', err)
+
+    def test_list_reservations(self):
+        result = list_reservations(timezone.now(), timezone.now(), 'nonexistent')
+        self.assertEquals({}, result)
+
+    def test_parse_date(self):
+        date = datetime(2015, 9, 25, 18, 59)
+        datestr = '2015-09-25 18:59'
+        self.assertEquals(date, parse_date(datestr))
+
+    def test_parse_reservations(self):
+        jsonstr = '''{"90A05013": [
+         {
+              "start": "2015-09-25 18:30",
+              "end": "2015-09-25 19:00"
+         },
+         {
+              "start": "2015-09-25 18:30",
+              "end": "2015-09-25 18:59"
+         }
+         ]}
+        '''
+        expected = {
+            # "90A05013":
+        }
+        result = parse_reservations(jsonstr)
+        self.assertEquals(expected, result)

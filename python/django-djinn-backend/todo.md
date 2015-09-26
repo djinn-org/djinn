@@ -1,6 +1,8 @@
 essential
 ---------
 
+create technical room name method to use in communications with exchange
+
 implement comm with exchange
 - create package, move and rename ext commands
 - make it easy to work with or without exchange
