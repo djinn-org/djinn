@@ -726,7 +726,16 @@ class RunCommandTest(TestCase):
          ]}
         '''
         expected = {
-            # "90A05013":
+            "90A05013": [
+                {
+                    'start': datetime(2015, 9, 25, 18, 30),
+                    'end': datetime(2015, 9, 25, 19, 0),
+                },
+                {
+                    'start': datetime(2015, 9, 25, 18, 30),
+                    'end': datetime(2015, 9, 25, 18, 59),
+                },
+            ]
         }
         result = parse_reservations(jsonstr)
         self.assertEquals(expected, result)

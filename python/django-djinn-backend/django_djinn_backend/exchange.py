@@ -20,7 +20,10 @@ def parse_date(datestr):
 def parse_reservations(jsonstr):
     reservations = {}
     for roomname, values in json.loads(jsonstr).items():
-        reservations[roomname] = values
+        reservations[roomname] = [{
+            'start': parse_date(value['start']),
+            'end': parse_date(value['end']),
+        } for value in values]
 
     return reservations
 
