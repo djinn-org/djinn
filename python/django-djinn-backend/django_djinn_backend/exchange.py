@@ -37,10 +37,10 @@ def list_reservations(start, end, *roomnames):
     :param roomnames: list of room names
     :return: reservations as a dictionary of roomname -> reservations
     """
-    reservations = {}
+    no_reservations = {}
 
     if not ready() or not roomnames:
-        return reservations
+        return no_reservations
 
     startstr = format_date_param(start)
     endstr = format_date_param(end)
@@ -49,7 +49,7 @@ def list_reservations(start, end, *roomnames):
         'java', '-cp', settings.EXCHANGE_CONNECTOR_JAR, settings.EXCHANGE_LIST_CMD, startstr, endstr, *roomnames)
 
     if returncode != 0:
-        return reservations
+        return no_reservations
 
     return parse_reservations(out)
 
