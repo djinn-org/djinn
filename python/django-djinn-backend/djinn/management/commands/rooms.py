@@ -15,6 +15,7 @@ class Command(BaseCommand):
                             help='list rooms')
         parser.add_argument('--import', metavar='XMLFILE',
                             help='import rooms from XML dump')
+        parser.add_argument('--delete-all-rooms', action='store_true')
 
     def do_list(self):
         for room in Room.objects.all():
@@ -23,6 +24,11 @@ class Command(BaseCommand):
     def do_import_path(self, path):
         with open(path) as fh:
             self.do_import_soup(BeautifulSoup(fh, 'html.parser'))
+
+    def do_delete_all_rooms(self):
+        self.msg('About to delete {} rooms'.format(Room.objects.count()))
+        Room.objects.all().delete()
+        self.msg('Done. Number of rooms: {}'.format(Room.objects.count()))
 
     def do_import_soup(self, soup):
         # later: update room
@@ -64,10 +70,11 @@ class Command(BaseCommand):
 
             building = get_or_create_building(match.group('building'))
             floor = int(match.group('floor'))
-            name = match.group('name')
+            name = room_data.name
+            external_name = room_data.mail[0:room_data.mail.find('@')]
             capacity = room_data.capacity
 
-            room = Room(building=building, floor=floor, name=name, capacity=capacity)
+            room = Room(building=building, floor=floor, name=name, external_name=external_name, capacity=capacity)
 
             room_str = str(room)
             if room_str in known_rooms:
@@ -98,3 +105,5 @@ class Command(BaseCommand):
             self.do_list()
         elif options['import']:
             self.do_import_path(options['import'])
+        elif options['delete_all_rooms']:
+            self.do_delete_all_rooms()

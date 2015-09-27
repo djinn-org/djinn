@@ -20,10 +20,11 @@ class Room(models.Model):
     building = models.ForeignKey(Building)
     floor = models.IntegerField()
     name = models.CharField(max_length=20)
+    external_name = models.CharField(max_length=20, unique=True)
     capacity = models.IntegerField()
 
     def __str__(self):
-        return '{}-{}.{}'.format(self.building, self.floor, self.name)
+        return self.name
 
     class Meta:
         unique_together = (('building', 'floor', 'name'),)
