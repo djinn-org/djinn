@@ -1,27 +1,26 @@
 essential
 ---------
 
-create technical room name method to use in communications with exchange
-
 implement comm with exchange
-- create package, move and rename ext commands
-- make it easy to work with or without exchange
-    - reserve and cancel are void methods (at least for now)
-    - sync gets a list of bookings
-    - if any of these are broken, simply nothing happens
++ create package, move and rename ext commands
+! make it easy to work with or without exchange
+    + reserve and cancel are void methods (at least for now)
+    ! sync gets a list of bookings
+    + if any of these are broken, simply nothing happens; but: tests are slow
+    ! make tests fast
 
 + /clients/:mac/presence
     - ext: sync related room
     + if available:
         + calculate end = min(next start, start + 1 hour)
-        - ext: create booking -> +log
+        + ext: create booking -> +log
         - ext: sync related room
     - update related client
 
 /clients/:mac/empty
     - ext: sync related room
     + if booked:
-        - ext: cancel booking -> +log
+        + ext: cancel booking -> +log
         - ext: sync related room
     - update related client
 

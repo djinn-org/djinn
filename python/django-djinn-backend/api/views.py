@@ -2,6 +2,7 @@ from datetime import timedelta
 from django import forms
 from django.utils import timezone
 from django_djinn_backend import settings
+from django_djinn_backend import exchange
 from rest_framework import viewsets, status, mixins
 from rest_framework.decorators import api_view
 from rest_framework.generics import get_object_or_404
@@ -70,15 +71,19 @@ def find_rooms(request):
 
 
 def ext_sync_room(start, end, room):
+    room_reservations = exchange.list_reservations(start, end, room)
+    if room_reservations:
+        pass  # TODO: sync!
+
     return room
 
 
 def ext_create_reservation(start, end, room):
-    pass
+    exchange.create_reservation(start, end, room)
 
 
 def ext_cancel_reservation(start, end, room):
-    pass
+    exchange.cancel_reservation(start, end, room)
 
 
 @api_view(['PUT'])

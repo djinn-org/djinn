@@ -707,7 +707,7 @@ class RunCommandTest(TestCase):
         self.assertEquals('ls: nonexistent: No such file or directory', err)
 
     def test_list_reservations(self):
-        result = list_reservations(timezone.now(), timezone.now(), 'nonexistent')
+        result = list_reservations(timezone.now(), timezone.now(), Room())
         self.assertEquals({}, result)
 
     def test_parse_date(self):
