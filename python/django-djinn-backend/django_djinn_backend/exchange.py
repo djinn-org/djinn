@@ -54,14 +54,26 @@ def list_reservations(start, end, *roomnames):
     return parse_reservations(out)
 
 
-def create_reservation(start, end, room):
+def create_reservation(start, end, roomname):
     if not ready():
         return
 
+    startstr = format_date_param(start)
+    endstr = format_date_param(end)
 
-def cancel_reservation(start, end, room):
+    returncode, out, err = run_cmd(
+        'java', '-cp', settings.EXCHANGE_CONNECTOR_JAR, settings.EXCHANGE_CREATE_CMD, startstr, endstr, roomname)
+
+
+def cancel_reservation(start, end, roomname):
     if not ready():
         return
+
+    startstr = format_date_param(start)
+    endstr = format_date_param(end)
+
+    returncode, out, err = run_cmd(
+        'java', '-cp', settings.EXCHANGE_CONNECTOR_JAR, settings.EXCHANGE_CREATE_CMD, startstr, endstr, roomname)
 
 
 def run_cmd(*args):
