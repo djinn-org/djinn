@@ -28,22 +28,23 @@ def parse_reservations(jsonstr):
     return reservations
 
 
-def list_reservations(start, end, *roomnames):
+def list_reservations(start, end, *rooms):
     """
     Get the list of reservations for specified room names.
 
     :param start: start datetime to search
     :param end: end datetime to search
-    :param roomnames: list of room names
+    :param rooms: list of rooms
     :return: reservations as a dictionary of roomname -> reservations
     """
     no_reservations = {}
 
-    if not ready() or not roomnames:
+    if not ready() or not rooms:
         return no_reservations
 
     startstr = format_date_param(start)
     endstr = format_date_param(end)
+    roomnames = [room.external_name for room in rooms]
 
     returncode, out, err = run_cmd(
         'java', '-cp', settings.EXCHANGE_CONNECTOR_JAR, settings.EXCHANGE_LIST_CMD, startstr, endstr, *roomnames)
@@ -54,23 +55,25 @@ def list_reservations(start, end, *roomnames):
     return parse_reservations(out)
 
 
-def create_reservation(start, end, roomname):
+def create_reservation(start, end, room):
     if not ready():
         return
 
     startstr = format_date_param(start)
     endstr = format_date_param(end)
+    roomname = room.external_name
 
     returncode, out, err = run_cmd(
         'java', '-cp', settings.EXCHANGE_CONNECTOR_JAR, settings.EXCHANGE_CREATE_CMD, startstr, endstr, roomname)
 
 
-def cancel_reservation(start, end, roomname):
+def cancel_reservation(start, end, room):
     if not ready():
         return
 
     startstr = format_date_param(start)
     endstr = format_date_param(end)
+    roomname = room.external_name
 
     returncode, out, err = run_cmd(
         'java', '-cp', settings.EXCHANGE_CONNECTOR_JAR, settings.EXCHANGE_CREATE_CMD, startstr, endstr, roomname)
