@@ -47,6 +47,7 @@ class RoomListTestCase(TestCase):
             building=building,
             floor=12,
             name='E50',
+            external_name='E50',
             capacity=8,
         )
 
@@ -54,6 +55,7 @@ class RoomListTestCase(TestCase):
             building=building,
             floor=16,
             name='J89',
+            external_name='J89',
             capacity=20,
         )
 
