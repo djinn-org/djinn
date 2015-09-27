@@ -69,15 +69,15 @@ def find_rooms(request):
     # return Response({"message": "hello", "data": request.data, "debug": debug})
 
 
-def ext_sync_room(room):
+def ext_sync_room(start, end, room):
     return room
 
 
-def ext_reserve(room, start, end):
+def ext_create_reservation(start, end, room):
     pass
 
 
-def ext_cancel(room, start, end):
+def ext_cancel_reservation(start, end, room):
     pass
 
 
@@ -92,18 +92,19 @@ def client_presence(request, mac):
     if not room:
         return Response({"error": "No associated room"}, status=status.HTTP_400_BAD_REQUEST)
 
-    room = ext_sync_room(room)
+    start = timezone.now()
+    end = start + timedelta(minutes=settings.AUTO_RESERVATION_MINUTES)
+    room = ext_sync_room(start, end, room)
 
     if room.is_available():
         minutes = min(settings.AUTO_RESERVATION_MINUTES, room.calc_minutes_to_next_reservation())
-        start = timezone.now()
         end = start + timedelta(minutes=minutes)
 
         reservation = Reservation.objects.create(room=room, start=start, minutes=minutes)
         ReservationLog.create_from_reservation(reservation, ReservationLog.TYPE_CREATE, ReservationLog.TRIGGER_DJINN)
 
-        ext_reserve(room, start, end)
-        room = ext_sync_room(room)
+        ext_create_reservation(start, end, room)
+        room = ext_sync_room(start, end, room)
 
         client.update_status(room.status)
 
@@ -122,7 +123,9 @@ def client_empty(request, mac):
     if not room:
         return Response({"error": "No associated room"}, status=status.HTTP_400_BAD_REQUEST)
 
-    room = ext_sync_room(room)
+    start = timezone.now()
+    end = start + timedelta(minutes=settings.AUTO_RESERVATION_MINUTES)
+    room = ext_sync_room(start, end, room)
 
     if not room.is_available():
         reservation = room.get_current_reservation()
@@ -130,8 +133,8 @@ def client_empty(request, mac):
             reservation.delete()
             ReservationLog.create_from_reservation(reservation, ReservationLog.TYPE_CANCEL, ReservationLog.TRIGGER_DJINN)
 
-            ext_cancel(room, reservation.start, reservation.end)
-            room = ext_sync_room(room)
+            ext_cancel_reservation(reservation.start, reservation.end, room)
+            room = ext_sync_room(start, end, room)
 
             client.update_status(room.status)
 
