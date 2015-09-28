@@ -5,6 +5,7 @@ from .models import Room
 from .models import Equipment
 from .models import RoomEquipment
 from .models import Reservation
+from .models import ReservationLog
 
 
 class RoomEquipmentInline(admin.StackedInline):
@@ -33,4 +34,5 @@ admin.site.register(Room, RoomAdmin)
 admin.site.register(Equipment, EquipmentAdmin)
 admin.site.register(RoomEquipment)
 admin.site.register(Reservation)
+admin.site.register(ReservationLog)
 admin.site.register(Client, ClientAdmin)
