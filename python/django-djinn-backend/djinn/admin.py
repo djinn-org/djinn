@@ -58,7 +58,10 @@ class ClientAdmin(admin.ModelAdmin):
     get_last_heartbeat.short_description = 'Last heartbeat'
 
     def room_link(self, obj):
-        return '<a href="{}">{}</a>'.format(reverse('admin:djinn_room_change', args=(obj.room.id,)), obj.room.name)
+        if obj.room:
+            return '<a href="{}">{}</a>'.format(reverse('admin:djinn_room_change', args=(obj.room.id,)), obj.room.name)
+        else:
+            return '(None)'
     room_link.allow_tags = True
     room_link.short_description = 'Room'
 
