@@ -21,6 +21,10 @@ class EquipmentAdmin(admin.ModelAdmin):
     inlines = [RoomEquipmentInline]
 
 
+class ReservationLogAdmin(admin.ModelAdmin):
+    model = ReservationLog
+    list_display = ('user', 'room', 'start', 'end', 'log_type', 'log_trigger')
+
 class ClientAdmin(admin.ModelAdmin):
     model = Client
     list_display = ('ip', 'mac', 'alias', 'room', 'is_alive', 'get_last_heartbeat')
@@ -34,5 +38,5 @@ admin.site.register(Room, RoomAdmin)
 admin.site.register(Equipment, EquipmentAdmin)
 admin.site.register(RoomEquipment)
 admin.site.register(Reservation)
-admin.site.register(ReservationLog)
+admin.site.register(ReservationLog, ReservationLogAdmin)
 admin.site.register(Client, ClientAdmin)
