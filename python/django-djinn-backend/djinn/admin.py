@@ -31,7 +31,13 @@ class EquipmentAdmin(admin.ModelAdmin):
 
 class ReservationLogAdmin(admin.ModelAdmin):
     model = ReservationLog
-    list_display = ('user', 'room', 'start', 'end', 'log_type', 'log_trigger')
+    list_display = ('user', 'room_link', 'start', 'end', 'log_type', 'log_trigger')
+
+    def room_link(self, client):
+        return '<a href="{}">{}</a>'.format(reverse('admin:djinn_room_change', args=(client.room.id,)), client.room.name)
+    room_link.allow_tags = True
+    room_link.short_description = 'Room'
+
 
 class ClientAdmin(admin.ModelAdmin):
     model = Client
@@ -41,8 +47,8 @@ class ClientAdmin(admin.ModelAdmin):
         return client.clientheartbeat.last_heartbeat
     get_last_heartbeat.short_description = 'Last heartbeat'
 
-    def room_link(self, client):
-        return '<a href="{}">{}</a>'.format(reverse('admin:djinn_room_change', args=(client.room.id,)), client.room.name)
+    def room_link(self, obj):
+        return '<a href="{}">{}</a>'.format(reverse('admin:djinn_room_change', args=(obj.room.id,)), obj.room.name)
     room_link.allow_tags = True
     room_link.short_description = 'Room'
 
