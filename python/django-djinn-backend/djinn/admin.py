@@ -14,8 +14,13 @@ class RoomEquipmentInline(admin.StackedInline):
     extra = 0
 
 
+class ClientInline(admin.StackedInline):
+    model = Client
+    extra = 0
+
+
 class RoomAdmin(admin.ModelAdmin):
-    inlines = [RoomEquipmentInline]
+    inlines = [RoomEquipmentInline, ClientInline]
 
 
 class EquipmentAdmin(admin.ModelAdmin):
