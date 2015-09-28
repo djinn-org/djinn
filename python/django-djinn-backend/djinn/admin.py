@@ -29,12 +29,22 @@ class EquipmentAdmin(admin.ModelAdmin):
     inlines = [RoomEquipmentInline]
 
 
+class ReservationAdmin(admin.ModelAdmin):
+    model = Reservation
+    list_display = ('user', 'room_link', 'start', 'end', 'minutes',)
+
+    def room_link(self, obj):
+        return '<a href="{}">{}</a>'.format(reverse('admin:djinn_room_change', args=(obj.room.id,)), obj.room.name)
+    room_link.allow_tags = True
+    room_link.short_description = 'Room'
+
+
 class ReservationLogAdmin(admin.ModelAdmin):
     model = ReservationLog
     list_display = ('user', 'room_link', 'start', 'end', 'log_type', 'log_trigger')
 
-    def room_link(self, client):
-        return '<a href="{}">{}</a>'.format(reverse('admin:djinn_room_change', args=(client.room.id,)), client.room.name)
+    def room_link(self, obj):
+        return '<a href="{}">{}</a>'.format(reverse('admin:djinn_room_change', args=(obj.room.id,)), obj.room.name)
     room_link.allow_tags = True
     room_link.short_description = 'Room'
 
@@ -56,6 +66,6 @@ admin.site.register(Building)
 admin.site.register(Room, RoomAdmin)
 admin.site.register(Equipment, EquipmentAdmin)
 admin.site.register(RoomEquipment)
-admin.site.register(Reservation)
+admin.site.register(Reservation, ReservationAdmin)
 admin.site.register(ReservationLog, ReservationLogAdmin)
 admin.site.register(Client, ClientAdmin)
