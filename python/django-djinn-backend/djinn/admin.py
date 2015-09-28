@@ -21,6 +21,8 @@ class ClientInline(admin.StackedInline):
 
 class RoomAdmin(admin.ModelAdmin):
     inlines = [RoomEquipmentInline, ClientInline]
+    list_display = ('name', 'external_name', 'building', 'floor', 'capacity',)
+    list_filter = ('building', 'floor', 'capacity',)
 
 
 class EquipmentAdmin(admin.ModelAdmin):
