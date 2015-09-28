@@ -64,7 +64,7 @@ class Command(BaseCommand):
     def reset(iface):
         info = Popen(["/sbin/ifconfig", iface], stdout=PIPE).communicate()[0].decode()
         mac = re.findall(r'(ether|hwaddr) ([^ ]*)', info, re.I)[0][1]
-        ip = re.findall(r'inet (addr )?([^ ]*)', info)[0][1]
+        ip = re.findall(r'inet (addr:)?([^ ]*)', info)[0][1]
         service_url = 'http://{}:{}/api/v1'.format(ip, 8001)
         Config.set_mac(mac)
         Config.set_ip(ip)
