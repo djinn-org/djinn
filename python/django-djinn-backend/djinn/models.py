@@ -15,6 +15,9 @@ class Building(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        ordering = ('name',)
+
 
 class Room(models.Model):
     building = models.ForeignKey(Building)
@@ -28,6 +31,7 @@ class Room(models.Model):
 
     class Meta:
         unique_together = (('building', 'floor', 'name'),)
+        ordering = ('external_name',)
 
     def is_available(self):
         now = timezone.now()
@@ -56,6 +60,9 @@ class Equipment(models.Model):
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        ordering = ('name',)
 
 
 class RoomEquipment(models.Model):
@@ -119,6 +126,9 @@ class ReservationLog(models.Model):
         TRIGGER_DJINN, TRIGGER_APP, TRIGGER_WEB, TRIGGER_EXT))
     log_time = models.DateTimeField(auto_now=True)
 
+    class Meta:
+        ordering = ('log_time',)
+
     @staticmethod
     def create_from_reservation(reservation, log_type, log_trigger):
         ReservationLog.objects.create(user=reservation.user, room=reservation.room,
@@ -173,6 +183,9 @@ class Client(models.Model):
 
     def __str__(self):
         return self.alias or self.ip
+
+    class Meta:
+        ordering = ('mac',)
 
     def is_alive(self):
         return False
