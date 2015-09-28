@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.core.urlresolvers import reverse
 
 from .models import Building, Client
 from .models import Room
@@ -27,11 +28,16 @@ class ReservationLogAdmin(admin.ModelAdmin):
 
 class ClientAdmin(admin.ModelAdmin):
     model = Client
-    list_display = ('ip', 'mac', 'alias', 'room', 'is_alive', 'get_last_heartbeat')
+    list_display = ('ip', 'mac', 'alias', 'room_link', 'is_alive', 'get_last_heartbeat')
 
     def get_last_heartbeat(self, client):
         return client.clientheartbeat.last_heartbeat
     get_last_heartbeat.short_description = 'Last heartbeat'
+
+    def room_link(self, client):
+        return '<a href="{}">{}</a>'.format(reverse('admin:djinn_room_change', args=(client.room.id,)), client.room.name)
+    room_link.allow_tags = True
+    room_link.short_description = 'Room'
 
 admin.site.register(Building)
 admin.site.register(Room, RoomAdmin)
