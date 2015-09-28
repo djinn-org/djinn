@@ -103,6 +103,9 @@ class Reservation(models.Model):
     def __str__(self):
         return '{} - {}'.format(self.start, self.end)
 
+    class Meta:
+        ordering = ('room', 'start', 'minutes',)
+
 
 def make_choices(*values):
     return [(value, value.title()) for value in values]
