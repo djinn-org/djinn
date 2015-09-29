@@ -163,6 +163,15 @@ class RegisterClientForm(forms.ModelForm):
         fields = ['ip', 'mac', 'alias', 'service_url']
 
 
+def get_client_ip(request):
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[0]
+    else:
+        ip = request.META.get('REMOTE_ADDR')
+    return ip
+
+
 # TODO: move this to /clients
 @api_view(['POST'])
 def client_register(request, mac):
@@ -172,7 +181,7 @@ def client_register(request, mac):
     except Client.DoesNotExist:
         pass
 
-    request.POST['ip'] = request.META['REMOTE_ADDR']
+    request.POST['ip'] = get_client_ip(request)
     form = RegisterClientForm(request.POST)
     if form.is_valid():
         form.save()
