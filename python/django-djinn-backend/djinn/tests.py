@@ -695,6 +695,17 @@ class RegisterClientTest(TestCase):
         client = DjinnClient.objects.first()
         self.assertEquals('127.0.0.1', client.ip)
 
+    def test_register_two_clients_with_distinct_mac_but_same_ip_ok(self):
+        mac1 = 'aa:bb:cc:dd:ee:ff'
+        response = self.client_register(mac1, {'mac': mac1})
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+
+        mac2 = 'aa:bb:cc:dd:ee:00'
+        response = self.client_register(mac2, {'mac': mac2})
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+
+        self.assertEquals(2, DjinnClient.objects.count())
+
 
 class RunCommandTest(TestCase):
     def test_exit_code_0(self):

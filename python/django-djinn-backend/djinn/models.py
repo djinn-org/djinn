@@ -171,11 +171,11 @@ class MACAddressField(models.Field):
 
 
 class Client(models.Model):
-    ip = models.GenericIPAddressField(unique=True)
+    ip = models.GenericIPAddressField()
     mac = MACAddressField(unique=True)
-    alias = models.CharField(max_length=50, unique=True, null=True, blank=True)
+    alias = models.CharField(max_length=50, null=True, blank=True)
     room = models.OneToOneField(Room, null=True)
-    service_url = models.URLField(unique=True)
+    service_url = models.URLField()
 
     def save(self, force_insert=False, force_update=False, **kwargs):
         is_new = self.id is None
