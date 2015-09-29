@@ -175,16 +175,18 @@ def get_client_ip(request):
 # TODO: move this to /clients
 @api_view(['POST'])
 def client_register(request, mac):
-    try:
-        Client.objects.get(mac=mac)
-        return Response({"error": "Client already exists"}, status=status.HTTP_400_BAD_REQUEST)
-    except Client.DoesNotExist:
-        pass
-
     request.POST['ip'] = get_client_ip(request)
-    form = RegisterClientForm(request.POST)
+    try:
+        client = Client.objects.get(mac=mac)
+        form = RegisterClientForm(request.POST, instance=client)
+    except Client.DoesNotExist:
+        client = None
+        form = RegisterClientForm(request.POST)
+
     if form.is_valid():
         form.save()
+        if client:
+            return Response({"message": "Updated client"})
         return Response({"message": "Register client OK"})
 
     return Response({"error": "Invalid parameters", "errors": form.errors}, status=status.HTTP_400_BAD_REQUEST)

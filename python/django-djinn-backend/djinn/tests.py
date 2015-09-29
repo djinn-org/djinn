@@ -649,13 +649,6 @@ class RegisterClientTest(TestCase):
     def extract_msg(self, response):
         return json.loads(response.content.decode())['message']
 
-    def test_register_existing_fails(self):
-        mac = 'aa:bb:cc:dd:ee:ff'
-        DjinnClient.objects.create(mac=mac, ip='x')
-        response = self.client_register(mac)
-        self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
-        self.assertEquals('Client already exists', self.extract_error_msg(response))
-
     def test_register_ok(self):
         mac = 'aa:bb:cc:dd:ee:ff'
         data = {
@@ -707,7 +700,23 @@ class RegisterClientTest(TestCase):
         self.assertEquals('127.0.0.1', client.ip)
 
     def test_update_client(self):
-        pass
+        mac = 'aa:bb:cc:dd:ee:ff'
+        orig_ip = 'x'
+        DjinnClient.objects.create(mac=mac, ip=orig_ip)
+        data = {
+            'mac': mac,
+            'service_url': 'http://localhost:8001/api/v1',
+        }
+        client = DjinnClient.objects.first()
+        self.assertEquals(orig_ip, client.ip)
+
+        response = self.client_register(mac, data)
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+
+        self.assertEquals('Updated client', self.extract_msg(response))
+        self.assertEquals(1, DjinnClient.objects.count())
+        client = DjinnClient.objects.first()
+        self.assertEquals('127.0.0.1', client.ip)
 
 
 class RunCommandTest(TestCase):
