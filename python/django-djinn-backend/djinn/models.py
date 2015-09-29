@@ -174,7 +174,7 @@ class Client(models.Model):
     ip = models.GenericIPAddressField()
     mac = MACAddressField(unique=True)
     alias = models.CharField(max_length=50, null=True, blank=True)
-    room = models.OneToOneField(Room, null=True)
+    room = models.OneToOneField(Room, null=True, blank=True)
     service_url = models.URLField()
 
     def save(self, force_insert=False, force_update=False, **kwargs):
