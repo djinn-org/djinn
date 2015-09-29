@@ -692,6 +692,23 @@ class RegisterClientTest(TestCase):
         self.assertEquals(['Enter a valid URL.'], self.extract_errors(response)['service_url'])
         self.assertEquals(['Enter a valid IPv4 or IPv6 address.'], self.extract_errors(response)['ip'])
 
+    def test_register_use_detected_ip(self):
+        mac = 'aa:bb:cc:dd:ee:ff'
+        data = {
+            'mac': mac,
+            'ip': '1.2.3.4',
+            'service_url': 'http://localhost:8001/api/v1',
+        }
+        response = self.client_register(mac, data)
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEquals('Register client OK', self.extract_msg(response))
+        self.assertEquals(1, DjinnClient.objects.count())
+        client = DjinnClient.objects.first()
+        self.assertEquals('127.0.0.1', client.ip)
+
+    def test_update_client(self):
+        pass
+
 
 class RunCommandTest(TestCase):
     def test_exit_code_0(self):

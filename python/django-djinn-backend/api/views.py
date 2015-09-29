@@ -172,6 +172,7 @@ def client_register(request, mac):
     except Client.DoesNotExist:
         pass
 
+    request.POST['ip'] = request.META['REMOTE_ADDR']
     form = RegisterClientForm(request.POST)
     if form.is_valid():
         form.save()
