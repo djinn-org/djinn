@@ -175,7 +175,9 @@ def get_client_ip(request):
 # TODO: move this to /clients
 @api_view(['POST'])
 def client_register(request, mac):
-    request.POST['ip'] = get_client_ip(request)
+    ip = get_client_ip(request)
+    request.POST['ip'] = ip
+    request.POST['service_url'] = 'http://{}:8001/api/v1'.format(ip)
     try:
         client = Client.objects.get(mac=mac)
         form = RegisterClientForm(request.POST, instance=client)

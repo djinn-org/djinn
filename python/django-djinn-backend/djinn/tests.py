@@ -661,30 +661,6 @@ class RegisterClientTest(TestCase):
         self.assertEquals('Register client OK', self.extract_msg(response))
         self.assertEquals(1, DjinnClient.objects.count())
 
-    def test_register_fail_if_missing_service_url_or_ip(self):
-        mac = 'aa:bb:cc:dd:ee:ff'
-        data = {
-            'mac': mac,
-        }
-        response = self.client_register(mac, data)
-        self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
-        self.assertEquals('Invalid parameters', self.extract_error_msg(response))
-        self.assertEquals(['This field is required.'], self.extract_errors(response)['service_url'])
-        # self.assertEquals(['This field is required.'], self.extract_errors(response)['ip'])
-
-    def test_register_fail_if_invalid_service_url_or_ip(self):
-        mac = 'aa:bb:cc:dd:ee:ff'
-        data = {
-            'mac': mac,
-            'ip': 'x',
-            'service_url': 'x',
-        }
-        response = self.client_register(mac, data)
-        self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
-        self.assertEquals('Invalid parameters', self.extract_error_msg(response))
-        self.assertEquals(['Enter a valid URL.'], self.extract_errors(response)['service_url'])
-        # self.assertEquals(['Enter a valid IPv4 or IPv6 address.'], self.extract_errors(response)['ip'])
-
     def test_register_use_detected_ip(self):
         mac = 'aa:bb:cc:dd:ee:ff'
         data = {
@@ -698,6 +674,7 @@ class RegisterClientTest(TestCase):
         self.assertEquals(1, DjinnClient.objects.count())
         client = DjinnClient.objects.first()
         self.assertEquals('127.0.0.1', client.ip)
+        self.assertEquals('http://127.0.0.1:8001/api/v1', client.service_url)
 
     def test_update_client(self):
         mac = 'aa:bb:cc:dd:ee:ff'
