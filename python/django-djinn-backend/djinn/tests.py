@@ -726,6 +726,21 @@ class RegisterClientTest(TestCase):
         client = DjinnClient.objects.first()
         self.assertEquals('127.0.0.1', client.ip)
 
+    def test_update_ip_on_empty(self):
+        mac = 'aa:bb:cc:dd:ee:ff'
+        orig_ip = 'x'
+        DjinnClient.objects.create(mac=mac, ip=orig_ip)
+        room = create_dummy_room()
+        client = DjinnClient.objects.first()
+        client.room = room
+        client.save()
+        self.assertEquals(orig_ip, client.ip)
+
+        response = self.client_empty(mac)
+        self.assertEqual(status.HTTP_409_CONFLICT, response.status_code)
+        client = DjinnClient.objects.first()
+        self.assertEquals('127.0.0.1', client.ip)
+
     def test_register_two_clients_with_distinct_mac_but_same_ip_ok(self):
         mac1 = 'aa:bb:cc:dd:ee:ff'
         response = self.client_register(mac1, {'mac': mac1})

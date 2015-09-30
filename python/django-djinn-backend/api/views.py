@@ -134,6 +134,8 @@ def client_empty(request, mac):
     except Client.DoesNotExist:
         return Response({"error": "No such client"}, status=status.HTTP_400_BAD_REQUEST)
 
+    update_client_ip(client, request)
+
     room = client.room
     if not room:
         return Response({"error": "No associated room"}, status=status.HTTP_400_BAD_REQUEST)
