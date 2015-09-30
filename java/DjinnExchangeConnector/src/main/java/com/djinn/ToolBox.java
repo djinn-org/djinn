@@ -9,7 +9,7 @@ import org.json.JSONObject;
 
 public class ToolBox {
 
-	public static Date formatDate(String date) {
+	public static Date parseDate(String date) {
 		SimpleDateFormat formatter = new SimpleDateFormat(ConnectionManager.dateFormat);
 		try {
 			return formatter.parse(date);
