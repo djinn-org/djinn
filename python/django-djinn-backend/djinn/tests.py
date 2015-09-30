@@ -37,6 +37,16 @@ def to_date_with_tz(dt):
     return pytz.timezone(tz).localize(dt)
 
 
+def create_dummy_room():
+    return Room.objects.create(
+        building=Building.objects.create(name='main'),
+        floor=12,
+        name='E50',
+        external_name='E50',
+        capacity=8,
+    )
+
+
 class RoomListTestCase(TestCase):
     def setUp(self):
         self.client = Client()
@@ -692,6 +702,27 @@ class RegisterClientTest(TestCase):
 
         self.assertEquals('Updated client', self.extract_msg(response))
         self.assertEquals(1, DjinnClient.objects.count())
+        client = DjinnClient.objects.first()
+        self.assertEquals('127.0.0.1', client.ip)
+
+    def client_presence(self, mac):
+        return self.client.put('/api/v1/clients/{}/presence'.format(mac))
+
+    def client_empty(self, mac):
+        return self.client.put('/api/v1/clients/{}/empty'.format(mac))
+
+    def test_update_ip_on_presence(self):
+        mac = 'aa:bb:cc:dd:ee:ff'
+        orig_ip = 'x'
+        DjinnClient.objects.create(mac=mac, ip=orig_ip)
+        room = create_dummy_room()
+        client = DjinnClient.objects.first()
+        client.room = room
+        client.save()
+        self.assertEquals(orig_ip, client.ip)
+
+        response = self.client_presence(mac)
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
         client = DjinnClient.objects.first()
         self.assertEquals('127.0.0.1', client.ip)
 

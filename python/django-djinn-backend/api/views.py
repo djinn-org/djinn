@@ -86,12 +86,22 @@ def ext_cancel_reservation(start, end, room):
     exchange.cancel_reservation(start, end, room)
 
 
+def update_client_ip(client, request):
+    orig_ip = client.ip
+    ip = get_client_ip(request)
+    if orig_ip != ip:
+        client.ip = ip
+        client.save()
+
+
 @api_view(['PUT'])
 def client_presence(request, mac):
     try:
         client = Client.objects.get(mac=mac)
     except Client.DoesNotExist:
         return Response({"error": "No such client"}, status=status.HTTP_400_BAD_REQUEST)
+
+    update_client_ip(client, request)
 
     room = client.room
     if not room:
