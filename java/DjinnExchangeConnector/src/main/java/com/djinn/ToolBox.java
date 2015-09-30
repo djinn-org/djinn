@@ -18,11 +18,14 @@ public class ToolBox {
 		}
 	}
 
-	public static JSONObject appointmentToJSON(Appointment appointment) throws Exception {
+	private static String formatDate(Date date) {
+		return new SimpleDateFormat("yyyy-MM-dd HH:mm").format(date);
+	}
 
+	public static JSONObject appointmentToJSON(Appointment appointment) throws Exception {
 		return new JSONObject()
-				.put("start", appointment.getStart())
-				.put("end", appointment.getEnd());
+				.put("start", formatDate(appointment.getStart()))
+				.put("end", formatDate(appointment.getEnd()));
 	}
 
 }
