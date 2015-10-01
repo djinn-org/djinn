@@ -1,13 +1,13 @@
 essential
 ---------
 
-implement comm with exchange
+! cleaning
 + create package, move and rename ext commands
-! make it easy to work with or without exchange
+x make it easy to work with or without exchange
     + reserve and cancel are void methods (at least for now)
     ! sync gets a list of bookings
     + if any of these are broken, simply nothing happens; but: tests are slow
-    ! make tests fast
+    x make tests fast
 
 + /clients/:mac/presence
     - ext: sync related room
