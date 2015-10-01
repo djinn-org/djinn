@@ -70,10 +70,40 @@ def find_rooms(request):
     # return Response({"message": "hello", "data": request.data, "debug": debug})
 
 
+def merge_reservations(room, reservations):
+    to_add = []
+
+    for reservation in reservations:
+        start = reservation['start']
+        end = reservation['end']
+
+        # delete any that starts before start and ends after start -> log it
+        for to_delete in room.reservation_set.filter(start__lt=start, end__gt=start):
+            print(to_delete)  # TODO
+
+        # delete any that starts before end and ends after end -> log it
+        for to_delete in room.reservation_set.filter(start__lt=end, end__gt=end):
+            print(to_delete)  # TODO
+
+        # delete any that starts after start and ends before end -> log it
+        for to_delete in room.reservation_set.filter(start__gt=start, end__lt=end):
+            print(to_delete)  # TODO
+
+        if not room.reservation_set.filter(start=start, end=end):
+            to_add.append(reservation)
+
+    for reservation in to_add:
+        # after all reservation processed, add all that were set aside -> log it
+        start = reservation['start']
+        end = reservation['end']
+        reservation = Reservation.objects.create(room=room, start=start, end=end)
+        ReservationLog.create_from_reservation(reservation, ReservationLog.TYPE_CREATE, ReservationLog.TRIGGER_EXT)
+
+
 def ext_sync_room(start, end, room):
-    room_reservations = exchange.list_reservations(start, end, room)
-    if room_reservations:
-        pass  # TODO: sync!
+    reservations = exchange.list_reservations(start, end, room)
+    if reservations and room.external_name in reservations:
+        merge_reservations(room, reservations[room.external_name])
 
     return room
 

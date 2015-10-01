@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 import json
 import unittest
+from api.views import merge_reservations
 
 from django_djinn_backend.exchange import run_cmd, list_reservations, parse_reservations, parse_date
 
@@ -801,3 +802,63 @@ class RunCommandTest(TestCase):
         }
         result = parse_reservations(jsonstr)
         self.assertEquals(expected, result)
+
+
+def create_reservations(*pairs):
+    return [{
+        'start': pair[0],
+        'end': pair[1],
+    } for pair in pairs]
+
+
+class MergeReservationsTest(TestCase):
+    def setUp(self):
+        self.room = create_dummy_room()
+        self.example1_find_better_name = [
+            {
+                'start': datetime(2015, 9, 25, 18, 30),
+                'end': datetime(2015, 9, 25, 19, 0),
+            },
+            {
+                'start': datetime(2015, 9, 25, 18, 30),
+                'end': datetime(2015, 9, 25, 18, 59),
+            },
+        ]
+
+    def simply_add_incoming(self):
+        start = datetime(2015, 9, 25, 18, 30)
+        end = datetime(2015, 9, 25, 19, 0)
+        reservations = create_reservations((start, end))
+        merge_reservations(self.room, reservations)
+        self.assertEquals(1, self.room.reservation_set.count())
+        self.assertEquals(1, self.room.reservationlog_set.count())
+
+    def simply_add_nothing(self):
+        pass
+
+    def simply_add_incoming_overlaps(self):
+        pass
+
+    def keep_exact_match(self):
+        pass
+
+    def keep_reservation_before(self):
+        pass
+
+    def keep_reservation_after(self):
+        pass
+
+    def remove_overlapping_at_start(self):
+        pass
+
+    def remove_overlapping_at_end(self):
+        pass
+
+    def remove_subset(self):
+        pass
+
+    def remove_superset(self):
+        pass
+
+    def remove_many(self):
+        pass
