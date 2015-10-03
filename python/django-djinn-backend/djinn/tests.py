@@ -876,7 +876,15 @@ class MergeReservationsTest(TestCase):
         self.assertEquals(1, self.room.reservationlog_set.count())
 
     def remove_subset(self):
-        pass
+        start = datetime(2015, 9, 25, 18, 30)
+        end = datetime(2015, 9, 25, 19, 0)
+        after_start = start + timedelta(minutes=5)
+        before_end = end - timedelta(minutes=5)
+        Reservation.objects.create(room=self.room, start=after_start, end=before_end)
+        reservations = create_reservations((start, end))
+        merge_reservations(self.room, reservations)
+        self.assertEquals(1, self.room.reservation_set.count())
+        self.assertEquals(1, self.room.reservationlog_set.count())
 
     def remove_superset(self):
         pass
