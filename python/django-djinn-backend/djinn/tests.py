@@ -834,7 +834,13 @@ class MergeReservationsTest(TestCase):
         self.assertEquals(1, self.room.reservationlog_set.count())
 
     def simply_add_nothing(self):
-        pass
+        start = datetime(2015, 9, 25, 18, 30)
+        end = datetime(2015, 9, 25, 19, 0)
+        Reservation.objects.create(room=self.room, start=start, end=end)
+        reservations = []
+        merge_reservations(self.room, reservations)
+        self.assertEquals(1, self.room.reservation_set.count())
+        self.assertEquals(0, self.room.reservationlog_set.count())
 
     def add_incoming_overlaps(self):
         pass
