@@ -857,8 +857,9 @@ class MergeReservationsTest(TestCase):
     def remove_overlapping_at_start(self):
         start = datetime(2015, 9, 25, 18, 30)
         end = datetime(2015, 9, 25, 19, 0)
-        shortly_before_end = end - timedelta(minutes=1)
-        Reservation.objects.create(room=self.room, start=start, end=shortly_before_end)
+        before_start = start - timedelta(minutes=5)
+        after_start = start + timedelta(minutes=5)
+        Reservation.objects.create(room=self.room, start=before_start, end=after_start)
         reservations = create_reservations((start, end))
         merge_reservations(self.room, reservations)
         self.assertEquals(1, self.room.reservation_set.count())
