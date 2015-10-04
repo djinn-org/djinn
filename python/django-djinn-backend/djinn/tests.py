@@ -858,6 +858,19 @@ class MergeReservationsTest(TestCase):
         self.assertEquals(ReservationLog.TYPE_CREATE, log.log_type)
         self.assertEquals(ReservationLog.TRIGGER_EXT, log.log_trigger)
 
+    def remerge(self):
+        start = datetime(2015, 9, 25, 18, 30)
+        end = datetime(2015, 9, 25, 19, 0)
+        reservations = create_reservations((start, end), (start, end))
+        merge_reservations(self.room, reservations)
+        merge_reservations(self.room, reservations)
+        self.assertEquals(2, self.room.reservation_set.count())
+        self.assertEquals(2, self.room.reservationlog_set.count())
+
+        log = self.room.reservationlog_set.first()
+        self.assertEquals(ReservationLog.TYPE_CREATE, log.log_type)
+        self.assertEquals(ReservationLog.TRIGGER_EXT, log.log_trigger)
+
     def keep_exact_match(self):
         start = datetime(2015, 9, 25, 18, 30)
         end = datetime(2015, 9, 25, 19, 0)
