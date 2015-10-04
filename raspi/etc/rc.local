@@ -18,7 +18,7 @@ msg() {
 (
     msg Hello Djinn
 
-    cd ~/local/djinn/raspi
+    cd ~pi/local/djinn/raspi
 
     ./scripts/reset-leds.sh
 
