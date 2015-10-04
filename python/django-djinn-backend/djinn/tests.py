@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 import json
 import unittest
+
 from api.views import merge_reservations
 
 from django_djinn_backend.exchange import run_cmd, list_reservations, parse_reservations, parse_date
@@ -805,10 +806,12 @@ class RunCommandTest(TestCase):
 
 
 def create_reservations(*pairs):
-    return [{
-        'start': pair[0],
-        'end': pair[1],
-    } for pair in pairs]
+    return [
+        {
+            'start': pair[0],
+            'end': pair[1],
+        } for pair in pairs
+    ]
 
 
 class MergeReservationsTest(TestCase):
@@ -917,11 +920,18 @@ class MergeReservationsTest(TestCase):
         reservations = create_reservations((start, end))
         merge_reservations(self.room, reservations)
         self.assertEquals(1, self.room.reservation_set.count())
-        self.assertEquals(1, self.room.reservationlog_set.count())
+        self.assertEquals(2, self.room.reservationlog_set.count())
 
-        log = self.room.reservationlog_set.first()
-        self.assertEquals(ReservationLog.TYPE_CREATE, log.log_type)
-        self.assertEquals(ReservationLog.TRIGGER_EXT, log.log_trigger)
+        self.assertEquals(
+            1, ReservationLog.objects.filter(
+                log_type=ReservationLog.TYPE_CANCEL,
+                log_trigger=ReservationLog.TRIGGER_EXT).count()
+        )
+        self.assertEquals(
+            1, ReservationLog.objects.filter(
+                log_type=ReservationLog.TYPE_CREATE,
+                log_trigger=ReservationLog.TRIGGER_EXT).count()
+        )
 
     def test_remove_overlapping_at_end(self):
         start = datetime(2015, 9, 25, 18, 30)
@@ -932,11 +942,18 @@ class MergeReservationsTest(TestCase):
         reservations = create_reservations((start, end))
         merge_reservations(self.room, reservations)
         self.assertEquals(1, self.room.reservation_set.count())
-        self.assertEquals(1, self.room.reservationlog_set.count())
+        self.assertEquals(2, self.room.reservationlog_set.count())
 
-        log = self.room.reservationlog_set.first()
-        self.assertEquals(ReservationLog.TYPE_CREATE, log.log_type)
-        self.assertEquals(ReservationLog.TRIGGER_EXT, log.log_trigger)
+        self.assertEquals(
+            1, ReservationLog.objects.filter(
+                log_type=ReservationLog.TYPE_CANCEL,
+                log_trigger=ReservationLog.TRIGGER_EXT).count()
+        )
+        self.assertEquals(
+            1, ReservationLog.objects.filter(
+                log_type=ReservationLog.TYPE_CREATE,
+                log_trigger=ReservationLog.TRIGGER_EXT).count()
+        )
 
     def test_remove_subset(self):
         start = datetime(2015, 9, 25, 18, 30)
@@ -947,11 +964,18 @@ class MergeReservationsTest(TestCase):
         reservations = create_reservations((start, end))
         merge_reservations(self.room, reservations)
         self.assertEquals(1, self.room.reservation_set.count())
-        self.assertEquals(1, self.room.reservationlog_set.count())
+        self.assertEquals(2, self.room.reservationlog_set.count())
 
-        log = self.room.reservationlog_set.first()
-        self.assertEquals(ReservationLog.TYPE_CREATE, log.log_type)
-        self.assertEquals(ReservationLog.TRIGGER_EXT, log.log_trigger)
+        self.assertEquals(
+            1, ReservationLog.objects.filter(
+                log_type=ReservationLog.TYPE_CANCEL,
+                log_trigger=ReservationLog.TRIGGER_EXT).count()
+        )
+        self.assertEquals(
+            1, ReservationLog.objects.filter(
+                log_type=ReservationLog.TYPE_CREATE,
+                log_trigger=ReservationLog.TRIGGER_EXT).count()
+        )
 
     def test_remove_superset(self):
         start = datetime(2015, 9, 25, 18, 30)
@@ -962,11 +986,18 @@ class MergeReservationsTest(TestCase):
         reservations = create_reservations((start, end))
         merge_reservations(self.room, reservations)
         self.assertEquals(1, self.room.reservation_set.count())
-        self.assertEquals(1, self.room.reservationlog_set.count())
+        self.assertEquals(2, self.room.reservationlog_set.count())
 
-        log = self.room.reservationlog_set.first()
-        self.assertEquals(ReservationLog.TYPE_CREATE, log.log_type)
-        self.assertEquals(ReservationLog.TRIGGER_EXT, log.log_trigger)
+        self.assertEquals(
+            1, ReservationLog.objects.filter(
+                log_type=ReservationLog.TYPE_CANCEL,
+                log_trigger=ReservationLog.TRIGGER_EXT).count()
+        )
+        self.assertEquals(
+            1, ReservationLog.objects.filter(
+                log_type=ReservationLog.TYPE_CREATE,
+                log_trigger=ReservationLog.TRIGGER_EXT).count()
+        )
 
     def test_remove_many(self):
         start = datetime(2015, 9, 25, 18, 30)
@@ -980,8 +1011,15 @@ class MergeReservationsTest(TestCase):
         reservations = create_reservations((start, end))
         merge_reservations(self.room, reservations)
         self.assertEquals(1, self.room.reservation_set.count())
-        self.assertEquals(1, self.room.reservationlog_set.count())
+        self.assertEquals(4, self.room.reservationlog_set.count())
 
-        log = self.room.reservationlog_set.first()
-        self.assertEquals(ReservationLog.TYPE_CREATE, log.log_type)
-        self.assertEquals(ReservationLog.TRIGGER_EXT, log.log_trigger)
+        self.assertEquals(
+            3, ReservationLog.objects.filter(
+                log_type=ReservationLog.TYPE_CANCEL,
+                log_trigger=ReservationLog.TRIGGER_EXT).count()
+        )
+        self.assertEquals(
+            1, ReservationLog.objects.filter(
+                log_type=ReservationLog.TYPE_CREATE,
+                log_trigger=ReservationLog.TRIGGER_EXT).count()
+        )

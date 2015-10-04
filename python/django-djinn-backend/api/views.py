@@ -79,18 +79,22 @@ def merge_reservations(room, reservations):
 
         # delete any that starts before start and ends after start -> log it
         for to_delete in room.reservation_set.filter(start__lt=start, end__gt=start):
+            ReservationLog.create_from_reservation(to_delete, ReservationLog.TYPE_CANCEL, ReservationLog.TRIGGER_EXT)
             to_delete.delete()
 
         # delete any that starts before end and ends after end -> log it
         for to_delete in room.reservation_set.filter(start__lt=end, end__gt=end):
+            ReservationLog.create_from_reservation(to_delete, ReservationLog.TYPE_CANCEL, ReservationLog.TRIGGER_EXT)
             to_delete.delete()
 
         # delete any that starts after start and ends before end -> log it
         for to_delete in room.reservation_set.filter(start__gt=start, end__lte=end):
+            ReservationLog.create_from_reservation(to_delete, ReservationLog.TYPE_CANCEL, ReservationLog.TRIGGER_EXT)
             to_delete.delete()
 
         # delete any that starts after start and ends before end -> log it
         for to_delete in room.reservation_set.filter(start__gte=start, end__lt=end):
+            ReservationLog.create_from_reservation(to_delete, ReservationLog.TYPE_CANCEL, ReservationLog.TRIGGER_EXT)
             to_delete.delete()
 
         if not room.reservation_set.filter(start=start, end=end):

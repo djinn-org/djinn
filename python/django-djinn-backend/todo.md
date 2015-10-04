@@ -1,14 +1,12 @@
 essential
 ---------
 
-! merge reservations
-    ! implement logging for merge-delete
-    ! test cases are incorrect, missing the merge-delete-logs
-
 ! periodic job to merge reservations
 ! periodic job to cancel reservations
 
 ! cleaning
+    - replace datetime in tests with timezone
+    
 + create package, move and rename ext commands
 x make it easy to work with or without exchange
     + reserve and cancel are void methods (at least for now)
