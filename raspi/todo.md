@@ -1,12 +1,6 @@
-reset lights on boot
+test logging in normal startup
 
-script to manually set network if missing
-- create preset network scripts
-- logging
-
-script to connect to specified djinn server, with logging
-
-add rc.local in repo, with anonymized config params
+test logging in networkless startup
 
 get updated image
 

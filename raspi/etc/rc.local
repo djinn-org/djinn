@@ -1,0 +1,26 @@
+#!/bin/sh
+
+IP=$1
+
+cd $(dirname "$0")
+
+. ./config.sh
+
+msg() {
+    echo $(date) $*
+}
+
+(
+    msg Hello Djinn
+
+    cd ~/local/djinn/raspi
+
+    ./scripts/reset-leds.sh
+
+    ./scripts/configure-network.sh $IFACE $_IP $SUBNET $GW $NAMESERVER
+
+    sudo -u pi -c ./scripts/register-server.sh $SERVER_URL $RETRY_COUNT
+
+    msg Djinn startup done.
+    echo
+) 2>&1 | tee -a $LOGFILE
