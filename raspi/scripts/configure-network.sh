@@ -6,14 +6,16 @@ subnet=$3
 gw=$4
 nameserver=$5
 
-# if we have ip, skip
-test "$ip" && exit 0
-
-cd $(dirname "$0")
-
 msg() {
     echo '[*]' $*
 }
+
+if test "$ip"; then
+    msg Received IP: $ip
+    exit 0
+fi
+
+cd $(dirname "$0")
 
 msg No IP received, will try to pick from address list
 
