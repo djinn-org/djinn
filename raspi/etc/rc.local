@@ -22,7 +22,7 @@ msg() {
 
     sudo -u pi ./scripts/reset-leds.sh
 
-    ./scripts/configure-network.sh $IFACE $_IP $SUBNET $GW $NAMESERVER
+    ./scripts/configure-network.sh $IFACE $IP $SUBNET $GW $NAMESERVER
 
     sudo -u pi ./scripts/register-server.sh $SERVER_URL $RETRY_COUNT
 
