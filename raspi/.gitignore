@@ -1,5 +1,10 @@
 # PyCharm
 .idea/
 
+# local config
+etc/addresses.txt
+etc/config.sh
+etc/config.sh.*
+
 # misc
 tmp/
