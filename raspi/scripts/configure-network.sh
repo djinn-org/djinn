@@ -27,7 +27,7 @@ addresses=../etc/addresses.txt
 msg Could not detect IP, trying to find one in address list
 
 mac=$(./mac.sh $iface)
-ip=$(grep "$mac" "$addresses" | awk '{print $2}')
+ip=$(grep "$mac" "$addresses" | awk 'NR == 1 {print $2}')
 
 if ! test "$ip"; then
     msg No IP in address list, will pick one at random

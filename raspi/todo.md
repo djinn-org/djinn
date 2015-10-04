@@ -1,7 +1,3 @@
-rc script does not retry because of -e flag probably
-
-why does configuring network lists many addresses
-
 tests:
 - can pick ip from list
 - can pick a random ip
