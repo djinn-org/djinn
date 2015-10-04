@@ -1,6 +1,14 @@
 essential
 ---------
 
+! merge reservations
+    ! implement logging for merge-delete
+    ! test cases are incorrect, missing the merge-delete-logs
+    ! finish all test cases
+
+! periodic job to merge reservations
+! periodic job to cancel reservations
+
 ! cleaning
 + create package, move and rename ext commands
 x make it easy to work with or without exchange
