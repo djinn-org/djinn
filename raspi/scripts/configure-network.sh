@@ -1,23 +1,21 @@
 #!/bin/bash
 
 iface=$1
-ip=$2
-subnet=$3
-gw=$4
-nameserver=$5
+subnet=$2
+gw=$3
+nameserver=$4
 
 msg() {
     echo '[*]' $*
 }
 
-if test "$ip"; then
-    msg Received IP: $ip
-    exit 0
-fi
-
 cd $(dirname "$0")
 
-msg No IP received, will try to pick from address list
+ip=$(./ip.sh)
+if test "$ip"; then
+    msg Detected IP: $ip
+    exit 0
+fi
 
 addresses=../etc/addresses.txt
 # in the format:
@@ -25,6 +23,8 @@ addresses=../etc/addresses.txt
 #b8:27:eb:34:f8:f2 192.168.1.11
 #b8:27:eb:ab:f9:98 192.168.1.12
 #...
+
+msg Could not detect IP, trying to find one in address list
 
 mac=$(./mac.sh $iface)
 ip=$(grep "$mac" "$addresses" | awk '{print $2}')
