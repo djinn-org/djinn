@@ -94,9 +94,10 @@ class Command(BaseCommand):
             response = post(url, params)
         except MaxRetryError:
             self.stderr.write('Unreachable server URL: {}'.format(url))
-            return
+            return False
 
         self.stdout.write(response)
+        return True
 
     def send_presence(self):
         url = '{}/clients/{}/presence'.format(Config.get_server_url(), Config.get_mac())
@@ -140,7 +141,9 @@ class Command(BaseCommand):
             self.print_info()
         else:
             if options['register']:
-                self.register()
+                if not self.register():
+                    import sys
+                    sys.exit(1)
             elif options['send_presence']:
                 self.send_presence()
             elif options['send_empty']:
