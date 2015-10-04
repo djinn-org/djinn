@@ -29,7 +29,9 @@ msg Could not detect IP, trying to find one in address list
 mac=$(./mac.sh $iface)
 ip=$(grep "$mac" "$addresses" | awk 'NR == 1 {print $2}')
 
-if ! test "$ip"; then
+if test "$ip"; then
+    msg Found IP in address list: $ip
+else
     msg No IP in address list, will pick one at random
     network=$(head -n1 $addresses | awk '{sub("\.[^.]*$", "", $2); print $2}')
     highest_ip=$(awk -F. '{ if ($NF > max) max = $NF } END { print max }' $addresses)
