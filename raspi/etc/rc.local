@@ -1,10 +1,18 @@
 #!/bin/sh
 
+# To enable this script, add the following line in /etc/rc.local:
+# sudo -u pi -c ~pi/local/djinn/raspi/etc/rc.local $_IP
+
 IP=$1
 
 cd $(dirname "$0")
 
 . ./config.sh
+
+LOGDIR=~/logs
+mkdir -p $LOGDIR
+
+LOGFILE=$LOGDIR/djinn.log
 
 msg() {
     echo $(date) $*
