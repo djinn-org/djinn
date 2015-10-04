@@ -20,7 +20,7 @@ msg() {
 
     cd ~pi/local/djinn/raspi
 
-    ./scripts/reset-leds.sh
+    sudo -u pi ./scripts/reset-leds.sh
 
     ./scripts/configure-network.sh $IFACE $_IP $SUBNET $GW $NAMESERVER
 
