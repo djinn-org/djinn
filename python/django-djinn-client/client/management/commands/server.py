@@ -60,15 +60,18 @@ class Command(BaseCommand):
         self.stdout.write('MAC: {}'.format(Config.get_mac()))
         self.stdout.write('Service URL: {}'.format(Config.get_service_url()))
 
-    @staticmethod
-    def reset(iface):
+    def reset(self, iface):
         info = Popen(["/sbin/ifconfig", iface], stdout=PIPE).communicate()[0].decode()
         mac = re.findall(r'(ether|hwaddr) ([^ ]*)', info, re.I)[0][1]
-        ip = re.findall(r'inet (addr:)?([^ ]*)', info)[0][1]
-        service_url = 'http://{}:{}/api/v1'.format(ip, 8001)
-        Config.set_mac(mac)
-        Config.set_ip(ip)
-        Config.set_service_url(service_url)
+        ip_match = re.findall(r'inet (addr:)?([^ ]*)', info)
+        if ip_match:
+            ip = ip_match[0][1]
+            service_url = 'http://{}:{}/api/v1'.format(ip, 8001)
+            Config.set_mac(mac)
+            Config.set_ip(ip)
+            Config.set_service_url(service_url)
+        else:
+            self.stderr.write('Could not detect IP address (network down?)')
 
     def register(self):
         mac = Config.get_mac()
