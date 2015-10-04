@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # To enable this script, add the following line in /etc/rc.local:
-# sudo -u pi -c ~pi/local/djinn/raspi/etc/rc.local $_IP
+# ~pi/local/djinn/raspi/etc/rc.local $_IP
 
 IP=$1
 
@@ -9,10 +9,7 @@ cd $(dirname "$0")
 
 . ./config.sh
 
-LOGDIR=~/logs
-mkdir -p $LOGDIR
-
-LOGFILE=$LOGDIR/djinn.log
+LOGFILE=/var/log/djinn.log
 
 msg() {
     echo $(date) $*
@@ -27,7 +24,7 @@ msg() {
 
     ./scripts/configure-network.sh $IFACE $_IP $SUBNET $GW $NAMESERVER
 
-    sudo -u pi -c ./scripts/register-server.sh $SERVER_URL $RETRY_COUNT
+    sudo -u pi ./scripts/register-server.sh $SERVER_URL $RETRY_COUNT
 
     msg Djinn startup done.
     echo
