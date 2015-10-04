@@ -825,7 +825,7 @@ class MergeReservationsTest(TestCase):
             },
         ]
 
-    def simply_add_incoming(self):
+    def test_simply_add_incoming(self):
         start = datetime(2015, 9, 25, 18, 30)
         end = datetime(2015, 9, 25, 19, 0)
         reservations = create_reservations((start, end))
@@ -837,7 +837,7 @@ class MergeReservationsTest(TestCase):
         self.assertEquals(ReservationLog.TYPE_CREATE, log.log_type)
         self.assertEquals(ReservationLog.TRIGGER_EXT, log.log_trigger)
 
-    def simply_add_nothing(self):
+    def test_simply_add_nothing(self):
         start = datetime(2015, 9, 25, 18, 30)
         end = datetime(2015, 9, 25, 19, 0)
         Reservation.objects.create(room=self.room, start=start, end=end)
@@ -846,7 +846,7 @@ class MergeReservationsTest(TestCase):
         self.assertEquals(1, self.room.reservation_set.count())
         self.assertEquals(0, self.room.reservationlog_set.count())
 
-    def add_incoming_overlaps(self):
+    def test_add_incoming_overlaps(self):
         start = datetime(2015, 9, 25, 18, 30)
         end = datetime(2015, 9, 25, 19, 0)
         reservations = create_reservations((start, end), (start, end))
@@ -858,7 +858,7 @@ class MergeReservationsTest(TestCase):
         self.assertEquals(ReservationLog.TYPE_CREATE, log.log_type)
         self.assertEquals(ReservationLog.TRIGGER_EXT, log.log_trigger)
 
-    def remerge(self):
+    def test_remerge(self):
         start = datetime(2015, 9, 25, 18, 30)
         end = datetime(2015, 9, 25, 19, 0)
         reservations = create_reservations((start, end), (start, end))
@@ -871,7 +871,7 @@ class MergeReservationsTest(TestCase):
         self.assertEquals(ReservationLog.TYPE_CREATE, log.log_type)
         self.assertEquals(ReservationLog.TRIGGER_EXT, log.log_trigger)
 
-    def keep_exact_match(self):
+    def test_keep_exact_match(self):
         start = datetime(2015, 9, 25, 18, 30)
         end = datetime(2015, 9, 25, 19, 0)
         Reservation.objects.create(room=self.room, start=start, end=end)
@@ -880,7 +880,7 @@ class MergeReservationsTest(TestCase):
         self.assertEquals(1, self.room.reservation_set.count())
         self.assertEquals(0, self.room.reservationlog_set.count())
 
-    def keep_reservation_before(self):
+    def test_keep_reservation_before(self):
         start = datetime(2015, 9, 25, 18, 30)
         end = datetime(2015, 9, 25, 19, 0)
         before_start = start - timedelta(minutes=60)
@@ -894,7 +894,7 @@ class MergeReservationsTest(TestCase):
         self.assertEquals(ReservationLog.TYPE_CREATE, log.log_type)
         self.assertEquals(ReservationLog.TRIGGER_EXT, log.log_trigger)
 
-    def keep_reservation_after(self):
+    def test_keep_reservation_after(self):
         start = datetime(2015, 9, 25, 18, 30)
         end = datetime(2015, 9, 25, 19, 0)
         after_end = end + timedelta(minutes=60)
@@ -908,7 +908,7 @@ class MergeReservationsTest(TestCase):
         self.assertEquals(ReservationLog.TYPE_CREATE, log.log_type)
         self.assertEquals(ReservationLog.TRIGGER_EXT, log.log_trigger)
 
-    def remove_overlapping_at_start(self):
+    def test_remove_overlapping_at_start(self):
         start = datetime(2015, 9, 25, 18, 30)
         end = datetime(2015, 9, 25, 19, 0)
         before_start = start - timedelta(minutes=5)
@@ -923,7 +923,7 @@ class MergeReservationsTest(TestCase):
         self.assertEquals(ReservationLog.TYPE_CREATE, log.log_type)
         self.assertEquals(ReservationLog.TRIGGER_EXT, log.log_trigger)
 
-    def remove_overlapping_at_end(self):
+    def test_remove_overlapping_at_end(self):
         start = datetime(2015, 9, 25, 18, 30)
         end = datetime(2015, 9, 25, 19, 0)
         before_end = end - timedelta(minutes=5)
@@ -938,7 +938,7 @@ class MergeReservationsTest(TestCase):
         self.assertEquals(ReservationLog.TYPE_CREATE, log.log_type)
         self.assertEquals(ReservationLog.TRIGGER_EXT, log.log_trigger)
 
-    def remove_subset(self):
+    def test_remove_subset(self):
         start = datetime(2015, 9, 25, 18, 30)
         end = datetime(2015, 9, 25, 19, 0)
         after_start = start + timedelta(minutes=5)
@@ -953,7 +953,7 @@ class MergeReservationsTest(TestCase):
         self.assertEquals(ReservationLog.TYPE_CREATE, log.log_type)
         self.assertEquals(ReservationLog.TRIGGER_EXT, log.log_trigger)
 
-    def remove_superset(self):
+    def test_remove_superset(self):
         start = datetime(2015, 9, 25, 18, 30)
         end = datetime(2015, 9, 25, 19, 0)
         before_start = start - timedelta(minutes=5)
@@ -968,7 +968,7 @@ class MergeReservationsTest(TestCase):
         self.assertEquals(ReservationLog.TYPE_CREATE, log.log_type)
         self.assertEquals(ReservationLog.TRIGGER_EXT, log.log_trigger)
 
-    def remove_many(self):
+    def test_remove_many(self):
         start = datetime(2015, 9, 25, 18, 30)
         end = datetime(2015, 9, 25, 19, 0)
         before_start = start - timedelta(minutes=5)
