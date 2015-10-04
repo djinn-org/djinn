@@ -131,6 +131,9 @@ class ReservationLog(models.Model):
         TRIGGER_DJINN, TRIGGER_APP, TRIGGER_WEB, TRIGGER_EXT))
     log_time = models.DateTimeField(auto_now=True)
 
+    def __str__(self):
+        return ', '.join([str(x) for x in [self.user, self.room, self.start, self.minutes, self.log_type, self.log_trigger]])
+
     class Meta:
         ordering = ('log_time',)
 
