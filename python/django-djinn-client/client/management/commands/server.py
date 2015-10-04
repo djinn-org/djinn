@@ -5,6 +5,7 @@ from client.models import Config
 import urllib3
 import certifi
 import re
+from urllib3.exceptions import MaxRetryError
 
 
 def create_http():
@@ -89,7 +90,12 @@ class Command(BaseCommand):
             'mac': mac,
             'service_url': Config.get_service_url(),
         }
-        response = post(url, params)
+        try:
+            response = post(url, params)
+        except MaxRetryError:
+            self.stderr.write('Unreachable server URL: {}'.format(url))
+            return
+
         self.stdout.write(response)
 
     def send_presence(self):
