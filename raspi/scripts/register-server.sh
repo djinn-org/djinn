@@ -10,7 +10,7 @@ msg() {
     echo '[*]' $*
 }
 
-for ((i = 0; i < $retry_count; ++i)); do
+for ((i = 1; i <= $retry_count; ++i)); do
     msg connecting to server, attempt '#'$i
     $manage server --register && exit 0
 done
