@@ -1,5 +1,3 @@
-test logging in networkless startup
-
 copy prod config and make it the default
 
 get updated image
