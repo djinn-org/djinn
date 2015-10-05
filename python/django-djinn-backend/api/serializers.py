@@ -17,15 +17,10 @@ class ReservationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Reservation
 
-    def save(self, **kwargs):
-        try:
-            return super().save(**kwargs)
-        except IllegalReservation:
-            raise serializers.ValidationError({'non_field_errors': ['Illegal Reservation']})
-
     def validate(self, attrs):
         data = super().validate(attrs)
 
+        room = data.get('room')
         start = data.get('start')
         end = data.get('end')
         minutes = data.get('minutes')
@@ -43,6 +38,17 @@ class ReservationSerializer(serializers.ModelSerializer):
             data['end'] = end
         else:
             raise serializers.ValidationError('Either field is required: minutes, end')
+
+        if Reservation.objects.filter(room=room, start__lt=start, end__gt=start).exists():
+            raise serializers.ValidationError('Reservation overlaps with existing')
+        if Reservation.objects.filter(room=room, start__lt=end, end__gt=end).exists():
+            raise serializers.ValidationError('Reservation overlaps with existing')
+        if Reservation.objects.filter(room=room, start__gt=start, end__lte=end).exists():
+            raise serializers.ValidationError('Reservation overlaps with existing')
+        if Reservation.objects.filter(room=room, start__gte=start, end__lt=end).exists():
+            raise serializers.ValidationError('Reservation overlaps with existing')
+        if Reservation.objects.filter(room=room, start=start, end=end).exists():
+            raise serializers.ValidationError('Reservation overlaps with existing')
 
         return data
 

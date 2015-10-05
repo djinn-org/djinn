@@ -92,14 +92,16 @@ class Reservation(models.Model):
             self.end = self.start + timedelta(minutes=self.minutes)
         if not self.minutes and self.end:
             self.minutes = (self.end - self.start).seconds // 60
-        if Reservation.objects.filter(room=self.room, end__gt=self.start, end__lt=self.end).exists():
+        '''
+        if Reservation.objects.filter(room=self.room, start__lt=self.start, end__gt=self.start).exists():
             raise IllegalReservation()
-        if Reservation.objects.filter(room=self.room, start__gt=self.start, start__lt=self.end).exists():
+        if Reservation.objects.filter(room=self.room, start__lt=self.end, end__gt=self.end).exists():
             raise IllegalReservation()
-        if Reservation.objects.filter(room=self.room, start__gt=self.start, end__lt=self.end).exists():
+        if Reservation.objects.filter(room=self.room, start__gt=self.start, end__lte=self.end).exists():
             raise IllegalReservation()
-        if Reservation.objects.filter(room=self.room, start__lt=self.start, end__gt=self.end).exists():
+        if Reservation.objects.filter(room=self.room, start__gte=self.start, end__lt=self.end).exists():
             raise IllegalReservation()
+        '''
         super().save(*args, **kwargs)
 
     def __str__(self):
