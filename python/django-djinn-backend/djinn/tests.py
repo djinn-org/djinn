@@ -596,7 +596,8 @@ class ClientPresenceTest(TestCase):
         room = Room.objects.create(building=building, floor=1, capacity=1)
         mac = 'aa:bb:cc:dd:ee:ff'
         client = DjinnClient.objects.create(mac=mac, ip='x', room=room)
-        Reservation.objects.create(room=room, start=timezone.now(), minutes=30)
+        start = timezone.now() - settings.WAIT_DELTA
+        Reservation.objects.create(room=room, start=start, minutes=30)
 
         self.assertEquals(0, ReservationLog.objects.count())
         self.assertEquals(0, client.clientupdate.failed_updates)
@@ -608,6 +609,24 @@ class ClientPresenceTest(TestCase):
         self.assertEquals(1, ReservationLog.objects.count())
         client.clientupdate.refresh_from_db()
         self.assertEquals(1, client.clientupdate.failed_updates)
+
+    def test_dont_cancel_too_soon_after_start(self):
+        building = Building.objects.create()
+        room = Room.objects.create(building=building, floor=1, capacity=1)
+        mac = 'aa:bb:cc:dd:ee:ff'
+        client = DjinnClient.objects.create(mac=mac, ip='x', room=room)
+        Reservation.objects.create(room=room, start=timezone.now(), minutes=30)
+
+        self.assertEquals(0, ReservationLog.objects.count())
+        self.assertEquals(0, client.clientupdate.failed_updates)
+
+        response = self.client_empty(mac)
+        self.assertEqual(status.HTTP_428_PRECONDITION_REQUIRED, response.status_code)
+        self.assertEquals('Room is booked, but not canceling soon after start.', self.extract_msg(response))
+
+        self.assertEquals(0, ReservationLog.objects.count())
+        client.clientupdate.refresh_from_db()
+        self.assertEquals(0, client.clientupdate.failed_updates)
 
 
 class RoomAvailableTest(TestCase):

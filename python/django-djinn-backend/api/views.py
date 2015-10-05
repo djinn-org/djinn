@@ -198,15 +198,19 @@ def client_empty(request, mac):
     if not room.is_available():
         reservation = room.get_current_reservation()
         if reservation:
-            reservation.delete()
-            ReservationLog.create_from_reservation(reservation, ReservationLog.TYPE_CANCEL, ReservationLog.TRIGGER_DJINN)
+            if reservation.start < timezone.now() - settings.WAIT_DELTA:
+                reservation.delete()
+                ReservationLog.create_from_reservation(reservation, ReservationLog.TYPE_CANCEL, ReservationLog.TRIGGER_DJINN)
 
-            ext_cancel_reservation(reservation.start, reservation.end, room)
-            room = ext_sync_room(start, end, room)
+                ext_cancel_reservation(reservation.start, reservation.end, room)
+                room = ext_sync_room(start, end, room)
 
-            client.update_status(room.status)
+                client.update_status(room.status)
 
-            return Response({"message": "Room was booked. Current status: {}".format(room.status)})
+                return Response({"message": "Room was booked. Current status: {}".format(room.status)})
+
+            else:
+                return Response({"message": "Room is booked, but not canceling soon after start."}, status=status.HTTP_428_PRECONDITION_REQUIRED)
 
     return Response({"error": "Room is empty"}, status=status.HTTP_409_CONFLICT)
 
