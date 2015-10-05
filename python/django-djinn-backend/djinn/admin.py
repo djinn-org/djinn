@@ -51,7 +51,7 @@ class ReservationLogAdmin(admin.ModelAdmin):
 
 class ClientAdmin(admin.ModelAdmin):
     model = Client
-    list_display = ('ip', 'mac', 'alias', 'room_link', 'is_alive', 'get_last_heartbeat')
+    list_display = ('ip', 'mac', 'room_link', 'enabled')
 
     def get_last_heartbeat(self, client):
         return client.clientheartbeat.last_heartbeat
