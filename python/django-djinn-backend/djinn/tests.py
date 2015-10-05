@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import timedelta
 import json
 import unittest
 
@@ -10,6 +10,7 @@ from bs4 import BeautifulSoup
 from django_djinn_backend import settings
 import pytz
 from django.utils import timezone
+from django.utils.timezone import datetime
 from django.test import TestCase
 from django.test import Client
 from djinn.models import Room, Building, Equipment, Reservation, Client as DjinnClient, ReservationLog
