@@ -8,6 +8,11 @@ class RoomSerializer(serializers.ModelSerializer):
         model = Room
 
 
+class FindRoomResultSerializer(serializers.Serializer):
+    room = RoomSerializer()
+    accuracy = serializers.IntegerField()
+
+
 class ReservationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Reservation

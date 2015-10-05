@@ -3,12 +3,13 @@ from django import forms
 from django.utils import timezone
 from django_djinn_backend import settings
 from django_djinn_backend import exchange
+from random import randint
 from rest_framework import viewsets, status, mixins
 from rest_framework.decorators import api_view
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from djinn.models import Room, Reservation, Equipment, Client, ReservationLog
-from api.serializers import RoomSerializer, ReservationSerializer, EquipmentSerializer
+from api.serializers import RoomSerializer, ReservationSerializer, EquipmentSerializer, FindRoomResultSerializer
 
 
 class RoomViewSet(viewsets.ModelViewSet):
@@ -16,9 +17,21 @@ class RoomViewSet(viewsets.ModelViewSet):
     serializer_class = RoomSerializer
 
 
-class FindRoomsViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+class FindRoomResult:
+    def __init__(self, room, accuracy):
+        self.room = room
+        self.accuracy = accuracy
+
+
+class FindRoomsViewSet(viewsets.GenericViewSet):
     queryset = Room.objects.all()
-    serializer_class = RoomSerializer
+    serializer_class = FindRoomResultSerializer
+
+    def list(self, request):
+        # TODO: implement proper filtering
+        results = [FindRoomResult(room, randint(80, 100)) for room in Room.objects.all()[:10]]
+        serializer = self.get_serializer(results, many=True)
+        return Response(serializer.data)
 
 
 class RoomReservationViewSet(viewsets.ModelViewSet):
