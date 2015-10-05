@@ -158,6 +158,9 @@ def client_presence(request, mac):
     if not room:
         return Response({"error": "No associated room"}, status=status.HTTP_400_BAD_REQUEST)
 
+    if not client.enabled:
+        return Response({"error": "Client disabled"}, status=status.HTTP_400_BAD_REQUEST)
+
     start = timezone.now()
     end = start + timedelta(minutes=settings.AUTO_RESERVATION_MINUTES)
     room = ext_sync_room(start, end, room)
@@ -190,6 +193,9 @@ def client_empty(request, mac):
     room = client.room
     if not room:
         return Response({"error": "No associated room"}, status=status.HTTP_400_BAD_REQUEST)
+
+    if not client.enabled:
+        return Response({"error": "Client disabled"}, status=status.HTTP_400_BAD_REQUEST)
 
     start = timezone.now()
     end = start + timedelta(minutes=settings.AUTO_RESERVATION_MINUTES)
