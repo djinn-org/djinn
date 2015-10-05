@@ -3,5 +3,4 @@
 cd $(dirname "$0")
 . ./virtualenv.sh
 
-ip=$(./scripts/ip.sh)
-./manage.sh runserver $ip:8000 $*
+./manage.sh runserver 0.0.0.0:8000 $*
