@@ -181,6 +181,7 @@ class Client(models.Model):
     alias = models.CharField(max_length=50, null=True, blank=True)
     room = models.OneToOneField(Room, null=True, blank=True)
     service_url = models.URLField()
+    enabled = models.BooleanField(default=True)
 
     def save(self, force_insert=False, force_update=False, **kwargs):
         is_new = self.id is None
