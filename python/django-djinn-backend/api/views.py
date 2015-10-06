@@ -170,7 +170,7 @@ def client_presence(request, mac):
         end = start + timedelta(minutes=minutes)
 
         # TODO: precise time, will not match on resync
-        reservation = Reservation.objects.create(room=room, start=start, minutes=minutes)
+        reservation = Reservation.objects.create(room=room, start=start, end=end)
         ReservationLog.create_from_reservation(reservation, ReservationLog.TYPE_CREATE, ReservationLog.TRIGGER_DJINN)
 
         ext_create_reservation(start, end, room)
