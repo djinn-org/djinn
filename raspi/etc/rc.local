@@ -18,7 +18,7 @@ msg() {
 
     ~pi/local/djinn/python/django-djinn-client/manage.sh state --reset
 
-    ~pi/local/djinn/python/django-djinn-client/run.sh
+    screen -d -m -S djinn ~pi/local/djinn/python/django-djinn-client/run.sh
 
     cd ~pi/local/djinn/raspi
 
