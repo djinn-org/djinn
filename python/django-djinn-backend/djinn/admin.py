@@ -41,7 +41,7 @@ class ReservationAdmin(admin.ModelAdmin):
 
 class ReservationLogAdmin(admin.ModelAdmin):
     model = ReservationLog
-    list_display = ('user', 'room_link', 'start', 'end', 'log_type', 'log_trigger')
+    list_display = ('user', 'room_link', 'start', 'end', 'log_type', 'log_trigger', 'log_time')
 
     def room_link(self, obj):
         return '<a href="{}">{}</a>'.format(reverse('admin:djinn_room_change', args=(obj.room.id,)), obj.room.name)
@@ -51,7 +51,7 @@ class ReservationLogAdmin(admin.ModelAdmin):
 
 class ClientAdmin(admin.ModelAdmin):
     model = Client
-    list_display = ('ip', 'mac', 'room_link', 'enabled')
+    list_display = ('ip', 'mac', 'room_link', 'enabled', 'alias')
 
     def get_last_heartbeat(self, client):
         return client.clientheartbeat.last_heartbeat
