@@ -16,6 +16,10 @@ msg() {
 (
     msg Hello Djinn
 
+    ~pi/local/djinn/python/django-djinn-client/manage.sh state --reset
+
+    ~pi/local/djinn/python/django-djinn-client/run.sh
+
     cd ~pi/local/djinn/raspi
 
     sudo -u pi ./scripts/reset-leds.sh
