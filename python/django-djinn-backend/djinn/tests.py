@@ -295,7 +295,7 @@ class MakeReservationTestCase(TestCase):
     def test_reserve_ok_with_start_and_minutes(self):
         data = {
             'room': 1,
-            'start': '2015-07-27T12:00',
+            'start': '2015-07-27T12:00Z',
             'minutes': 15,
         }
         response = self.client.post('/api/v1/reservations/', data=data)
@@ -307,8 +307,8 @@ class MakeReservationTestCase(TestCase):
     def test_reserve_ok_with_start_and_end(self):
         data = {
             'room': 1,
-            'start': '2015-07-27T12:00',
-            'end': '2015-07-27T13:00',
+            'start': '2015-07-27T12:00Z',
+            'end': '2015-07-27T13:00Z',
         }
         response = self.client.post('/api/v1/reservations/', data=data)
         self.assertEqual(response.status_code, 201)
@@ -394,8 +394,8 @@ class MakeReservationTestCase(TestCase):
         first = Reservation.objects.create(room=room, start=start, minutes=30)
         data = {
             'room': 1,
-            'start': '2015-07-27T12:00',
-            'end': '2015-07-27T13:00',
+            'start': '2015-07-27T12:00Z',
+            'end': '2015-07-27T13:00Z',
         }
         response = self.client.post('/api/v1/reservations/', data=data)
         self.assertEqual(response.status_code, 201)
@@ -410,8 +410,8 @@ class MakeReservationTestCase(TestCase):
         first = Reservation.objects.create(room=room, start=start, minutes=60)
         data = {
             'room': 1,
-            'start': '2015-07-27T12:00',
-            'end': '2015-07-27T13:00',
+            'start': '2015-07-27T12:00Z',
+            'end': '2015-07-27T13:00Z',
         }
         response = self.client.post('/api/v1/reservations/', data=data)
         self.assertEqual(response.status_code, 201)
