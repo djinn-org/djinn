@@ -54,6 +54,7 @@ class Command(BaseCommand):
         parser.add_argument('--send-presence', action='store_true')
         parser.add_argument('--send-empty', action='store_true')
         parser.add_argument('--send-heartbeat', action='store_true')
+        parser.add_argument('--send-update', action='store_true')
 
     def print_info(self):
         self.stdout.write('Server URL: {}'.format(Config.get_server_url()))
@@ -111,6 +112,14 @@ class Command(BaseCommand):
         response = put(url)
         self.stdout.write(response)
 
+    def send_update(self):
+        if State.is_presence():
+            self.send_presence()
+        elif State.is_empty():
+            self.send_empty()
+        else:
+            self.stdout.write('Not sending state: {}'.format(State.get_state()))
+
     def send_heartbeat(self):
         url = '{}/clients/{}/heartbeat'.format(Config.get_server_url(), Config.get_mac())
         response = head(url)
@@ -152,5 +161,7 @@ class Command(BaseCommand):
                 self.send_empty()
             elif options['send_heartbeat']:
                 self.send_heartbeat()
+            elif options['send_update']:
+                self.send_update()
             else:
                 self.print_info()
