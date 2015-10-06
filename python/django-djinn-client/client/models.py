@@ -60,3 +60,55 @@ class Config(models.Model):
     @staticmethod
     def set_service_url(service_url):
         Config.set(Config.SERVICE_URL, service_url)
+
+
+def make_choices(*values):
+    return [(value, value.title()) for value in values]
+
+
+class State(models.Model):
+    STATE_NONE = 'none'
+    STATE_PRESENCE = 'presence'
+    STATE_EMPTY = 'empty'
+
+    state = models.CharField(max_length=50, default=STATE_NONE,
+                             choices=make_choices(STATE_NONE, STATE_EMPTY, STATE_PRESENCE))
+
+    def __str__(self):
+        return self.state
+
+    @staticmethod
+    def is_state(state):
+        try:
+            State.objects.first() == state
+        except State.DoesNotExist:
+            return False
+
+    @staticmethod
+    def is_presence():
+        return State.is_state(State.STATE_PRESENCE)
+
+    @staticmethod
+    def is_empty():
+        return State.is_state(State.STATE_PRESENCE)
+
+    @staticmethod
+    def set_state(state):
+        State.objects.all().delete()
+        State.objects.create(state=state)
+
+    @staticmethod
+    def set_presence():
+        State.set_state(State.STATE_PRESENCE)
+
+    @staticmethod
+    def set_empty():
+        State.set_state(State.STATE_EMPTY)
+
+    @staticmethod
+    def set_none():
+        State.set_state(State.STATE_NONE)
+
+    @staticmethod
+    def get_state():
+        return State.objects.first() or State.STATE_NONE
