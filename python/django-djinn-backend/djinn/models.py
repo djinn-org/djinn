@@ -137,7 +137,7 @@ class ReservationLog(models.Model):
         return ', '.join([str(x) for x in [self.user, self.room, self.start, self.minutes, self.log_type, self.log_trigger]])
 
     class Meta:
-        ordering = ('log_time',)
+        ordering = ('-log_time',)
 
     @staticmethod
     def create_from_reservation(reservation, log_type, log_trigger):
