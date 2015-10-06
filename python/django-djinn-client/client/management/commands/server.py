@@ -1,7 +1,7 @@
 from subprocess import Popen, PIPE
 
 from django.core.management.base import BaseCommand
-from client.models import Config
+from client.models import Config, State
 import urllib3
 import certifi
 import re
@@ -100,11 +100,13 @@ class Command(BaseCommand):
         return True
 
     def send_presence(self):
+        State.set_presence()
         url = '{}/clients/{}/presence'.format(Config.get_server_url(), Config.get_mac())
         response = put(url)
         self.stdout.write(response)
 
     def send_empty(self):
+        State.set_empty()
         url = '{}/clients/{}/empty'.format(Config.get_server_url(), Config.get_mac())
         response = put(url)
         self.stdout.write(response)
