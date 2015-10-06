@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 """
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+from datetime import timedelta
 import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -41,10 +42,12 @@ INSTALLED_APPS = (
     'api',
     'rest_framework',
     'rest_framework_swagger',
+    'corsheaders',
 )
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -91,7 +94,7 @@ DATABASES = {
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Paris'
 
 USE_I18N = True
 
@@ -106,3 +109,18 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+# Project specific module settings
+
+CORS_ORIGIN_ALLOW_ALL = True
+
+# Project specific custom settings
+
+WAIT_DELTA = timedelta(minutes=15)
+AUTO_RESERVATION_MINUTES = 60
+
+EXCHANGE_CONNECTOR_JAR = os.path.join(BASE_DIR, 'local/TestEWS-0.0.1-SNAPSHOT-jar-with-dependencies.jar')
+EXCHANGE_CONNECTOR_READY = os.path.isfile(EXCHANGE_CONNECTOR_JAR)
+EXCHANGE_LIST_CMD = 'com.djinn.run.ListReservations'
+EXCHANGE_CREATE_CMD = 'com.djinn.run.CreateReservation'
+EXCHANGE_CANCEL_CMD = 'com.djinn.run.CancelReservation'
