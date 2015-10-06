@@ -166,6 +166,10 @@ def update_client_ip(client, request):
         client.save()
 
 
+def truncate_date(date):
+    return date.replace(second=0, microsecond=0)
+
+
 @api_view(['PUT'])
 def client_presence(request, mac):
     try:
@@ -190,7 +194,9 @@ def client_presence(request, mac):
         minutes = min(settings.AUTO_RESERVATION_MINUTES, room.calc_minutes_to_next_reservation())
         end = start + timedelta(minutes=minutes)
 
-        # TODO: precise time, will not match on resync
+        start = truncate_date(start)
+        end = truncate_date(end)
+
         create_and_log_reservation_as_djinn(room, start, end)
 
         ext_create_reservation(start, end, room)
