@@ -11,6 +11,18 @@ essential
 
 /clients/:mac/empty -> update related client
 
+important: sort out timezone
+----------------------------
+
+Currently, production requires:
+
+    USE_TZ = False
+
+Otherwise reservations are created 2 hours behind or ahead, it's a confused mess.
+
+However, unit tests fail like that:
+
+> SQLite backend does not support timezone-aware datetimes when USE_TZ is False.
 
 later
 -----
