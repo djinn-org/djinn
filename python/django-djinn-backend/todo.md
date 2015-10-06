@@ -1,15 +1,9 @@
 essential
 ---------
 
-! periodic job to merge reservations
+! get CORS working, test
 
-! periodic job to cancel reservations
-    
-/clients/:mac/presence -> update related client
-- client: POST /status
-- client: GET /status
-
-/clients/:mac/empty -> update related client
+! fix sync related bugs
 
 important: sort out timezone
 ----------------------------
@@ -24,16 +18,20 @@ However, unit tests fail like that:
 
 > SQLite backend does not support timezone-aware datetimes when USE_TZ is False.
 
+While at, force timezone warnings in unit tests.
+
 later
 -----
 
-get CORS working, test
-
 get filter tests working
 
-cron script for client for heartbeats
+/clients/:mac/presence -> update related client
+- client: POST /status
+- client: GET /status
 
-replace datetime in tests with timezone
+/clients/:mac/empty -> update related client
+
+cron script for client for heartbeats
 
 disable deleting from rest api
 

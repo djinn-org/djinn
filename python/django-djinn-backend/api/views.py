@@ -90,6 +90,9 @@ def merge_reservations(room, reservations):
         start = reservation['start']
         end = reservation['end']
 
+        # TODO: nothing matches the case of start=start, end__gt=end -> unit test to expose
+        # TODO: nothing matches the case of start__lt=start, end=end -> unit test to expose
+
         # delete any that starts before start and ends after start -> log it
         for to_delete in room.reservation_set.filter(start__lt=start, end__gt=start):
             ReservationLog.create_from_reservation(to_delete, ReservationLog.TYPE_CANCEL, ReservationLog.TRIGGER_EXT)
@@ -169,6 +172,7 @@ def client_presence(request, mac):
         minutes = min(settings.AUTO_RESERVATION_MINUTES, room.calc_minutes_to_next_reservation())
         end = start + timedelta(minutes=minutes)
 
+        # TODO: precise time, will not match on resync
         reservation = Reservation.objects.create(room=room, start=start, minutes=minutes)
         ReservationLog.create_from_reservation(reservation, ReservationLog.TYPE_CREATE, ReservationLog.TRIGGER_DJINN)
 
