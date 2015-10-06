@@ -125,6 +125,10 @@ def cancel_and_log_reservation_as_ext(reservation):
     cancel_and_log_reservation(reservation, ReservationLog.TRIGGER_EXT)
 
 
+def cancel_and_log_reservation_as_djinn(reservation):
+    cancel_and_log_reservation(reservation, ReservationLog.TRIGGER_DJINN)
+
+
 def create_and_log_reservation(room, start, end, trigger):
     reservation = Reservation.objects.create(room=room, start=start, end=end)
     ReservationLog.create_from_reservation(reservation, ReservationLog.TYPE_CREATE, trigger)
@@ -222,8 +226,7 @@ def client_empty(request, mac):
         reservation = room.get_current_reservation()
         if reservation:
             if reservation.start < timezone.now() - settings.WAIT_DELTA:
-                reservation.delete()
-                ReservationLog.create_from_reservation(reservation, ReservationLog.TYPE_CANCEL, ReservationLog.TRIGGER_DJINN)
+                cancel_and_log_reservation_as_djinn(reservation)
 
                 ext_cancel_reservation(reservation.start, reservation.end, room)
                 room = ext_sync_room(start, end, room)
