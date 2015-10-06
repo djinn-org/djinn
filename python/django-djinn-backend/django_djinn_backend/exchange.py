@@ -76,7 +76,7 @@ def cancel_reservation(start, end, room):
     roomname = room.external_name
 
     returncode, out, err = run_cmd(
-        'java', '-cp', settings.EXCHANGE_CONNECTOR_JAR, settings.EXCHANGE_CREATE_CMD, startstr, endstr, roomname)
+        'java', '-cp', settings.EXCHANGE_CONNECTOR_JAR, settings.EXCHANGE_CANCEL_CMD, startstr, endstr, roomname)
 
 
 def run_cmd(*args):
