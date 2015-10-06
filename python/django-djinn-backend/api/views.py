@@ -117,8 +117,20 @@ def merge_reservations(room, reservations):
         # after all reservation processed, add all that were set aside -> log it
         start = reservation['start']
         end = reservation['end']
-        reservation = Reservation.objects.create(room=room, start=start, end=end)
-        ReservationLog.create_from_reservation(reservation, ReservationLog.TYPE_CREATE, ReservationLog.TRIGGER_EXT)
+        create_and_log_reservation_as_ext(room, start, end)
+
+
+def create_and_log_reservation(room, start, end, trigger):
+    reservation = Reservation.objects.create(room=room, start=start, end=end)
+    ReservationLog.create_from_reservation(reservation, ReservationLog.TYPE_CREATE, trigger)
+
+
+def create_and_log_reservation_as_ext(room, start, end):
+    create_and_log_reservation(room, start, end, ReservationLog.TRIGGER_EXT)
+
+
+def create_and_log_reservation_as_djinn(room, start, end):
+    create_and_log_reservation(room, start, end, ReservationLog.TRIGGER_DJINN)
 
 
 def ext_sync_room(start, end, room):
@@ -170,8 +182,7 @@ def client_presence(request, mac):
         end = start + timedelta(minutes=minutes)
 
         # TODO: precise time, will not match on resync
-        reservation = Reservation.objects.create(room=room, start=start, end=end)
-        ReservationLog.create_from_reservation(reservation, ReservationLog.TYPE_CREATE, ReservationLog.TRIGGER_DJINN)
+        create_and_log_reservation_as_djinn(room, start, end)
 
         ext_create_reservation(start, end, room)
         room = ext_sync_room(start, end, room)
