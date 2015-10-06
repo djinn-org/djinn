@@ -92,23 +92,19 @@ def merge_reservations(room, reservations):
 
         # delete any that starts before start and ends after start -> log it
         for to_delete in room.reservation_set.filter(start__lt=start, end__gt=start):
-            ReservationLog.create_from_reservation(to_delete, ReservationLog.TYPE_CANCEL, ReservationLog.TRIGGER_EXT)
-            to_delete.delete()
+            cancel_and_log_reservation_as_ext(to_delete)
 
         # delete any that starts before end and ends after end -> log it
         for to_delete in room.reservation_set.filter(start__lt=end, end__gt=end):
-            ReservationLog.create_from_reservation(to_delete, ReservationLog.TYPE_CANCEL, ReservationLog.TRIGGER_EXT)
-            to_delete.delete()
+            cancel_and_log_reservation_as_ext(to_delete)
 
         # delete any that starts after start and ends before end -> log it
         for to_delete in room.reservation_set.filter(start__gt=start, end__lte=end):
-            ReservationLog.create_from_reservation(to_delete, ReservationLog.TYPE_CANCEL, ReservationLog.TRIGGER_EXT)
-            to_delete.delete()
+            cancel_and_log_reservation_as_ext(to_delete)
 
         # delete any that starts after start and ends before end -> log it
         for to_delete in room.reservation_set.filter(start__gte=start, end__lt=end):
-            ReservationLog.create_from_reservation(to_delete, ReservationLog.TYPE_CANCEL, ReservationLog.TRIGGER_EXT)
-            to_delete.delete()
+            cancel_and_log_reservation_as_ext(to_delete)
 
         if not room.reservation_set.filter(start=start, end=end):
             to_add.append(reservation)
@@ -118,6 +114,15 @@ def merge_reservations(room, reservations):
         start = reservation['start']
         end = reservation['end']
         create_and_log_reservation_as_ext(room, start, end)
+
+
+def cancel_and_log_reservation(reservation, trigger):
+    ReservationLog.create_from_reservation(reservation, ReservationLog.TYPE_CANCEL, trigger)
+    reservation.delete()
+
+
+def cancel_and_log_reservation_as_ext(reservation):
+    cancel_and_log_reservation(reservation, ReservationLog.TRIGGER_EXT)
 
 
 def create_and_log_reservation(room, start, end, trigger):
