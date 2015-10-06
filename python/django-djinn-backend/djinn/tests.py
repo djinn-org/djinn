@@ -1019,6 +1019,48 @@ class MergeReservationsTest(TestCase):
                 log_trigger=ReservationLog.TRIGGER_EXT).count()
         )
 
+    def test_remove_same_start_later_end(self):
+        start = datetime(2015, 9, 25, 18, 30)
+        end = datetime(2015, 9, 25, 19, 0)
+        after_end = end + timedelta(minutes=5)
+        Reservation.objects.create(room=self.room, start=start, end=after_end)
+        reservations = create_reservations((start, end))
+        merge_reservations(self.room, reservations)
+        self.assertEquals(1, self.room.reservation_set.count())
+        self.assertEquals(2, self.room.reservationlog_set.count())
+
+        self.assertEquals(
+            1, ReservationLog.objects.filter(
+                log_type=ReservationLog.TYPE_CANCEL,
+                log_trigger=ReservationLog.TRIGGER_EXT).count()
+        )
+        self.assertEquals(
+            1, ReservationLog.objects.filter(
+                log_type=ReservationLog.TYPE_CREATE,
+                log_trigger=ReservationLog.TRIGGER_EXT).count()
+        )
+
+    def test_remove_early_start_same_end(self):
+        start = datetime(2015, 9, 25, 18, 30)
+        end = datetime(2015, 9, 25, 19, 0)
+        before_start = start - timedelta(minutes=5)
+        Reservation.objects.create(room=self.room, start=before_start, end=end)
+        reservations = create_reservations((start, end))
+        merge_reservations(self.room, reservations)
+        self.assertEquals(1, self.room.reservation_set.count())
+        self.assertEquals(2, self.room.reservationlog_set.count())
+
+        self.assertEquals(
+            1, ReservationLog.objects.filter(
+                log_type=ReservationLog.TYPE_CANCEL,
+                log_trigger=ReservationLog.TRIGGER_EXT).count()
+        )
+        self.assertEquals(
+            1, ReservationLog.objects.filter(
+                log_type=ReservationLog.TYPE_CREATE,
+                log_trigger=ReservationLog.TRIGGER_EXT).count()
+        )
+
     def test_remove_many(self):
         start = datetime(2015, 9, 25, 18, 30)
         end = datetime(2015, 9, 25, 19, 0)
