@@ -1,2 +1,2 @@
 # TODO: change hours to 8-20 when ntp date is fixed
-*/5 * * * * {date; /home/pi/local/djinn/python/django-djinn-client/manage.sh server --send-update; } 2>&1 >> ~/cron.log
+*/5 * * * * { date; /home/pi/local/djinn/python/django-djinn-client/manage.sh server --send-update; } 2>&1 >> ~/cron.log
