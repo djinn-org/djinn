@@ -8,6 +8,9 @@ cd $(dirname "$0")
 . ./config.sh
 
 LOGFILE=/var/log/djinn.log
+BASEDIR=~pi/local/djinn
+CLIENT=$BASEDIR/python/django-djinn-client
+RASPI=$BASEDIR/raspi
 
 msg() {
     echo $(date): $*
@@ -16,11 +19,11 @@ msg() {
 (
     msg Hello Djinn
 
-    ~pi/local/djinn/python/django-djinn-client/manage.sh state --reset
+    sudo -u pi $CLIENT/manage.sh state --reset
 
-    screen -d -m -S djinn ~pi/local/djinn/python/django-djinn-client/run.sh
+    sudo -u pi screen -d -m -S djinn $CLIENT/run.sh
 
-    cd ~pi/local/djinn/raspi
+    cd $RASPI
 
     sudo -u pi ./scripts/reset-leds.sh
 
