@@ -80,7 +80,7 @@ class State(models.Model):
     @staticmethod
     def is_state(state):
         try:
-            State.objects.first() == state
+            return State.objects.first().state == state
         except State.DoesNotExist:
             return False
 
@@ -90,7 +90,7 @@ class State(models.Model):
 
     @staticmethod
     def is_empty():
-        return State.is_state(State.STATE_PRESENCE)
+        return State.is_state(State.STATE_EMPTY)
 
     @staticmethod
     def set_state(state):
