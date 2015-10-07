@@ -42,6 +42,7 @@ class ReservationAdmin(admin.ModelAdmin):
 class ReservationLogAdmin(admin.ModelAdmin):
     model = ReservationLog
     list_display = ('user', 'room_link', 'start', 'end', 'log_type', 'log_trigger', 'log_time')
+    list_filter = ('room',)
 
     def room_link(self, obj):
         return '<a href="{}">{}</a>'.format(reverse('admin:djinn_room_change', args=(obj.room.id,)), obj.room.name)
