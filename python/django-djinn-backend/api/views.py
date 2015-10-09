@@ -1,10 +1,11 @@
 from datetime import timedelta
+
 from django import forms
 from django.utils import timezone
 from django_djinn_backend import settings
-from django_djinn_backend import exchange
+from djinn import exchange
 from random import randint
-from rest_framework import viewsets, status, mixins
+from rest_framework import viewsets, status
 from rest_framework.decorators import api_view
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response

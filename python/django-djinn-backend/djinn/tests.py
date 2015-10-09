@@ -3,9 +3,7 @@ import json
 import unittest
 
 from api.views import merge_reservations
-
-from django_djinn_backend.exchange import run_cmd, list_reservations, parse_reservations, parse_date
-
+from djinn.exchange import run_cmd, list_reservations, parse_reservations, parse_date
 from bs4 import BeautifulSoup
 from django_djinn_backend import settings
 import pytz
