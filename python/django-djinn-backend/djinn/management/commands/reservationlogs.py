@@ -3,8 +3,8 @@ from djinn.models import ReservationLog
 from django.utils.timezone import datetime, timedelta
 
 
-def format_time(datetime):
-    return datetime.strftime('%H:%m')
+def format_time(dt):
+    return dt.strftime('%H:%m')
 
 
 class Command(BaseCommand):
