@@ -47,6 +47,20 @@ class Command(BaseCommand):
         self.stdout.write("---")
         self.stdout.write("total time saved = {}".format(total_time_saved))
 
+    def print_booking_count(self, qs):
+        def count_rooms_booked_by(trigger):
+            return qs.filter(
+                log_type=ReservationLog.TYPE_CREATE,
+                log_trigger=trigger
+            ).count()
+        booked_by_ext = count_rooms_booked_by(ReservationLog.TRIGGER_EXT)
+        booked_by_djinn = count_rooms_booked_by(ReservationLog.TRIGGER_DJINN)
+
+        self.stdout.write("---")
+        self.stdout.write("rooms booked by ext = {}".format(booked_by_ext))
+        self.stdout.write("rooms booked by djinn = {}".format(booked_by_djinn))
+
+
     def handle(self, *args, **options):
         qs = ReservationLog.objects
 
@@ -57,3 +71,4 @@ class Command(BaseCommand):
             qs = qs.filter(start__gte=day, end__lt=day + timedelta(days=1))
 
         self.print_saved_time(qs)
+        self.print_booking_count(qs)
