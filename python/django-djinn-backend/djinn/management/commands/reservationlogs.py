@@ -28,10 +28,12 @@ class Command(BaseCommand):
 
         for cancel_djinn in cancel_djinn_list:
             create_ext_list = qs.filter(
-                room=cancel_djinn.room, log_type=ReservationLog.TYPE_CREATE,
-                log_trigger=ReservationLog.TRIGGER_EXT, start=cancel_djinn.start,
-                end=cancel_djinn.end
-            )
+                room=cancel_djinn.room,
+                log_type=ReservationLog.TYPE_CREATE,
+                log_trigger=ReservationLog.TRIGGER_EXT,
+                start=cancel_djinn.start, end=cancel_djinn.end,
+                log_time__lt=cancel_djinn.log_time
+            )[:1]
 
             for create_ext in create_ext_list:
                 saved = (create_ext.end - cancel_djinn.log_time).seconds // 60
