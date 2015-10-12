@@ -41,7 +41,7 @@ class Command(BaseCommand):
 
             for create_ext in create_ext_list:
                 saved = (create_ext.end - cancel_djinn.log_time).seconds // 60
-                print('{} {} {:%H:%m} {} canceled at {:%H:%m:%S} {}'.format(
+                print('{} {} {:%H:%M} {} canceled at {:%H:%M:%S} {}'.format(
                     saved, create_ext.room.external_name,
                     create_ext.start, create_ext.minutes, cancel_djinn.log_time,
                     cancel_djinn.pk))
