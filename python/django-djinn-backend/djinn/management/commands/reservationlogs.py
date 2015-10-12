@@ -3,6 +3,10 @@ from djinn.models import ReservationLog
 from django.utils.timezone import datetime, timedelta
 
 
+def format_time(datetime):
+    return datetime.strftime('%H:%m')
+
+
 class Command(BaseCommand):
     help = 'Show reservation log stats'
 
@@ -22,10 +26,18 @@ class Command(BaseCommand):
             day = datetime.strptime(options['day'], '%Y-%m-%d')
             qs = qs.filter(start__gte=day, end__lt=day + timedelta(days=1))
 
-        for cancel_djinn in qs.filter(log_type=ReservationLog.TYPE_CANCEL,
-                                      log_trigger=ReservationLog.TRIGGER_DJINN).order_by('room', 'log_time'):
-            for create_ext in qs.filter(room=cancel_djinn.room, log_type=ReservationLog.TYPE_CREATE,
-                                        log_trigger=ReservationLog.TRIGGER_EXT, start=cancel_djinn.start,
-                                        end=cancel_djinn.end):
+        cancel_djinn_list = qs.filter(
+            log_type=ReservationLog.TYPE_CANCEL,
+            log_trigger=ReservationLog.TRIGGER_DJINN).order_by('room', 'log_time')
+
+        for cancel_djinn in cancel_djinn_list:
+            create_ext_list = qs.filter(
+                room=cancel_djinn.room, log_type=ReservationLog.TYPE_CREATE,
+                log_trigger=ReservationLog.TRIGGER_EXT, start=cancel_djinn.start,
+                end=cancel_djinn.end)
+
+            for create_ext in create_ext_list:
                 saved = (create_ext.end - cancel_djinn.log_time).seconds // 60
-                print(saved, create_ext.room, create_ext.start, create_ext.minutes, cancel_djinn.log_time)
+                print('{} {} {:%H:%m} {} canceled at {:%H:%m:%S} {}'.format(
+                    saved, create_ext.room, create_ext.start, create_ext.minutes, cancel_djinn.log_time,
+                    cancel_djinn.pk))
