@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 import json
 from subprocess import Popen, PIPE
 
@@ -71,8 +71,9 @@ def cancel_reservation(start, end, room):
     if not ready():
         return
 
-    startstr = format_date_param(start)
-    endstr = format_date_param(end)
+    epsilon = timedelta(minutes=1)
+    startstr = format_date_param(start + epsilon)
+    endstr = format_date_param(end - epsilon)
     roomname = room.external_name
 
     returncode, out, err = run_cmd(
