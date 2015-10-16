@@ -110,6 +110,8 @@ STATIC_URL = '/static/'
 
 # Project specific module settings
 
+# STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
 CORS_ORIGIN_ALLOW_ALL = True
 
 # TODO: this is not yet working as intended.
