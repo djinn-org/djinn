@@ -112,6 +112,28 @@ STATIC_URL = '/static/'
 
 CORS_ORIGIN_ALLOW_ALL = True
 
+# TODO: this is not yet working as intended.
+# The goal is to log like the built-in dev server does. See this ongoing bounty:
+# http://stackoverflow.com/questions/28303892/how-to-configure-my-django-log-to-function-like-the-built-in-dev-server-log
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': 'debug.log',
+        },
+    },
+    'loggers': {
+        'django.request': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
+}
+
 # Project specific custom settings
 
 WAIT_DELTA = timedelta(minutes=15)
