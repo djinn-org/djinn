@@ -118,16 +118,19 @@ def make_choices(*values):
 class ReservationLog(models.Model):
     TYPE_CREATE = 'create'
     TYPE_CANCEL = 'cancel'
+
     TRIGGER_DJINN = 'djinn'
     TRIGGER_APP = 'app'
     TRIGGER_WEB = 'web'
     TRIGGER_EXT = 'ext'
 
+    reservation_pk = models.IntegerField()
     user = models.ForeignKey(User, null=True)
     room = models.ForeignKey(Room)
     start = models.DateTimeField()
     end = models.DateTimeField()
     minutes = models.IntegerField()
+
     log_type = models.CharField(max_length=50, choices=make_choices(TYPE_CREATE, TYPE_CANCEL))
     log_trigger = models.CharField(max_length=50, choices=make_choices(
         TRIGGER_DJINN, TRIGGER_APP, TRIGGER_WEB, TRIGGER_EXT))
@@ -138,10 +141,12 @@ class ReservationLog(models.Model):
 
     class Meta:
         ordering = ('-log_time',)
+        # unique_together = (('reservation_pk', 'log_type'),)
 
     @staticmethod
     def create_from_reservation(reservation, log_type, log_trigger):
-        ReservationLog.objects.create(user=reservation.user, room=reservation.room,
+        ReservationLog.objects.create(reservation_pk=reservation.pk,
+                                      user=reservation.user, room=reservation.room,
                                       start=reservation.start, end=reservation.end, minutes=reservation.minutes,
                                       log_type=log_type, log_trigger=log_trigger)
 
