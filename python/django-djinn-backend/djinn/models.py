@@ -144,6 +144,7 @@ class ReservationLog(models.Model):
 
         fmt = '{name} {date:%Y-%m-%d} {start_time:%H:%M} - {end_time} ' \
               '{type}/{trigger} @{ts:%Y-%m-%d %H:%M%:%S}'
+
         return fmt.format(
             name=self.room, date=self.start,
             start_time=self.start, end_time=end_time,
@@ -158,10 +159,12 @@ class ReservationLog(models.Model):
 
     @staticmethod
     def create_from_reservation(reservation, log_type, log_trigger):
-        ReservationLog.objects.create(reservation_pk=reservation.pk,
-                                      user=reservation.user, room=reservation.room,
-                                      start=reservation.start, end=reservation.end, minutes=reservation.minutes,
-                                      log_type=log_type, log_trigger=log_trigger)
+        ReservationLog.objects.create(
+            reservation_pk=reservation.pk,
+            user=reservation.user, room=reservation.room,
+            start=reservation.start, end=reservation.end, minutes=reservation.minutes,
+            log_type=log_type, log_trigger=log_trigger
+        )
 
 
 mac_re = re.compile(r'^([0-9a-fA-F]{2}([:-]|$)){6}$')
