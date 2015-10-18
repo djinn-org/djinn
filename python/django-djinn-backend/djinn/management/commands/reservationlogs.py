@@ -96,10 +96,10 @@ class Command(BaseCommand):
                 log_time__lt=cancel_item.log_time
             )
 
-            print('cancel item:\n  {}'.format(cancel_item))
+            self.stdout.write('cancel item:\n  {}'.format(cancel_item))
 
             if create_list:
-                print('will link to:\n  {}'.format(create_list[0]))
+                self.stdout.write('will link to:\n  {}'.format(create_list[0]))
                 # NOTE: cannot do this way, it will update log_time
                 # cancel_item.save()
                 cancel_list.filter(pk=cancel_item.pk).update(
@@ -108,12 +108,12 @@ class Command(BaseCommand):
                 )
 
                 for create_item in create_list[1:]:
-                    print('will NOT link to:\n  {}'.format(create_item))
+                    self.stdout.write('will NOT link to:\n  {}'.format(create_item))
 
             else:
-                print('no matching create logs for {}'.format(cancel_item))
+                self.stdout.write('no matching create logs for {}'.format(cancel_item))
 
-            print()
+            self.stdout.write('')
 
     def handle(self, *args, **options):
         qs = ReservationLog.objects
