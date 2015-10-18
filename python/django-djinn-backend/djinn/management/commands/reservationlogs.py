@@ -21,28 +21,29 @@ class Command(BaseCommand):
     def print_saved_time(self, qs):
         cancel_djinn_list = qs.filter(
             log_type=ReservationLog.TYPE_CANCEL,
-            log_trigger=ReservationLog.TRIGGER_DJINN
+            log_trigger=ReservationLog.TRIGGER_DJINN,
+            reservation_pk__gt=0
         ).order_by('room', 'log_time')
 
         total_time_saved = 0
 
         for cancel_djinn in cancel_djinn_list:
-            create_ext_list = qs.filter(
-                room=cancel_djinn.room,
-                log_type=ReservationLog.TYPE_CREATE,
-                log_trigger=ReservationLog.TRIGGER_EXT,
-                start=cancel_djinn.start, end=cancel_djinn.end,
-                log_time__lt=cancel_djinn.log_time
-            )[:1]
+            try:
+                create_ext = qs.get(
+                    reservation_pk=cancel_djinn.reservation_pk,
+                    log_type=ReservationLog.TYPE_CREATE,
+                    log_trigger=ReservationLog.TRIGGER_EXT
+                )
+            except ReservationLog.DoesNotExist:
+                continue
 
-            for create_ext in create_ext_list:
-                saved = (create_ext.end - cancel_djinn.log_time).seconds // 60
-                self.stdout.write('{} {} {:%H:%M} {} canceled at {:%H:%M:%S} {}'.format(
-                    saved, create_ext.room.external_name,
-                    create_ext.start, create_ext.minutes, cancel_djinn.log_time,
-                    cancel_djinn.pk))
+            saved = (create_ext.end - cancel_djinn.log_time).seconds // 60
+            self.stdout.write('{} {} {:%H:%M} {} canceled at {:%H:%M:%S} {}'.format(
+                saved, create_ext.room.external_name,
+                create_ext.start, create_ext.minutes, cancel_djinn.log_time,
+                cancel_djinn.pk))
 
-                total_time_saved += saved
+            total_time_saved += saved
 
         self.stdout.write("---")
         self.stdout.write("total time saved = {}".format(total_time_saved))
@@ -60,6 +61,7 @@ class Command(BaseCommand):
         self.stdout.write("rooms booked by ext = {}".format(booked_by_ext))
         self.stdout.write("rooms booked by djinn = {}".format(booked_by_djinn))
 
+    # deprecated, remove after applied in prod
     def fix_reservation_pk(self, qs):
         create_list = qs.filter(
             log_type=ReservationLog.TYPE_CREATE,
@@ -82,6 +84,7 @@ class Command(BaseCommand):
                 reservation_pk=pk
             )
 
+    # deprecated, remove after applied in prod
     def fix_cancel_links(self, qs):
         cancel_list = qs.filter(
             log_type=ReservationLog.TYPE_CANCEL,
