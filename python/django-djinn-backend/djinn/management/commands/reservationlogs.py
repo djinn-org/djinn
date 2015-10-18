@@ -11,9 +11,9 @@ class Command(BaseCommand):
     help = 'Show reservation log stats'
 
     def add_arguments(self, parser):
-        parser.add_argument('-r', '--room', )
-        parser.add_argument('--time-saved', )
-        parser.add_argument('--day', )
+        parser.add_argument('action', choices=['time-saved', 'fix-cancel-links'])
+        parser.add_argument('--room', '-r')
+        parser.add_argument('--day', '-d')
 
     def msg(self, message):
         self.stdout.write('* ' + message)
@@ -60,7 +60,6 @@ class Command(BaseCommand):
         self.stdout.write("rooms booked by ext = {}".format(booked_by_ext))
         self.stdout.write("rooms booked by djinn = {}".format(booked_by_djinn))
 
-
     def handle(self, *args, **options):
         qs = ReservationLog.objects
 
@@ -70,5 +69,9 @@ class Command(BaseCommand):
             day = datetime.strptime(options['day'], '%Y-%m-%d')
             qs = qs.filter(start__gte=day, end__lt=day + timedelta(days=1))
 
-        self.print_saved_time(qs)
-        self.print_booking_count(qs)
+        action = options['action']
+        if action == 'fix-cancel-links':
+            pass
+        elif action == 'time-saved':
+            self.print_saved_time(qs)
+            self.print_booking_count(qs)
