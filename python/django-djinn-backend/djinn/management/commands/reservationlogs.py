@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from djinn.models import ReservationLog
+from djinn.models import ReservationLog, Reservation, Room
 from django.utils.timezone import datetime, timedelta
 
 
@@ -11,7 +11,7 @@ class Command(BaseCommand):
     help = 'Show reservation log stats'
 
     def add_arguments(self, parser):
-        parser.add_argument('action', choices=['time-saved', 'fix-cancel-links'])
+        parser.add_argument('action', choices=['time-saved', 'fix-cancel-links', 'fix-reservation-pk'])
         parser.add_argument('--room', '-r')
         parser.add_argument('--day', '-d')
 
@@ -60,6 +60,28 @@ class Command(BaseCommand):
         self.stdout.write("rooms booked by ext = {}".format(booked_by_ext))
         self.stdout.write("rooms booked by djinn = {}".format(booked_by_djinn))
 
+    def fix_reservation_pk(self, qs):
+        create_list = qs.filter(
+            log_type=ReservationLog.TYPE_CREATE,
+            reservation_pk=0
+        ).order_by('room', 'log_time')
+
+        room = Room.objects.first()
+        start = datetime(2015, 9, 15, 10, 0)
+
+        for create_item in create_list:
+            fake_reservation = Reservation.objects.create(room=room, start=start, minutes=1)
+            pk = fake_reservation.pk
+            fake_reservation.delete()
+            self.stdout.write('setting unused reservation_pk = {} for {}'.format(pk, create_item))
+
+            # NOTE: cannot do this way, it will update log_time
+            # create_item.save()
+            create_list.filter(pk=create_item.pk).update(
+                log_time=create_item.log_time,
+                reservation_pk=pk
+            )
+
     def fix_cancel_links(self, qs):
         cancel_list = qs.filter(
             log_type=ReservationLog.TYPE_CANCEL,
@@ -105,6 +127,8 @@ class Command(BaseCommand):
         action = options['action']
         if action == 'fix-cancel-links':
             self.fix_cancel_links(qs)
+        elif action == 'fix-reservation-pk':
+            self.fix_reservation_pk(qs)
         elif action == 'time-saved':
             self.print_saved_time(qs)
             self.print_booking_count(qs)
