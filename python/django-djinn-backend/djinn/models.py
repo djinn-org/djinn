@@ -137,10 +137,23 @@ class ReservationLog(models.Model):
     log_time = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return ', '.join([str(x) for x in [self.user, self.room, self.start, self.minutes, self.log_type, self.log_trigger]])
+        if self.minutes < 60 * 60 * 24:
+            end_time = '{:%H:%M}'.format(self.end)
+        else:
+            end_time = '{:%Y-%m-%d_%H:%M}'.format(self.end)
+
+        fmt = '{name} {date:%Y-%m-%d} {start_time:%H:%M} - {end_time} ' \
+              '{type}/{trigger} @{ts:%Y-%m-%d %H:%M%:%S}'
+        return fmt.format(
+            name=self.room, date=self.start,
+            start_time=self.start, end_time=end_time,
+            type=self.log_type, trigger=self.log_trigger,
+            ts=self.log_time
+        )
 
     class Meta:
         ordering = ('-log_time',)
+        # TODO
         # unique_together = (('reservation_pk', 'log_type'),)
 
     @staticmethod
