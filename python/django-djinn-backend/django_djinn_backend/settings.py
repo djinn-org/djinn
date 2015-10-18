@@ -49,6 +49,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
+    'django_djinn_backend.middleware.RequestLogMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
@@ -114,23 +115,26 @@ STATIC_URL = '/static/'
 
 CORS_ORIGIN_ALLOW_ALL = True
 
-# TODO: this is not yet working as intended.
-# The goal is to log like the built-in dev server does. See this ongoing bounty:
-# http://stackoverflow.com/questions/28303892/how-to-configure-my-django-log-to-function-like-the-built-in-dev-server-log
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
+    'formatters': {
+        'requests': {
+            'format': '%(levelname)s %(asctime)s %(message)s',
+        },
+    },
     'handlers': {
-        'file': {
-            'level': 'DEBUG',
+        'requests': {
+            'level': 'INFO',
             'class': 'logging.FileHandler',
-            'filename': 'debug.log',
+            'filename': 'requests.log',
+            'formatter': 'requests',
         },
     },
     'loggers': {
-        'django.request': {
-            'handlers': ['file'],
-            'level': 'DEBUG',
+        'requests': {
+            'handlers': ['requests'],
+            'level': 'INFO',
             'propagate': True,
         },
     },
