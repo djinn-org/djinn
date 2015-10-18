@@ -60,6 +60,39 @@ class Command(BaseCommand):
         self.stdout.write("rooms booked by ext = {}".format(booked_by_ext))
         self.stdout.write("rooms booked by djinn = {}".format(booked_by_djinn))
 
+    def fix_cancel_links(self, qs):
+        cancel_list = qs.filter(
+            log_type=ReservationLog.TYPE_CANCEL,
+            reservation_pk=0
+        ).order_by('room', 'log_time')
+
+        for cancel_item in cancel_list:
+            create_list = qs.filter(
+                room=cancel_item.room,
+                log_type=ReservationLog.TYPE_CREATE,
+                start=cancel_item.start, end=cancel_item.end,
+                log_time__lt=cancel_item.log_time
+            )
+
+            print('cancel item:\n  {}'.format(cancel_item))
+
+            if create_list:
+                print('will link to:\n  {}'.format(create_list[0]))
+                # NOTE: cannot do this way, it will update log_time
+                # cancel_item.save()
+                cancel_list.filter(pk=cancel_item.pk).update(
+                    log_time=cancel_item.log_time,
+                    reservation_pk=create_list[0].reservation_pk
+                )
+
+                for create_item in create_list[1:]:
+                    print('will NOT link to:\n  {}'.format(create_item))
+
+            else:
+                print('no matching create logs for {}'.format(cancel_item))
+
+            print()
+
     def handle(self, *args, **options):
         qs = ReservationLog.objects
 
@@ -71,7 +104,7 @@ class Command(BaseCommand):
 
         action = options['action']
         if action == 'fix-cancel-links':
-            pass
+            self.fix_cancel_links(qs)
         elif action == 'time-saved':
             self.print_saved_time(qs)
             self.print_booking_count(qs)
