@@ -1,10 +1,3 @@
-essential
----------
-
-! get CORS working, test
-
-! fix sync related bugs
-
 important: sort out timezone
 ----------------------------
 
