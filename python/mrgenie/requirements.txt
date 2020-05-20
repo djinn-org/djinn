@@ -1,4 +1,4 @@
 # Install required python packages using pip:
 # pip install -r requirements.txt
-httplib2==0.9.1
+httplib2==0.18.0
 urllib3==1.10.4
